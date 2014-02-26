@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".RegisterWithHuntActivity"
+    android:background="#FFBDA78A" >
+
+    <TextView
+        android:id="@+id/hunt_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/hunt_description_box"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_below="@+id/hunt_name_label"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/scan_question_result"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/register_hunt_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/start_treasure_hunt_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:text="@string/register" 
+        android:background="#FF54C8E2"/>
+
+    <Button
+        android:id="@+id/start_treasure_hunt_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="42dp"
+        android:text="Play" 
+        android:background="#FF54C8E2"/>
+
+    <ProgressBar
+        android:id="@+id/hunt_description_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/hunt_description_box"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

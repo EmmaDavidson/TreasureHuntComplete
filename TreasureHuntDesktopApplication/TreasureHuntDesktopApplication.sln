@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreasureHuntDesktopApplication.FullClient", "TreasureHuntDesktopApplication.FullClient\TreasureHuntDesktopApplication.FullClient.csproj", "{8997CED6-E342-4E05-8143-77C4D98F88D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4} = {5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreasureHuntDesktopApplication.Data", "TreasureHuntDesktopApplication.Data\TreasureHuntDesktopApplication.Data.csproj", "{873CE545-F089-4918-B08B-5E8A3E7D12FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreasureHuntDesktopApplication.DataService", "TreasureHuntDesktopApplication.DataService\TreasureHuntDesktopApplication.DataService.csproj", "{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreasureHuntDesktopApplication.Test", "TreasureHuntDesktopApplication.Test\TreasureHuntDesktopApplication.Test.csproj", "{0DA85E35-FF6A-4FED-B56E-B3CC71A5ED31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8997CED6-E342-4E05-8143-77C4D98F88D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8997CED6-E342-4E05-8143-77C4D98F88D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8997CED6-E342-4E05-8143-77C4D98F88D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8997CED6-E342-4E05-8143-77C4D98F88D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873CE545-F089-4918-B08B-5E8A3E7D12FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{873CE545-F089-4918-B08B-5E8A3E7D12FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{873CE545-F089-4918-B08B-5E8A3E7D12FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{873CE545-F089-4918-B08B-5E8A3E7D12FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B3BB04E-FDA5-4FED-8889-5AADBE402FC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA85E35-FF6A-4FED-B56E-B3CC71A5ED31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA85E35-FF6A-4FED-B56E-B3CC71A5ED31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA85E35-FF6A-4FED-B56E-B3CC71A5ED31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA85E35-FF6A-4FED-B56E-B3CC71A5ED31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,42 @@
+<Application x:Class="TreasureHuntDesktopApplication.FullClient.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:vm="clr-namespace:TreasureHuntDesktopApplication.FullClient.ViewModel" xmlns:views="clr-namespace:TreasureHuntDesktopApplication.FullClient.Views" StartupUri="Views/MainWindow.xaml" mc:Ignorable="d">
+  <Application.Resources>
+    <!--Global View Model Locator-->
+    <vm:ViewModelLocator x:Key="Locator" />
+      
+    <DataTemplate DataType="{x:Type vm:CreateHuntViewModel}">
+      <views:CreateHuntView>
+      </views:CreateHuntView>
+    </DataTemplate>
+      
+    <DataTemplate DataType="{x:Type vm:ViewHuntViewModel}">
+      <views:ViewHuntView>
+      </views:ViewHuntView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:SearchHuntViewModel}">
+        <views:SearchHuntView>
+        </views:SearchHuntView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:PrintViewModel}">
+            <views:PrintView>
+            </views:PrintView>
+        </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+            <views:LoginView>
+            </views:LoginView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
+            <views:RegisterView>
+            </views:RegisterView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:LeaderboardViewModel}">
+            <views:LeaderboardView>
+            </views:LeaderboardView>
+        </DataTemplate>
+
+    </Application.Resources>
+</Application>

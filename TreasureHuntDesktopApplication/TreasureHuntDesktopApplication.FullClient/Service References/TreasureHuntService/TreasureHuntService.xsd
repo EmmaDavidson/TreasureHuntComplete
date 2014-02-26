@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" />
+  <xs:complexType name="question">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q1:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Question1" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="QuestionId" type="xs:long" />
+          <xs:element minOccurs="0" name="URL" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="huntquestions" nillable="true" type="tns:ArrayOfhuntquestion" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="question" nillable="true" type="tns:question" />
+  <xs:complexType name="ArrayOfhuntquestion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="huntquestion" nillable="true" type="tns:huntquestion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfhuntquestion" nillable="true" type="tns:ArrayOfhuntquestion" />
+  <xs:complexType name="huntquestion">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q2="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q2:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="HuntId" type="xs:long" />
+          <xs:element minOccurs="0" name="HuntQuestionId" type="xs:long" />
+          <xs:element minOccurs="0" name="QuestionId" type="xs:long" />
+          <xs:element minOccurs="0" name="hunt" nillable="true" type="tns:hunt" />
+          <xs:element minOccurs="0" name="huntReference" nillable="true" type="q2:EntityReferenceOfhuntotu8m0Go" />
+          <xs:element minOccurs="0" name="question" nillable="true" type="tns:question" />
+          <xs:element minOccurs="0" name="questionReference" nillable="true" type="q2:EntityReferenceOfquestionotu8m0Go" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="huntquestion" nillable="true" type="tns:huntquestion" />
+  <xs:complexType name="hunt">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q3:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="EndDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="HuntDescription" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="HuntId" type="xs:long" />
+          <xs:element minOccurs="0" name="HuntName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="huntparticipants" nillable="true" type="tns:ArrayOfhuntparticipant" />
+          <xs:element minOccurs="0" name="huntquestions" nillable="true" type="tns:ArrayOfhuntquestion" />
+          <xs:element minOccurs="0" name="userhunts" nillable="true" type="tns:ArrayOfuserhunt" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="hunt" nillable="true" type="tns:hunt" />
+  <xs:complexType name="ArrayOfhuntparticipant">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="huntparticipant" nillable="true" type="tns:huntparticipant" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfhuntparticipant" nillable="true" type="tns:ArrayOfhuntparticipant" />
+  <xs:complexType name="huntparticipant">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q4:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ElapsedTime" type="xs:float" />
+          <xs:element minOccurs="0" name="HuntId" type="xs:long" />
+          <xs:element minOccurs="0" name="HuntParticipantId" type="xs:long" />
+          <xs:element minOccurs="0" name="StartTime" nillable="true" type="xs:double" />
+          <xs:element minOccurs="0" name="Tally" type="xs:long" />
+          <xs:element minOccurs="0" name="UserId" type="xs:long" />
+          <xs:element minOccurs="0" name="hunt" nillable="true" type="tns:hunt" />
+          <xs:element minOccurs="0" name="huntReference" nillable="true" type="q4:EntityReferenceOfhuntotu8m0Go" />
+          <xs:element minOccurs="0" name="user" nillable="true" type="tns:user" />
+          <xs:element minOccurs="0" name="userReference" nillable="true" type="q4:EntityReferenceOfuserotu8m0Go" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="huntparticipant" nillable="true" type="tns:huntparticipant" />
+  <xs:complexType name="user">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q5:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Company" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CompanyPassword" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="UserId" type="xs:long" />
+          <xs:element minOccurs="0" name="huntparticipants" nillable="true" type="tns:ArrayOfhuntparticipant" />
+          <xs:element minOccurs="0" name="userhunts" nillable="true" type="tns:ArrayOfuserhunt" />
+          <xs:element minOccurs="0" name="userroles" nillable="true" type="tns:ArrayOfuserrole" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="user" nillable="true" type="tns:user" />
+  <xs:complexType name="ArrayOfuserhunt">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="userhunt" nillable="true" type="tns:userhunt" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfuserhunt" nillable="true" type="tns:ArrayOfuserhunt" />
+  <xs:complexType name="userhunt">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q6:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="HuntId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserHuntId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserRoleId" type="xs:long" />
+          <xs:element minOccurs="0" name="hunt" nillable="true" type="tns:hunt" />
+          <xs:element minOccurs="0" name="huntReference" nillable="true" type="q6:EntityReferenceOfhuntotu8m0Go" />
+          <xs:element minOccurs="0" name="user" nillable="true" type="tns:user" />
+          <xs:element minOccurs="0" name="userReference" nillable="true" type="q6:EntityReferenceOfuserotu8m0Go" />
+          <xs:element minOccurs="0" name="userrole" nillable="true" type="tns:userrole" />
+          <xs:element minOccurs="0" name="userroleReference" nillable="true" type="q6:EntityReferenceOfuserroleotu8m0Go" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="userhunt" nillable="true" type="tns:userhunt" />
+  <xs:complexType name="userrole">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q7:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="RoleId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserRoleId" type="xs:long" />
+          <xs:element minOccurs="0" name="role" nillable="true" type="tns:role" />
+          <xs:element minOccurs="0" name="roleReference" nillable="true" type="q7:EntityReferenceOfroleotu8m0Go" />
+          <xs:element minOccurs="0" name="user" nillable="true" type="tns:user" />
+          <xs:element minOccurs="0" name="userReference" nillable="true" type="q7:EntityReferenceOfuserotu8m0Go" />
+          <xs:element minOccurs="0" name="userhunts" nillable="true" type="tns:ArrayOfuserhunt" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="userrole" nillable="true" type="tns:userrole" />
+  <xs:complexType name="role">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q8:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="RoleId" type="xs:long" />
+          <xs:element minOccurs="0" name="userroles" nillable="true" type="tns:ArrayOfuserrole" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="role" nillable="true" type="tns:role" />
+  <xs:complexType name="ArrayOfuserrole">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="userrole" nillable="true" type="tns:userrole" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfuserrole" nillable="true" type="tns:ArrayOfuserrole" />
+  <xs:complexType name="ArrayOfhunt">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="hunt" nillable="true" type="tns:hunt" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfhunt" nillable="true" type="tns:ArrayOfhunt" />
+  <xs:complexType name="ArrayOfuser">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="user" nillable="true" type="tns:user" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfuser" nillable="true" type="tns:ArrayOfuser" />
+</xs:schema>

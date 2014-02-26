@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="TreasureHuntDesktopApplication.DataService.TreasureHuntService" CodeBehind="TreasureHuntService.svc.cs" %>

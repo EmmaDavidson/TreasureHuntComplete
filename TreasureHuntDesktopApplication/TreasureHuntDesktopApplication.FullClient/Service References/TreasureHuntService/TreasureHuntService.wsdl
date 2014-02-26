@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TreasureHuntService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" />
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" />
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ITreasureHuntService_SaveQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveNewHuntQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNewHuntQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveNewHuntQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNewHuntQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveNewHunt_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNewHunt" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveNewHunt_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveNewHuntResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntQuestions_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntQuestions" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntQuestions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntQuestionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetTreasureHunts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTreasureHunts" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetTreasureHunts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTreasureHuntsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_UpdateQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_UpdateQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntBasedOnName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntBasedOnName" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntBasedOnName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntBasedOnNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetExistingUsers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetExistingUsers" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetExistingUsers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetExistingUsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUser" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserRole" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUser" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetUserRole_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserRole" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetUserRole_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserRoleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserHunt_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserHunt" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserHunt_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserHuntResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetTreasureHuntsForParticularUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTreasureHuntsForParticularUser" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetTreasureHuntsForParticularUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTreasureHuntsForParticularUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntParticipants_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntParticipants" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetHuntParticipants_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetHuntParticipantsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetParticipantName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetParticipantName" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_GetParticipantName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetParticipantNameResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ITreasureHuntService">
+    <wsdl:operation name="SaveQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveQuestion" message="tns:ITreasureHuntService_SaveQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveQuestionResponse" message="tns:ITreasureHuntService_SaveQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveNewHuntQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveNewHuntQuestion" message="tns:ITreasureHuntService_SaveNewHuntQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveNewHuntQuestionResponse" message="tns:ITreasureHuntService_SaveNewHuntQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveNewHunt">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveNewHunt" message="tns:ITreasureHuntService_SaveNewHunt_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveNewHuntResponse" message="tns:ITreasureHuntService_SaveNewHunt_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntQuestions">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntQuestions" message="tns:ITreasureHuntService_GetHuntQuestions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntQuestionsResponse" message="tns:ITreasureHuntService_GetHuntQuestions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTreasureHunts">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetTreasureHunts" message="tns:ITreasureHuntService_GetTreasureHunts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetTreasureHuntsResponse" message="tns:ITreasureHuntService_GetTreasureHunts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetQuestion" message="tns:ITreasureHuntService_GetQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetQuestionResponse" message="tns:ITreasureHuntService_GetQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/UpdateQuestion" message="tns:ITreasureHuntService_UpdateQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/UpdateQuestionResponse" message="tns:ITreasureHuntService_UpdateQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntBasedOnName">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntBasedOnName" message="tns:ITreasureHuntService_GetHuntBasedOnName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntBasedOnNameResponse" message="tns:ITreasureHuntService_GetHuntBasedOnName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetExistingUsers">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetExistingUsers" message="tns:ITreasureHuntService_GetExistingUsers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetExistingUsersResponse" message="tns:ITreasureHuntService_GetExistingUsers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUser" message="tns:ITreasureHuntService_SaveUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserResponse" message="tns:ITreasureHuntService_SaveUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserRole" message="tns:ITreasureHuntService_SaveUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserRoleResponse" message="tns:ITreasureHuntService_SaveUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetUser" message="tns:ITreasureHuntService_GetUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetUserResponse" message="tns:ITreasureHuntService_GetUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUserRole">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetUserRole" message="tns:ITreasureHuntService_GetUserRole_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetUserRoleResponse" message="tns:ITreasureHuntService_GetUserRole_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserHunt">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserHunt" message="tns:ITreasureHuntService_SaveUserHunt_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserHuntResponse" message="tns:ITreasureHuntService_SaveUserHunt_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTreasureHuntsForParticularUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetTreasureHuntsForParticularUser" message="tns:ITreasureHuntService_GetTreasureHuntsForParticularUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetTreasureHuntsForParticularUserResponse" message="tns:ITreasureHuntService_GetTreasureHuntsForParticularUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntParticipants">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntParticipants" message="tns:ITreasureHuntService_GetHuntParticipants_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetHuntParticipantsResponse" message="tns:ITreasureHuntService_GetHuntParticipants_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetParticipantName">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetParticipantName" message="tns:ITreasureHuntService_GetParticipantName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetParticipantNameResponse" message="tns:ITreasureHuntService_GetParticipantName_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_ITreasureHuntService" type="tns:ITreasureHuntService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SaveQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveNewHuntQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveNewHuntQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveNewHunt">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveNewHunt" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntQuestions">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetHuntQuestions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTreasureHunts">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetTreasureHunts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/UpdateQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntBasedOnName">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetHuntBasedOnName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetExistingUsers">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetExistingUsers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveUser">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserRole">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveUserRole" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserRole">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetUserRole" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserHunt">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveUserHunt" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTreasureHuntsForParticularUser">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetTreasureHuntsForParticularUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetHuntParticipants">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetHuntParticipants" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParticipantName">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetParticipantName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TreasureHuntService">
+    <wsdl:port name="BasicHttpBinding_ITreasureHuntService" binding="tns:BasicHttpBinding_ITreasureHuntService">
+      <soap:address location="http://localhost:51416/TreasureHuntService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

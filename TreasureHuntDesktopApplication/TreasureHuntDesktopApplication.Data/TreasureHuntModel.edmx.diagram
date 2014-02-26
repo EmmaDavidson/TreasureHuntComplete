@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c0079099f2924d4399647d6e90556d1a" Name="Diagram1">
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.hunt" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.huntparticipant" Width="1.5" PointX="3" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.huntquestion" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.question" Width="1.5" PointX="0.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.role" Width="1.5" PointX="3.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.user" Width="1.5" PointX="0.75" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.userhunt" Width="1.5" PointX="6" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="virapy_treasurehuntdbModel.userrole" Width="1.5" PointX="6" PointY="3.625" IsExpanded="true" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.huntparticipants_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.huntquestions_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.userhunt_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.huntparticipants_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.huntquestions_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.userrole_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.userhunt_ibfk_1" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.userrole_ibfk_2" ManuallyRouted="false" />
+        <AssociationConnector Association="virapy_treasurehuntdbModel.userhunt_ibfk_3" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
