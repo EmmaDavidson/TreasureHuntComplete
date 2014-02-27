@@ -8,7 +8,7 @@
 	require("config.inc.php");
 
 	try {	
-		$query = "SELECT HuntId FROM huntparticipants WHERE UserId = :UserId ";
+		$query = "SELECT HuntId FROM huntparticipants WHERE UserId = :UserId AND StartTime != '0'";
 		$query_params = array(
 	        ':UserId' => $_POST['userId']
 	   	 );
@@ -35,8 +35,9 @@
 		foreach($hunts as $huntIdReturned)
 		{
 			try {	
+				$date = date('Y-m-d H:i:s'); 
 				$huntIdReturned = array_shift($huntIdReturned);
-				$query2 = "SELECT HuntName FROM hunt WHERE HuntId = :HuntId ";
+				$query2 = "SELECT HuntName FROM hunt WHERE HuntId = :HuntId AND EndDate > '$date'";
 				$query_params2 = array(
 	    			    ':HuntId' => $huntIdReturned
 	   			 );			
