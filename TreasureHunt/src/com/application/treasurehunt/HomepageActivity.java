@@ -55,10 +55,11 @@ public class HomepageActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Intent myHuntsActivity = new Intent(HomepageActivity.this, MyHuntsActivity.class);	
+						Intent myHuntsActivity = new Intent(HomepageActivity.this, ChooseTypeOfMyHuntActivity.class);	
 						startActivity(myHuntsActivity);
 					}
 				});
+		
 		mBrowseHuntsButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -66,8 +67,7 @@ public class HomepageActivity extends Activity {
 						Intent chooseHuntActivity = new Intent(HomepageActivity.this, ChooseHuntActivity.class);	
 						startActivity(chooseHuntActivity);
 					}
-				});
-		
+				});	
 	}
 
 	@Override

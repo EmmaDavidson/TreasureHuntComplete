@@ -20,22 +20,23 @@
         android:text="" />
 
     <Button
-        android:id="@+id/my_hunts_button"
+        android:id="@+id/browse_hunts_button"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_alignLeft="@+id/homepage_username"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="21dp"
+        android:layout_below="@+id/homepage_username"
+        android:layout_marginTop="53dp"
         android:background="#FF54C8E2"
         android:text="My Hunts"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/browse_hunts_button"
+        android:id="@+id/my_hunts_button"
         android:layout_width="140dp"
         android:layout_height="140dp"
+        android:layout_alignBaseline="@+id/browse_hunts_button"
+        android:layout_alignBottom="@+id/browse_hunts_button"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/my_hunts_button"
         android:background="#FF54C8E2"
         android:text="Browse Hunts"
         android:textColor="#FFFFFF" />

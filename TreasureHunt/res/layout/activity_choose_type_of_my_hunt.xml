@@ -11,17 +11,17 @@
     android:background="#FFBDA78A">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/not_started_hunts_button"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/button1"
+        android:layout_alignTop="@+id/current_hunts_button"
         android:text="Not started" 
         android:background="#FF54C8E2"
 		android:textColor="#FFFFFF"/>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/current_hunts_button"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_alignParentRight="true"
@@ -32,14 +32,14 @@
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/completed_hunts_button"
         android:layout_width="140dp"
         android:layout_height="140dp"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_below="@+id/button2"
+        android:layout_alignLeft="@+id/not_started_hunts_button"
+        android:layout_below="@+id/not_started_hunts_button"
         android:layout_marginTop="16dp"
+        android:background="#FF54C8E2"
         android:text="Completed"
-        android:background="#FF54C8E2" 
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

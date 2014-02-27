@@ -232,10 +232,9 @@ containing a value of this type.
         public static final int action_settings=0x7f05003b;
         public static final int altitude=0x7f050030;
         public static final int browse_hunts_button=0x7f05000c;
-        public static final int button1=0x7f050007;
-        public static final int button2=0x7f050006;
-        public static final int button3=0x7f050008;
         public static final int choose_hunt_item=0x7f050027;
+        public static final int completed_hunts_button=0x7f050008;
+        public static final int current_hunts_button=0x7f050007;
         public static final int elapsedTime=0x7f050031;
         public static final int fragment_container=0x7f050009;
         public static final int homepage_username=0x7f05000a;
@@ -266,6 +265,7 @@ containing a value of this type.
         public static final int my_hunts_button=0x7f05000b;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
+        public static final int not_started_hunts_button=0x7f050006;
         public static final int pager=0x7f050024;
         public static final int pager_title_strip=0x7f050025;
         public static final int register_email_address=0x7f050018;

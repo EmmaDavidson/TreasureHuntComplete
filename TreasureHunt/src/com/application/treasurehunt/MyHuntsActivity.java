@@ -46,12 +46,18 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 	
 	boolean huntParticipantIdReturned;
 	
-	private static final String getHuntParticipantIdUrl = "http://lowryhosting.com/emmad/getHuntParticipantId.php";
+	
 	
 	ReturnUserHuntsTask mReturnUserHuntsTask;
 	GetHuntParticipantIdTask mGetHuntParticipantIdTask;
 	private JSONParser jsonParser;
-	private static final String returnUserHuntsUrl =  "http://lowryhosting.com/emmad/chooseUserHunt.php";
+	
+	//private static final String returnUserHuntsUrl =  "http://lowryhosting.com/emmad/chooseUserHunt.php";
+	private static final String returnUserHuntsNotStartedUrl =  "http://lowryhosting.com/emmad/chooseUserHuntNotStarted.php";
+	private static final String returnUserHuntsCompletedUrl =  "http://lowryhosting.com/emmad/chooseUserHuntCompleted.php";
+	private static final String returnUserHuntsCurrentUrl =  "http://lowryhosting.com/emmad/chooseUserHuntCurrent.php";
+	private static final String getHuntParticipantIdUrl = "http://lowryhosting.com/emmad/getHuntParticipantId.php";
+	
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
 	private static JSONArray tagResult;
@@ -70,6 +76,8 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 	
 	Hunt chosenHunt;
 	
+	String typeOfHunt;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,6 +92,8 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 			actionBar.setTitle("Treasure Hunt");
 			actionBar.setSubtitle("My hunts");
 		}
+		
+		typeOfHunt = getIntent().getStringExtra("Type");
 		
 		mMapManager = MapManager.get(this);
 		
@@ -161,8 +171,7 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
 						mGetHuntParticipantIdTask.cancel(true);
-						Toast.makeText(MyHuntsActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-						
+						Toast.makeText(MyHuntsActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();	
 					}
 				}
 			}
@@ -288,11 +297,30 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 			
 			try {
 				
+				
+				
+				//look for hunts that 
+				
+				
 				Log.d("request", "starting");
 				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 				parameters.add(new BasicNameValuePair("userId", Integer.toString(currentUserId)));
 				
-				JSONObject json = jsonParser.makeHttpRequest(returnUserHuntsUrl, "POST", parameters);
+				JSONObject json = new JSONObject();
+				
+				//look for hunts that have start times that are 0 i.e. registered but not started
+				if(typeOfHunt.equals("NotStarted"))
+				{
+					json = jsonParser.makeHttpRequest(returnUserHuntsNotStartedUrl, "POST", parameters);
+				}
+				else if(typeOfHunt.equals("Current"))
+				{
+					json = jsonParser.makeHttpRequest(returnUserHuntsCurrentUrl, "POST", parameters);
+				}
+				else
+				{	//look for hunts where hunt end date is less than current date
+					json = jsonParser.makeHttpRequest(returnUserHuntsCompletedUrl, "POST", parameters);
+				}
 				
 				Log.d("Get hunts attempt", json.toString());
 				
