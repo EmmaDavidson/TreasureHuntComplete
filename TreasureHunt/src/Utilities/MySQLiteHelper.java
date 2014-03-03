@@ -19,6 +19,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
   public static final String COLUMN_LEADERBOARD_TALLY = "Tally";
   public static final String COLUMN_LEADERBOARD_ELAPSED_TIME = "ElapsedTime";
   
+  public static final String TABLE_COMPANIES = "Company";
+  public static final String COLUMN_COMPANY_ID = "CompanyId";
+  public static final String COLUMN_COMPANY_NAME = "CompanyName";
+  public static final String COLUMN_COMPANY_PASSWORD = "CompanyPassword";
+  
 
   private static final String DATABASE_NAME = "TreasureHunt.db";
   private static final int DATABASE_VERSION = 1;
@@ -39,6 +44,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		  + TABLE_HUNT_LEADERBOARD + " (" + COLUMN_LEADERBOARD_USERNAME + " name not null, " +
 	        COLUMN_LEADERBOARD_TALLY + " INTEGER NOT NULL, " + COLUMN_LEADERBOARD_ELAPSED_TIME + " FLOAT NOT NULL); ";
   
+  private static final String DATABASE_CREATE_COMPANY = "create table "
+	      + TABLE_COMPANIES + "("  + COLUMN_COMPANY_ID + " INTEGER NOT NULL, " + 
+	      COLUMN_COMPANY_NAME + " text not null, " + COLUMN_COMPANY_PASSWORD + " text not null); ";
+	  
+  
   public MySQLiteHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
   }
@@ -48,6 +58,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     database.execSQL(DATABASE_CREATE);
     database.execSQL(DATABASE_CREATE_USER_HUNTS);
     database.execSQL(DATABASE_CREATE_LEADERBOARD);
+    database.execSQL(DATABASE_CREATE_COMPANY);
   }
 
   //WE REALLY WANT A HELPER FOR EACH DIFFERENT TABLE - UPDATE LATER 
@@ -59,6 +70,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_HUNTS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER_HUNTS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_HUNT_LEADERBOARD);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMPANIES);
     onCreate(db);
   }
   

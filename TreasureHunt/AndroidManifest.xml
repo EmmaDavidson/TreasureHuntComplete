@@ -118,6 +118,18 @@
             android:name="com.application.treasurehunt.ChooseTypeOfMyHuntActivity"
             android:label="@string/title_activity_choose_type_of_my_hunt" >
         </activity>
+        <activity
+            android:name="com.application.treasurehunt.CompanyPasswordActivity"
+            android:label="@string/title_activity_company_password" >
+        </activity>
+        <activity
+            android:name="com.application.treasurehunt.ChooseCompanyActivity"
+            android:label="@string/title_activity_choose_company" >
+        </activity>
+        <activity
+            android:name="com.application.treasurehunt.ForgottenPasswordActivity"
+            android:label="@string/title_activity_forgotten_password" >
+        </activity>
     </application>
 
 </manifest>

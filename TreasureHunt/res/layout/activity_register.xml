@@ -61,10 +61,26 @@
         android:id="@+id/register_save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/register_password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
+        android:layout_alignLeft="@+id/register_password"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="44dp"
         android:background="#FF54C8E2"
         android:text="@string/save" />
+
+    <Spinner
+        android:id="@+id/security_question_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/register_password"
+        android:layout_centerVertical="true" />
+
+    <EditText
+        android:id="@+id/security_question_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/security_question_spinner"
+        android:layout_below="@+id/security_question_spinner"
+        android:hint="Security Answer"
+        android:ems="10" />
 
 </RelativeLayout>

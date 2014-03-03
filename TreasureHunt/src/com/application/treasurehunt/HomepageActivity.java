@@ -64,8 +64,8 @@ public class HomepageActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Intent chooseHuntActivity = new Intent(HomepageActivity.this, ChooseHuntActivity.class);	
-						startActivity(chooseHuntActivity);
+						Intent chooseCompanyActivity = new Intent(HomepageActivity.this, ChooseCompanyActivity.class);	
+						startActivity(chooseCompanyActivity);
 					}
 				});	
 	}

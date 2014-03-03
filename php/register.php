@@ -5,18 +5,8 @@
 <?php
 
 	require("config.inc.php");
-	 
 
-	if (!empty($_POST)) {
-
-	    if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['name'])) {
-	        
-	        $response["success"] = 0;
-	        $response["message"] = "Please Enter a Name, Email Address and Password.";
-
-	        die(json_encode($response));
-	    }
-
+	    //Selecting the email address passed in to see if it already exists
 	    $query = " SELECT 1 FROM user WHERE email = :Email";
 	    $query_params = array(
 	        ':Email' => $_POST['email']
@@ -33,7 +23,11 @@
 	        $response["message"] = "Database Error1. Please Try Again!";
 	        die(json_encode($response));
 	    }
-	     
+
+
+
+
+	    //If it already exists... 
 	    $row = $stmt->fetch();
 	    if ($row) {
 
@@ -41,7 +35,8 @@
 	        $response["message"] = "This Email Address is already in use";
 	        die(json_encode($response));
 	    }
-	     
+		
+	    //Else insert into the user their details 
 	    $query = "INSERT INTO user ( name, email, password ) VALUES ( :Name, :Email, :Password ) ";
 	     
 	    $query_params = array(
@@ -61,28 +56,55 @@
 	        die(json_encode($response));
 	    }
 
-	    $response["success"] = 1;
-	    $response["message"] = "Registration successful!";
-	    echo json_encode($response);	     	     
-	     
-	} else {
-	?>
-	    <h1>Register</h1>
-	    <form action="register.php" method="post">
+
+
+	    //Get the user id of this newly added person
+	    $query = " SELECT UserId FROM user WHERE email = :Email";
+	    $query_params = array(
+	        ':Email' => $_POST['email']
+	    );
+	     	    
+	    try {
+	       
+	        $stmt   = $db->prepare($query);
+	        $result = $stmt->execute($query_params);
+	    }
+	    catch (PDOException $ex) {
 	        
-		Name:<br />
-		<input type="text" name="name" value="" />
-	        <br /><br />
-		Email:<br />
-	        <input type="text" name="email" value="" />
-	        <br /><br />
-	        Password:<br />
-	        <input type="password" name="password" value="" />
-	        <br /><br />
-	        <input type="submit" value="Register New User" />
-	    </form>
-	    <?php
-	}
-	 
+	        $response["success"] = 0;
+	        $response["message"] = "Database Error3. Please Try Again!";
+	        die(json_encode($response));
+	    }
+
+	   $user = $stmt->fetch();
+
+	    //If this person is returned...	
+	    if($user)
+	    {
+		//Insert into the security questions table their values
+	    	$query = "INSERT INTO usersecurityquestions ( userid, securityquestionid, answer ) VALUES ( :UserId, :SecurityQuestionId, :Answer )";
+	     
+	    $query_params = array(
+		':UserId' => $user['UserId'],
+	        ':SecurityQuestionId' => $_POST['securityQuestionId'],
+	        ':Answer' => $_POST['answer']
+	    );
+	     
+	    try {
+	        $stmt   = $db->prepare($query);
+	        $result = $stmt->execute($query_params);
+	    }
+	    catch (PDOException $ex) {
+
+	        $response["success"] = 0;
+	        $response["message"] = "Database Error4. Please Try Again!";
+	        die(json_encode($response));
+	    }
+	
+	    	$response["success"] = 1;
+	    	$response["message"] = "Registration successful!";
+		$response["result"] = $user;
+	        echo json_encode($response);	     	     
+	   }
 	?>
 

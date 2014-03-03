@@ -3,9 +3,7 @@
 	require("config.inc.php");
 
 	try {		
-		$date = date('Y-m-d H:i:s'); 
-
-		$query = $db->prepare("SELECT HuntName FROM hunt WHERE EndDate > '$date'");
+		$query = $db->prepare("SELECT * FROM user WHERE Company != ''");
 		$result = $query->execute();
 	    }
 
@@ -18,20 +16,20 @@
 	        die(json_encode($response));
 	    }
 
-	    $users = $query->fetchAll(PDO::FETCH_ASSOC);
+	    $companies = $query->fetchAll();
 
-            if($users)
+            if($companies)
 	    {
 		$response["success"] = 1;
-	        $response["message"] = "Sucessfully returned hunts!";
-		$response["results"] = $users;
+	        $response["message"] = "Sucessfully returned companies!";
+		$response["results"] = $companies;
 
 		echo json_encode($response);
 	    }		
 	    else
 	    {
 		$response["success"] = 0;
-	        $response["message"] = "No hunts were returned.";
+	        $response["message"] = "No companies were returned.";
 	  	echo json_encode($response);
 	    }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +39,7 @@ import android.widget.Toast;
 public class ChooseHuntActivity extends Activity{
 
 	public JSONParser jsonParser = new JSONParser();
-	private static final String myChooseHuntUrl =  "http://lowryhosting.com/emmad/choosehunt.php";
+	private static final String myChooseHuntUrl =  "http://lowryhosting.com/emmad/chooseHunts.php";
 	
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
@@ -57,6 +58,8 @@ public class ChooseHuntActivity extends Activity{
 	Handler handlerForUpdatingHuntList;
 	
 	MapManager mMapManager;
+	
+	int currentCompanyId;
 	
 	//http://stackoverflow.com/questions/12220239/repeat-task-in-android
 		//http://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay/6242292#6242292
@@ -84,6 +87,9 @@ public class ChooseHuntActivity extends Activity{
 			actionBar.setSubtitle("Choose a hunt");
 		}
 		
+		settings = getSharedPreferences("UserPreferencesFile", 0);
+		editor = settings.edit();
+		
 		mListView = (ListView) findViewById(R.id.hunt_list_view);	
 		
 		huntDataSource.updateDatabaseLocally();
@@ -92,10 +98,9 @@ public class ChooseHuntActivity extends Activity{
 		handlerForUpdatingHuntList = new Handler();
 		handlerForUpdatingHuntList.post(updateHuntsList);
 		
-		settings = getSharedPreferences("UserPreferencesFile", 0);
-		editor = settings.edit();
-		
 		mMapManager = MapManager.get(this);
+		
+		currentCompanyId = settings.getInt("currentCompanyId", 0);
 		
 	}
 
@@ -202,7 +207,9 @@ public class ReturnHuntsTask extends AsyncTask<String, String, String> {
 			//PHP CURRENT DATE TIME CHECK http://stackoverflow.com/questions/470617/get-current-date-and-time-in-php
 			Log.d("request", "starting");
 			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			JSONObject json = jsonParser.makeHttpRequest(myChooseHuntUrl, "GET", parameters);
+			parameters.add(new BasicNameValuePair("companyId", Integer.toString(currentCompanyId)));
+			
+			JSONObject json = jsonParser.makeHttpRequest(myChooseHuntUrl, "POST", parameters);
 			
 			Log.d("Get hunts attempt", json.toString());
 			
@@ -215,7 +222,7 @@ public class ReturnHuntsTask extends AsyncTask<String, String, String> {
 				//-http://stackoverflow.com/questions/8411154/null-pointer-exception-while-inserting-json-array-into-sqlite-database
 				for(int i=0; i < tagResult.length(); i++)
 				{
-					huntDataSource.addHunt(tagResult.getJSONObject(i).getString("HuntName"));
+					huntDataSource.addHunt(tagResult.getJSONArray(i).getJSONObject(0).getString("HuntName"));
 				}
 				
 				return tagMessage.toString();

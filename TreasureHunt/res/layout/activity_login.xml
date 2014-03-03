@@ -11,52 +11,63 @@
     android:id="@+id/login_form_layout" 
     android:background="#FFBDA78A">
 
+        <Button
+            android:id="@+id/register_on_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/login_password"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="21dp"
+            android:background="#FF54C8E2"
+            android:text="@string/register" />
+
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/register_on_login_button"
+            android:layout_alignLeft="@+id/register_on_login_button"
+            android:layout_marginBottom="14dp"
+            android:background="#FF54C8E2"
+            android:text="@string/login" />
+
+        <EditText
+            android:id="@+id/login_email_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:ems="10"
+            android:hint="@string/prompt_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true" >
+
+            <requestFocus />
+        </EditText>
+
         <EditText
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/login_email_address"
             android:layout_below="@+id/login_email_address"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="19dp"
             android:ems="10"
             android:hint="@string/prompt_password"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:singleLine="true" >
-        </EditText>
-
-        <EditText
-            android:id="@+id/login_email_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:singleLine="true" >
-            
-             <requestFocus />
-            </EditText>
+            android:singleLine="true" />
 
         <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
+            android:id="@+id/forgotten_password_button"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/register_on_login_button"
+            android:layout_alignRight="@+id/login_password"
             android:layout_below="@+id/login_password"
-            android:layout_marginTop="35dp"
-            android:text="@string/login"
-            android:background="#FF54C8E2" />
-
-        <Button
-            android:id="@+id/register_on_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/login_password"
-            android:layout_below="@+id/sign_in_button"
-            android:layout_marginTop="26dp"
-            android:background="#FF54C8E2"
-            android:text="@string/register" />
+            android:layout_marginTop="14dp"
+            android:text="Forgot Password" />
 
 </RelativeLayout>

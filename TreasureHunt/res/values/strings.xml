@@ -28,6 +28,7 @@
     <string name="error_name_null">Please enter your name</string>
     <string name="error_name_too_short">Should be more than 4 characters</string>
     <string name="error_email_incorrect_format">Should be valid email format</string>
+    <string name="error_answer_null">Should not be empty</string>
     <string name="choose_hunt_header">Choose A Hunt</string>
     <string name="choose_hunt">Choose Hunt</string>
     <string name="password_label">Password</string>
@@ -57,5 +58,16 @@
     <string name="title_activity_map_list">MapListActivity</string>
     <string name="title_activity_google_map">GoogleMapActivity</string>
     <string name="title_activity_choose_type_of_my_hunt">ChooseTypeOfMyHuntActivity</string>
+    <string name="title_activity_choose_company">ChooseCompany</string>
+    <string name="title_activity_company_password">CompanyPasswordActivity</string>
+    <string name="title_activity_forgotten_password">ForgottenPasswordActivity</string>
+    
+    <string-array name="security_choices_array">
+        <item>What is your mothers maiden name</item>
+        <item>What was the name of your first school</item>
+        <item>Who is your favourite celebrity</item>
+        <item>What was your first pet called</item>
+        <item>Where were you born</item>
+    </string-array>
 
 </resources>

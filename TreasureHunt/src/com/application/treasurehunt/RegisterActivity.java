@@ -23,7 +23,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
@@ -46,7 +48,6 @@ public class RegisterActivity extends Activity {
 	
 	private UserRegisterTask mAuthTask = null;
 	private SetUserRoleTask mUserRoleTask = null;
-	private GetUserIdTask mUserTask = null;
 	
 	private ProgressDialog pDialog; 
 	
@@ -61,10 +62,14 @@ public class RegisterActivity extends Activity {
 	private String mEmail;
 	private String mPassword;
 	private String mName;
+	private String mAnswer;
 
 	private EditText mEmailView;
 	private EditText mPasswordView;
 	private EditText mNameView;
+	private EditText mAnswerView;
+	
+	Spinner securityQuestionSpinner;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class RegisterActivity extends Activity {
 		mEmailView = (EditText) findViewById(R.id.register_email_address);
 		mPasswordView = (EditText) findViewById(R.id.register_password);
 		mNameView = (EditText) findViewById(R.id.register_name);
+		mAnswerView = (EditText) findViewById(R.id.security_question_answer);
 							
 		findViewById(R.id.register_save_button).setOnClickListener(
 				new View.OnClickListener() {
@@ -89,6 +95,12 @@ public class RegisterActivity extends Activity {
 			actionBar.setTitle("Treasure Hunt");
 			actionBar.setSubtitle("Register");
 		}
+		
+		//http://developer.android.com/guide/topics/ui/controls/spinner.html
+		securityQuestionSpinner = (Spinner) findViewById(R.id.security_question_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.security_choices_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		securityQuestionSpinner.setAdapter(adapter);
 		
 	}
 
@@ -114,8 +126,9 @@ public class RegisterActivity extends Activity {
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
 		mName = mNameView.getText().toString();
+		mAnswer = mAnswerView.getText().toString();
 		
-		if((isValidEmailAddress() && isValidPassword() && isValidName()))
+		if((isValidEmailAddress() && isValidPassword() && isValidName() && isValidAnswer()))
 		{		
 			mAuthTask = new UserRegisterTask(); // Do ASYNC way
 			mAuthTask.execute((String) null);
@@ -143,35 +156,6 @@ public class RegisterActivity extends Activity {
 		
 	}
 	
-	private void attemptToReturnUserId()
-	{
-		if (mUserTask != null) {
-			return;
-		} 	
-		
-		mUserTask = new GetUserIdTask();
-		mUserTask.execute((String) null);
-
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mUserTask!= null)
-				{
-					if(mUserTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mUserTask.cancel(true);
-						pDialog.cancel();
-						Toast.makeText(RegisterActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
-	
 	private boolean isValidEmailAddress()
 	{	
 		if (TextUtils.isEmpty(mEmail)) {
@@ -192,6 +176,15 @@ public class RegisterActivity extends Activity {
 		
 		return true;
 		
+	}
+	
+	private boolean isValidAnswer()
+	{
+		if (TextUtils.isEmpty(mAnswer)) {
+			mAnswerView.setError(getString(R.string.error_answer_null));
+			return false;
+		}
+		return true;
 	}
 	
 	private boolean isValidPassword()
@@ -297,16 +290,15 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 //http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 			int success;
-			String email = mEmail;
-			String password = mPassword;
-			String name = mName;
 			
 			try {
 				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 				
-				parameters.add(new BasicNameValuePair("email", email));
-				parameters.add(new BasicNameValuePair("password", password));
-				parameters.add(new BasicNameValuePair("name", name));
+				parameters.add(new BasicNameValuePair("email", mEmail));
+				parameters.add(new BasicNameValuePair("password", mPassword));
+				parameters.add(new BasicNameValuePair("name", mName));
+				parameters.add(new BasicNameValuePair("securityQuestionId", Long.toString(securityQuestionSpinner.getSelectedItemId())));
+				parameters.add(new BasicNameValuePair("answer", mAnswer));
 				
 				Log.d("request", "starting");
 				JSONObject json = jsonParser.makeHttpRequest(myRegisterUrl, "POST", parameters);
@@ -317,7 +309,10 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 				{
 					Log.d("Login Successful!", json.toString());
 					userSucessfullyRegistered = true;
-					currentUser = email;
+					currentUser = mEmail;
+					userIdResult = json.getJSONObject("result");
+					userIdSucessfullyReturned = true;
+					userId = userIdResult.getInt("UserId");
 					return json.getString(tagMessage);
 				}
 				else
@@ -342,8 +337,7 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 				Toast.makeText(RegisterActivity.this, fileUrl, Toast.LENGTH_LONG).show();
 				if(userSucessfullyRegistered)
 				{
-					attemptToReturnUserId();
-					pDialog.dismiss();
+					attemptUserRoleRegister();
 				}
 			} else {
 				Toast.makeText(RegisterActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
@@ -357,70 +351,6 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 			mAuthTask = null;
 			pDialog.cancel();
 		}
-	}
-
-public class GetUserIdTask extends AsyncTask<String, String, String> {
-	
-		@Override
-		protected String doInBackground(String... arg0) {
-			
-			int success;
-			//GETTING THE USER ID
-			List<NameValuePair> parametersForUserId = new ArrayList<NameValuePair>();
-			//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-			parametersForUserId.add(new BasicNameValuePair("email", currentUser));
-			
-			try{
-				Log.d("request", "starting");
-				JSONObject jsonFindUserId = jsonParser.makeHttpRequest(getUserIdUrl, "POST", parametersForUserId);
-				Log.d("Get User Id Attempt", jsonFindUserId.toString());
-				success = jsonFindUserId.getInt(tagSuccess);
-				
-				if(success == 1)
-				{
-					userIdResult = jsonFindUserId.getJSONObject("result");
-					userIdSucessfullyReturned = true;
-					userId = userIdResult.getInt("UserId");
-					
-					return jsonFindUserId.getString(tagMessage);
-					
-				}
-				else
-				{
-					Log.d("Getting User Id failed!", jsonFindUserId.getString(tagMessage));
-					return jsonFindUserId.getString(tagMessage);
-				}
-			}
-			catch (JSONException e) {
-				
-			}
-			
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(final String fileUrl) {
-			mUserTask = null;
-			
-			if (fileUrl != null) {
-				if(userSucessfullyRegistered)
-				{
-					attemptUserRoleRegister();
-				}
-		
-			} else {
-				Toast.makeText(RegisterActivity.this, "Couldn't get user id", Toast.LENGTH_LONG).show();
-			}
-		
-			
-		}
-		
-		@Override
-		protected void onCancelled() {
-			mUserTask = null;
-			pDialog.cancel();
-		}
-	
 	}
 
 public class SetUserRoleTask extends AsyncTask<String, String, String> {
