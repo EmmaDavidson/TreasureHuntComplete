@@ -105,7 +105,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 4;
+                return 3;
 
             }
         }
@@ -168,7 +168,25 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 4;
+                return 3;
+
+            }
+        }
+
+        public int CompanyPasswordMinLength
+        {
+            get
+            {
+                return 6;
+
+            }
+        }
+
+        public int CompanyPasswordMaxLength
+        {
+            get
+            {
+                return 20;
 
             }
         }
@@ -374,7 +392,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(Password))
+            if (!Validation.IsValidCharactersForPassword(Password))
             {
                 return "There are invalid characters";
             }
@@ -393,7 +411,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "This field cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(RetypedPassword))
+            if (!Validation.IsValidCharactersForPassword(RetypedPassword))
             {
                 return "There are invalid characters";
             }
@@ -431,11 +449,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(CompanyPassword))
+            if (!Validation.IsValidCharactersForPassword(CompanyPassword))
             {
                 return "There are invalid characters";
             }
-            if (!Validation.IsValidLength(Password, PasswordMaxLength, PasswordMinLength))
+            if (!Validation.IsValidLength(Password, CompanyPasswordMaxLength, CompanyPasswordMinLength))
             {
                 return "Password is an invalid length!";
             }

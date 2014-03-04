@@ -30,17 +30,10 @@ import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 
-	//Home
 	private static final String myRegisterUrl =  "http://lowryhosting.com/emmad/register.php";
 	private static final String getUserIdUrl =  "http://lowryhosting.com/emmad/returnCurrentUserId.php";
 	private static final String setUserRoleUrl =  "http://lowryhosting.com/emmad/setUserRole.php";
-	
-	//University
-	//private static final String myRegisterUrl =  "http://143.117.190.106:80/webservice/register.php";
-	//private static final String getUserIdUrl = "http://143.117.190.106:80/webservice/returnCurrentUserId.php";
-	//private static final String setUserRoleUrl = "http://143.117.190.106:80/webservice/setUserRole.php";
-	
-	
+
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
 	
@@ -163,7 +156,7 @@ public class RegisterActivity extends Activity {
 			return false;
 			
 		}
-		else if(mEmail.length() < 10)
+		else if(mEmail.length() < 10 || mEmail.length() >= 30)
 		{
 			mEmailView.setError(getString(R.string.error_email_too_short));	
 			return false;
@@ -184,6 +177,8 @@ public class RegisterActivity extends Activity {
 			mAnswerView.setError(getString(R.string.error_answer_null));
 			return false;
 		}
+		
+		//MUST BE LONGER THAN 3 AND SHORTER THAN 30
 		return true;
 	}
 	
@@ -194,7 +189,7 @@ public class RegisterActivity extends Activity {
 			return false;
 			
 		}
-		else if(mPassword.length() < 6)
+		else if(mPassword.length() < 6 || mPassword.length() >= 10)
 		{
 			mPasswordView.setError(getString(R.string.error_password_too_short));	
 			return false;
@@ -211,11 +206,13 @@ public class RegisterActivity extends Activity {
 			return false;
 			
 		}
-		else if(mName.length() < 4)
+		else if(mName.length() < 3 || mName.length() > 30)
 		{
 			mNameView.setError(getString(R.string.error_name_too_short));	
 			return false;
 		}
+		
+		//THIS DOESNT CHECK FORMAT HERE
 		
 		return true;
 		

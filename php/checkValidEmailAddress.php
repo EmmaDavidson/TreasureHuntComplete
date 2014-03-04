@@ -3,7 +3,7 @@
 	require("config.inc.php");	    
 
 	   try {
-		$query = "SELECT Name, Password, UserId FROM user WHERE email = 'oscar@gmail.com'";
+		$query = "SELECT Name, Password, UserId FROM user WHERE email = :Email";
 	
 		    $query_params = array(
 		':Email' => $_POST['email']
@@ -71,9 +71,34 @@
 					
 					if($row3)
 					{
-						$response["success"] = 1;
-	   		        		$response["message"] = "This email address is valid for resetting";
-						$response["result"] = $row3;
+
+						$query2  = "SELECT * FROM securityquestions WHERE SecurityQuestionId = :QuestionId";
+						
+						$questionIdResult = $row3['SecurityQuestionId'];
+					
+	    					$query_params2 = array(':QuestionId' => $questionIdResult);
+
+						try {
+	     				   
+	        					$stmt2   = $db->prepare($query2);
+	        					$result2 = $stmt2->execute($query_params2);
+	    					    }
+	    					catch (PDOException $ex) {
+	       
+	        					$response["success"] = 0;
+	        					$response["message"] = "Database Error2. Please Try Again!";
+	        					die(json_encode($response));
+	    					}
+						
+						$question = $stmt2->fetch();
+						
+						if($question)
+						{
+							$response["success"] = 1;
+	   		        			$response["message"] = "This email address is valid for resetting";
+							$response["result"] = $row3;
+							$response["securityquestion"] = $question['SecurityQuestion'];
+						}	
 	
 					}
 					else
@@ -87,7 +112,7 @@
 	    				echo json_encode($response);
 				}
 
-	  		  }
+	  		 }
 		else
 			{
 				$response["success"] = 0;

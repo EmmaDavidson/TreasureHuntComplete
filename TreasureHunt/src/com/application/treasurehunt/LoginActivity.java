@@ -77,6 +77,7 @@ public class LoginActivity extends Activity {
 	
 	private static JSONObject userIdResult;
 	private static JSONObject resetEmailAddressResult;
+	private static String resetEmailAddressQuestionResult;
 	
 	Button mLoginButton;
 	Button mRegisterButton;
@@ -95,6 +96,7 @@ public class LoginActivity extends Activity {
 	
 	String securityQuestion;
 	String securityAnswer;
+	int resetPasswordId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +152,7 @@ public class LoginActivity extends Activity {
 								
 								resetEmailAddress = (EditText) emailView.findViewById(R.id.email_address_reset_text_field);
 								submittedEmail = resetEmailAddress.getText().toString();
-								dialog.cancel();
+								//dialog.cancel();
 								attemptResetPassword();
 								
 								
@@ -508,16 +510,16 @@ public class ResetPasswordTask extends AsyncTask<String, String, String> {
 			if(success == 1)
 			{
 				resetEmailAddressResult = jsonFindUserId.getJSONObject("result");
+				securityAnswer = resetEmailAddressResult.getString("Answer");
+				securityQuestion = jsonFindUserId.getString("securityquestion");
+				resetPasswordId = resetEmailAddressResult.getInt("UserId");
 				existingEmailAddress = true;
-				//securityQuestion = resetEmailAddressResult.getString("SecurityQuestion");
-				//securityAnswer = resetEmailAddressResult.getString("SecurityAnswer");
-				
-				return jsonFindUserId.getString(tagMessage);
-				
+				return jsonFindUserId.getString(tagMessage);	
 			}
 			else
 			{
 				Log.d("Failed attempt at reset password", jsonFindUserId.getString(tagMessage));
+				existingEmailAddress = false;
 				return jsonFindUserId.getString(tagMessage);
 			}
 		}
@@ -530,7 +532,7 @@ public class ResetPasswordTask extends AsyncTask<String, String, String> {
 	
 	@Override
 	protected void onPostExecute(final String fileUrl) {
-		mUserTask = null;
+		mPasswordTask = null;
 		
 		if(existingEmailAddress)
 		{
@@ -538,11 +540,11 @@ public class ResetPasswordTask extends AsyncTask<String, String, String> {
 			forgottenPasswordIntent.putExtra("EmailAddress", resetEmailAddress.getText().toString());
 			forgottenPasswordIntent.putExtra("SecurityQuestion", securityQuestion);
 			forgottenPasswordIntent.putExtra("SecurityAnswer", securityAnswer);
+			forgottenPasswordIntent.putExtra("UserId", resetPasswordId);
 			startActivity(forgottenPasswordIntent);
 		}
 		else
-		{
-			
+		{	
 			Builder incorrectEmailBuilder = new Builder(LoginActivity.this);									
 			incorrectEmailBuilder.setTitle("Invalid email");
 			incorrectEmailBuilder.setMessage("You entered an invalid email address");
@@ -559,13 +561,11 @@ public class ResetPasswordTask extends AsyncTask<String, String, String> {
 			incorrectEmailBuilder.show();
 			
 		}
-
-	
 	}
 
 	@Override
 	protected void onCancelled() {
-		mUserTask = null;
+		mPasswordTask = null;
 	}
 }
 }
