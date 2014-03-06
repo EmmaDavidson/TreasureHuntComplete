@@ -27,6 +27,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             RegisterUserCommand = new RelayCommand(() => ExecuteRegisterUserCommand(), () => IsValidDetails());
             BackCommand = new RelayCommand(() => ExecuteBackCommand());
+
+            SecurityQuestions = this.serviceClient.getListOfSecurityQuestions().AsEnumerable(); 
         }
         #endregion
 
@@ -65,7 +67,18 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        private String retypedPassword;
+        private securityquestion currentSecurityQuestion;
+        public securityquestion CurrentSecurityQuestion
+        {
+            get { return this.currentSecurityQuestion; }
+            set
+            {
+                this.currentSecurityQuestion = value;
+                RaisePropertyChanged("CurrentSecurityQuestion");
+            }
+        }
+
+        /*private String retypedPassword;
         public String RetypedPassword
         {
             get { return this.retypedPassword; }
@@ -74,7 +87,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 this.retypedPassword = value;
                 RaisePropertyChanged("RetypedPassword");
             }
-        }
+        }*/
 
         private String companyName;
         public String CompanyName
@@ -97,6 +110,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 RaisePropertyChanged("CompanyPassword");
             }
         }
+
+        private IEnumerable<securityquestion> securityQuestions;
+        public IEnumerable<securityquestion> SecurityQuestions
+        {
+            get { return this.securityQuestions; }
+            set
+            {
+                this.securityQuestions = value;
+                RaisePropertyChanged("SecurityQuestions");
+            }
+        }
+
+        private String securityAnswer;
+        public String SecurityAnswer
+        {
+            get { return this.securityAnswer; }
+            set
+            {
+                this.securityAnswer = value;
+                RaisePropertyChanged("SecurityAnswer");
+            }
+        }
         #endregion
 
         #region Validation
@@ -105,7 +140,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 3;
+                return 4;
 
             }
         }
@@ -168,25 +203,25 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 3;
+                return 4;
 
             }
         }
 
-        public int CompanyPasswordMinLength
+        public int SecurityAnswerMinLength
         {
             get
             {
-                return 6;
+                return 4;
 
             }
         }
 
-        public int CompanyPasswordMaxLength
+        public int SecurityAnswerMaxLength
         {
             get
             {
-                return 20;
+                return 30;
 
             }
         }
@@ -202,6 +237,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         #endregion
 
         #region Commands
+
         public void ExecuteRegisterUserCommand()
         {
             user newUser = new user();
@@ -221,13 +257,21 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
                     this.serviceClient.SaveUserRole(newUserRole);
 
+                    //Saving the security question for this user
+                    usersecurityquestion newSecurityQuestion = new usersecurityquestion();
+                    newSecurityQuestion.UserId = userId;
+                    newSecurityQuestion.SecurityQuestionId = CurrentSecurityQuestion.SecurityQuestionId;
+                    newSecurityQuestion.Answer = SecurityAnswer;
+                    this.serviceClient.SaveUserSecurityQuestion(newSecurityQuestion);
+
+                    //this.serviceClient.getListOfSecurityQuestions();
                     MessageBoxResult messageBox = MessageBox.Show("You have successfully registered!", "Success");
 
                     Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
 
                     EmailAddress = String.Empty;
                     Password = String.Empty;
-                    RetypedPassword = String.Empty;
+                    //RetypedPassword = String.Empty;
                     Name = String.Empty;
                     CompanyName = String.Empty;
                     CompanyPassword = String.Empty;
@@ -239,7 +283,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             EmailAddress = String.Empty;
             Password = String.Empty;
             Name = String.Empty;
-            RetypedPassword = String.Empty;
+            //RetypedPassword = String.Empty;
             CompanyName = String.Empty;
             CompanyPassword = String.Empty;
 
@@ -293,9 +337,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             "Name",
             "EmailAddress",
             "Password",
-            "RetypedPassword",
             "CompanyName",
-            "CompanyPassword"
+            "CompanyPassword",
+            "SecurityAnswer"
         };
 
         string IDataErrorInfo.this[string propertyName]
@@ -327,11 +371,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         result = ValidatePassword();
                         break;
                     }
-                case "RetypedPassword":
+                /*case "RetypedPassword":
                     {
                         result = ValidateMatchingPasswords();
                         break;
-                    }
+                    }*/
                 case "CompanyName":
                     {
                         result = ValidateCompanyName();
@@ -340,6 +384,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 case "CompanyPassword":
                     {
                         result = ValidateCompanyPassword();
+                        break;
+                    }
+                case "SecurityAnswer":
+                    {
+                        result = ValidateSecurityAnswer();
                         break;
                     }
             }
@@ -392,7 +441,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharactersForPassword(Password))
+            if (!Validation.IsValidCharacters(Password))
             {
                 return "There are invalid characters";
             }
@@ -404,14 +453,14 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             return null;
         }
 
-        private String ValidateMatchingPasswords()
+        /*private String ValidateMatchingPasswords()
         {
             if (Validation.IsNullOrEmpty(RetypedPassword))
             {
                 return "This field cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharactersForPassword(RetypedPassword))
+            if (!Validation.IsValidCharacters(RetypedPassword))
             {
                 return "There are invalid characters";
             }
@@ -421,7 +470,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
 
             return null;
-        }
+        }*/
 
         private String ValidateCompanyName()
         {
@@ -449,16 +498,36 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharactersForPassword(CompanyPassword))
+            if (!Validation.IsValidCharacters(CompanyPassword))
             {
                 return "There are invalid characters";
             }
-            if (!Validation.IsValidLength(Password, CompanyPasswordMaxLength, CompanyPasswordMinLength))
+            if (!Validation.IsValidLength(Password, PasswordMaxLength, PasswordMinLength))
             {
                 return "Password is an invalid length!";
             }
 
             return null;
+        }
+
+        private String ValidateSecurityAnswer()
+        {
+
+            if (Validation.IsNullOrEmpty(SecurityAnswer))
+            {
+                return "Answer cannot be empty!";
+            }
+            //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
+            if (!Validation.IsValidCharacters(SecurityAnswer))
+            {
+                return "There are invalid characters";
+            }
+            if (!Validation.IsValidLength(SecurityAnswer, SecurityAnswerMaxLength, SecurityAnswerMinLength))
+            {
+                return "Answer is an invalid length!";
+            }
+
+            return null;   
         }
         #endregion
     }

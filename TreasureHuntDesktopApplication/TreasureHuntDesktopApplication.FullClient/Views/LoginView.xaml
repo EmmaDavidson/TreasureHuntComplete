@@ -43,9 +43,13 @@
             </Button>
             <PasswordBox FontSize="20" ToolTip="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="PasswordTextBox" validation:PasswordBoxAssistant.BindPassword="true" validation:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="173,199,0,0" VerticalAlignment="Top" Width="327" Height="44"/>
             <Label FontFamily="Tw Cen MT Condensed" FontSize="15" Content="Join the fun! Register now..." HorizontalAlignment="Left" Margin="404,353,0,0" VerticalAlignment="Top"/>
-            <!--<Label  FontSize="11" FontFamily="Arial" FontStyle="Italic" Foreground="#FF54C8E2" Content="{Binding ElementName=EmailAddressTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="173,176,0,0" VerticalAlignment="Top" Height="25" Width="327" RenderTransformOrigin="0.548,-0.154"/>-->
-            <!--<Label  FontSize="11" FontFamily="Arial" FontStyle="Italic" Foreground="#FF54C8E2" Content="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="173,246,0,0" VerticalAlignment="Top" Height="28" Width="327" RenderTransformOrigin="0.5,0.5"/>-->
-
+            <Button Command="{Binding ForgotPasswordCommand}" Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30" Foreground="DarkSlateGray"  Content="Forgot Password?" HorizontalAlignment="Left" Margin="364,259,0,0" VerticalAlignment="Top" Width="136">
+                <Button.BitmapEffect>
+                    <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
+                    <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
+                </Button.BitmapEffect>
+              
+            </Button>
         </Grid>
        
     </Grid>

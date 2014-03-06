@@ -18,6 +18,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         public RelayCommand SearchHuntCommand { get; private set; }
         public RelayCommand CreateNewHuntCommand { get; private set; }
         public RelayCommand LogoutCommand { get; private set; }
+        public RelayCommand ResetCompanyPasswordCommand { get; private set; }
 
         public SearchHuntViewModel(ITreasureHuntService _serviceClient)
         {
@@ -25,6 +26,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             SearchHuntCommand = new RelayCommand(() => ExecuteSearchHuntCommand(), () => IsValidHunt());
             CreateNewHuntCommand = new RelayCommand(() => ExecuteCreateHuntCommand());
             LogoutCommand = new RelayCommand(() => ExecuteLogoutCommand());
+            ResetCompanyPasswordCommand = new RelayCommand(() => ExecuteResetCompanyPasswordCommand());
             RefreshTreasureHunts();
 
             Messenger.Default.Register<ViewUpdatedMessage>
@@ -140,6 +142,13 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         private void ExecuteLogoutCommand()
         {
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
+            //SHOULD RESET THE CURRENT USER TO EMPTY
+        }
+
+        private void ExecuteResetCompanyPasswordCommand()
+        {
+            Messenger.Default.Send<CurrentUserMessage>(new CurrentUserMessage() { CurrentUser = this.CurrentUser });
+            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ResetCompanyPasswordViewModel" });    
         }
 
         #endregion

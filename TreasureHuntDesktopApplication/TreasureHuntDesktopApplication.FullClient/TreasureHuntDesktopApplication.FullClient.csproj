@@ -166,6 +166,9 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\PrintViewModel.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
+    <Compile Include="ViewModel\ResetCompanyPasswordViewModel.cs" />
+    <Compile Include="ViewModel\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModel\RetrieveEmailViewModel.cs" />
     <Compile Include="ViewModel\SearchHuntViewModel.cs" />
     <Compile Include="ViewModel\ViewHuntViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -184,6 +187,15 @@
     </Compile>
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResetCompanyPasswordView.xaml.cs">
+      <DependentUpon>ResetCompanyPasswordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResetPasswordView.xaml.cs">
+      <DependentUpon>ResetPasswordView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RetrieveEmailView.xaml.cs">
+      <DependentUpon>RetrieveEmailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SearchHuntView.xaml.cs">
       <DependentUpon>SearchHuntView.xaml</DependentUpon>
@@ -225,6 +237,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResetCompanyPasswordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResetPasswordView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RetrieveEmailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -277,10 +301,16 @@
     <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.securityquestion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.userrole.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.usersecurityquestion.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\TreasureHuntService\TreasureHuntService.wsdl" />

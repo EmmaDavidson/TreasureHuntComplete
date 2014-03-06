@@ -22,6 +22,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public RelayCommand LoginUserCommand { get; private set; }
         public RelayCommand RegisterCommand { get; private set; }
+        public RelayCommand ForgotPasswordCommand { get; private set; }
 
         public LoginViewModel(ITreasureHuntService _serviceClient)
         {
@@ -29,6 +30,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             LoginUserCommand = new RelayCommand(() => ExecuteLoginUserCommand(), () => IsValidDetails());
             RegisterCommand = new RelayCommand(() => ExecuteRegisterCommand());
+            ForgotPasswordCommand = new RelayCommand(() => ExecuteForgotPasswordCommand());
 
         }
         #endregion
@@ -108,6 +110,13 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         #endregion
 
         #region Commands
+
+        public void ExecuteForgotPasswordCommand()
+        {
+            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "RetrieveEmailViewModel" });
+            EmailAddress = String.Empty;
+            Password = String.Empty;
+        }
 
         public void ExecuteLoginUserCommand()
         { 

@@ -18,6 +18,7 @@ namespace TreasureHuntDesktopApplication.DataService
                 var returnedHunts = context.hunts.ToList();
                 returnedHunts.ForEach(e => context.ObjectStateManager.ChangeObjectState(e,System.Data.EntityState.Detached));        
                 return returnedHunts;
+              
             }
         }
 
@@ -200,6 +201,77 @@ namespace TreasureHuntDesktopApplication.DataService
                 var returnedHuntParticipant = context.users.Where(c => c.UserId == userId).Single();
                 context.ObjectStateManager.ChangeObjectState(returnedHuntParticipant, System.Data.EntityState.Detached);
                 return returnedHuntParticipant;
+            }
+        }
+
+        public void SaveUserSecurityQuestion(usersecurityquestion userSecurityQuestion)
+        {
+            using (var context = new TreasureHuntEntities())
+            {
+                context.usersecurityquestions.AddObject(userSecurityQuestion);
+                context.SaveChanges();
+                context.ObjectStateManager.ChangeObjectState(userSecurityQuestion, System.Data.EntityState.Added);
+            }
+        }
+
+        public IEnumerable<securityquestion> getListOfSecurityQuestions()
+        {
+            using (var context = new TreasureHuntEntities())
+            {
+                var returnedQuestions = context.securityquestions.ToList();
+                returnedQuestions.ForEach(e => context.ObjectStateManager.ChangeObjectState(e, System.Data.EntityState.Detached));
+                return returnedQuestions;
+            }
+        }
+
+        public securityquestion getUserSecurityQuestion(user user)
+        {
+            using (var context = new TreasureHuntEntities())
+            {
+                if (user == null) return null;
+
+                var returnedUserSecurityQuestionId = context.usersecurityquestions.Where(c => c.UserId == user.UserId).Select(s => s.SecurityQuestionId).Single();
+                context.ObjectStateManager.ChangeObjectState(returnedUserSecurityQuestionId, System.Data.EntityState.Detached);
+
+                var returnedQuestion = context.securityquestions.Where(c => c.SecurityQuestionId == returnedUserSecurityQuestionId).Single();
+                context.ObjectStateManager.ChangeObjectState(returnedQuestion, System.Data.EntityState.Detached);
+
+                return returnedQuestion;
+            }
+        }
+
+        public usersecurityquestion getUserSecurityAnswer(user currentUser)
+        {
+            using (var context = new TreasureHuntEntities())
+                {
+                    if (currentUser == null) return null;
+
+                    var returnedUserSecurityQuestionDetails = context.usersecurityquestions.Where(c => c.UserId == currentUser.UserId).Single();
+                    context.ObjectStateManager.ChangeObjectState(returnedUserSecurityQuestionDetails, System.Data.EntityState.Detached);
+
+                    return returnedUserSecurityQuestionDetails;
+                }
+        }
+
+        public void updateUserPassword(user currentUser, String newPassword)
+        { 
+            using (var context = new TreasureHuntEntities())
+            {
+                var userToChange = context.users.Where(c => c.UserId == currentUser.UserId).Single();
+                userToChange.Password = newPassword;
+                context.SaveChanges();
+                context.ObjectStateManager.ChangeObjectState(userToChange, System.Data.EntityState.Modified);
+            }
+        }
+
+        public void updateCompanyPassword(user currentUser, String newPassword)
+        {
+            using (var context = new TreasureHuntEntities())
+            {
+                var userToChange = context.users.Where(c => c.UserId == currentUser.UserId).Single();
+                userToChange.CompanyPassword = newPassword;
+                context.SaveChanges();
+                context.ObjectStateManager.ChangeObjectState(userToChange, System.Data.EntityState.Modified);
             }
         }
     }

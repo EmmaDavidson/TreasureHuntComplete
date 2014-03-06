@@ -112,6 +112,42 @@
   <wsdl:message name="ITreasureHuntService_GetParticipantName_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetParticipantNameResponse" />
   </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserSecurityQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserSecurityQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_SaveUserSecurityQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveUserSecurityQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getListOfSecurityQuestions_InputMessage">
+    <wsdl:part name="parameters" element="tns:getListOfSecurityQuestions" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getListOfSecurityQuestions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getListOfSecurityQuestionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getUserSecurityQuestion_InputMessage">
+    <wsdl:part name="parameters" element="tns:getUserSecurityQuestion" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getUserSecurityQuestion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getUserSecurityQuestionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getUserSecurityAnswer_InputMessage">
+    <wsdl:part name="parameters" element="tns:getUserSecurityAnswer" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getUserSecurityAnswer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getUserSecurityAnswerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_updateUserPassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateUserPassword" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_updateUserPassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateUserPasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_updateCompanyPassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:updateCompanyPassword" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_updateCompanyPassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:updateCompanyPasswordResponse" />
+  </wsdl:message>
   <wsdl:portType name="ITreasureHuntService">
     <wsdl:operation name="SaveQuestion">
       <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveQuestion" message="tns:ITreasureHuntService_SaveQuestion_InputMessage" />
@@ -180,6 +216,30 @@
     <wsdl:operation name="GetParticipantName">
       <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/GetParticipantName" message="tns:ITreasureHuntService_GetParticipantName_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/GetParticipantNameResponse" message="tns:ITreasureHuntService_GetParticipantName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserSecurityQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserSecurityQuestion" message="tns:ITreasureHuntService_SaveUserSecurityQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveUserSecurityQuestionResponse" message="tns:ITreasureHuntService_SaveUserSecurityQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getListOfSecurityQuestions">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/getListOfSecurityQuestions" message="tns:ITreasureHuntService_getListOfSecurityQuestions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/getListOfSecurityQuestionsResponse" message="tns:ITreasureHuntService_getListOfSecurityQuestions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getUserSecurityQuestion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/getUserSecurityQuestion" message="tns:ITreasureHuntService_getUserSecurityQuestion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/getUserSecurityQuestionResponse" message="tns:ITreasureHuntService_getUserSecurityQuestion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getUserSecurityAnswer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/getUserSecurityAnswer" message="tns:ITreasureHuntService_getUserSecurityAnswer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/getUserSecurityAnswerResponse" message="tns:ITreasureHuntService_getUserSecurityAnswer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateUserPassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/updateUserPassword" message="tns:ITreasureHuntService_updateUserPassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/updateUserPasswordResponse" message="tns:ITreasureHuntService_updateUserPassword_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="updateCompanyPassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/updateCompanyPassword" message="tns:ITreasureHuntService_updateCompanyPassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/updateCompanyPasswordResponse" message="tns:ITreasureHuntService_updateCompanyPassword_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_ITreasureHuntService" type="tns:ITreasureHuntService">
@@ -330,6 +390,60 @@
     </wsdl:operation>
     <wsdl:operation name="GetParticipantName">
       <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/GetParticipantName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveUserSecurityQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/SaveUserSecurityQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getListOfSecurityQuestions">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/getListOfSecurityQuestions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getUserSecurityQuestion">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/getUserSecurityQuestion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getUserSecurityAnswer">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/getUserSecurityAnswer" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateUserPassword">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/updateUserPassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateCompanyPassword">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/updateCompanyPassword" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

@@ -54,18 +54,6 @@ namespace TreasureHuntDesktopApplication.FullClient.Project_Utilities
             return false;
         }
 
-        public static bool IsValidCharactersForPassword(String stringToCheck)
-        {
-            if (stringToCheck != null)
-            {
-                if (Regex.IsMatch(stringToCheck, @"^[a-zA-Z0-9 ]+$"))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         
         public static bool IsValidEmail(String emailToCheck)
         {

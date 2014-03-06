@@ -11,9 +11,11 @@
           <EntitySet Name="huntquestions" EntityType="virapy_treasurehuntdbModel.Store.huntquestions" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <EntitySet Name="questions" EntityType="virapy_treasurehuntdbModel.Store.questions" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <EntitySet Name="role" EntityType="virapy_treasurehuntdbModel.Store.role" store:Type="Tables" Schema="virapy_treasurehuntdb" />
+          <EntitySet Name="securityquestions" EntityType="virapy_treasurehuntdbModel.Store.securityquestions" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <EntitySet Name="user" EntityType="virapy_treasurehuntdbModel.Store.user" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <EntitySet Name="userhunt" EntityType="virapy_treasurehuntdbModel.Store.userhunt" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <EntitySet Name="userrole" EntityType="virapy_treasurehuntdbModel.Store.userrole" store:Type="Tables" Schema="virapy_treasurehuntdb" />
+          <EntitySet Name="usersecurityquestions" EntityType="virapy_treasurehuntdbModel.Store.usersecurityquestions" store:Type="Tables" Schema="virapy_treasurehuntdb" />
           <AssociationSet Name="huntparticipants_ibfk_1" Association="virapy_treasurehuntdbModel.Store.huntparticipants_ibfk_1">
             <End Role="hunt" EntitySet="hunt" />
             <End Role="huntparticipants" EntitySet="huntparticipants" />
@@ -50,6 +52,10 @@
             <End Role="user" EntitySet="user" />
             <End Role="userrole" EntitySet="userrole" />
           </AssociationSet>
+          <AssociationSet Name="usersecurityquestions_ibfk_1" Association="virapy_treasurehuntdbModel.Store.usersecurityquestions_ibfk_1">
+            <End Role="securityquestions" EntitySet="securityquestions" />
+            <End Role="usersecurityquestions" EntitySet="usersecurityquestions" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="hunt">
           <Key>
@@ -57,7 +63,6 @@
           </Key>
           <Property Name="HuntId" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="HuntName" Type="longtext" Nullable="false" />
-          <Property Name="Password" Type="varchar" Nullable="false" MaxLength="30" />
           <Property Name="HuntDescription" Type="longtext" Nullable="false" />
           <Property Name="EndDate" Type="datetime" />
         </EntityType>
@@ -95,6 +100,13 @@
           <Property Name="RoleId" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="text" Nullable="false" />
         </EntityType>
+        <EntityType Name="securityquestions">
+          <Key>
+            <PropertyRef Name="SecurityQuestionId" />
+          </Key>
+          <Property Name="SecurityQuestionId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="SecurityQuestion" Type="text" Nullable="false" />
+        </EntityType>
         <EntityType Name="user">
           <Key>
             <PropertyRef Name="UserId" />
@@ -122,6 +134,15 @@
           <Property Name="UserRoleId" Type="uint" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="RoleId" Type="uint" Nullable="false" />
           <Property Name="UserId" Type="uint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="usersecurityquestions">
+          <Key>
+            <PropertyRef Name="UserSecurityId" />
+          </Key>
+          <Property Name="UserSecurityId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="uint" Nullable="false" />
+          <Property Name="SecurityQuestionId" Type="int" Nullable="false" />
+          <Property Name="Answer" Type="varchar" Nullable="false" MaxLength="30" />
         </EntityType>
         <Association Name="huntparticipants_ibfk_1">
           <End Role="hunt" Type="virapy_treasurehuntdbModel.Store.hunt" Multiplicity="1" />
@@ -231,6 +252,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="usersecurityquestions_ibfk_1">
+          <End Role="securityquestions" Type="virapy_treasurehuntdbModel.Store.securityquestions" Multiplicity="1" />
+          <End Role="usersecurityquestions" Type="virapy_treasurehuntdbModel.Store.usersecurityquestions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="securityquestions">
+              <PropertyRef Name="SecurityQuestionId" />
+            </Principal>
+            <Dependent Role="usersecurityquestions">
+              <PropertyRef Name="SecurityQuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
@@ -242,9 +275,11 @@
           <EntitySet Name="huntquestions" EntityType="virapy_treasurehuntdbModel.huntquestion" />
           <EntitySet Name="questions" EntityType="virapy_treasurehuntdbModel.question" />
           <EntitySet Name="roles" EntityType="virapy_treasurehuntdbModel.role" />
+          <EntitySet Name="securityquestions" EntityType="virapy_treasurehuntdbModel.securityquestion" />
           <EntitySet Name="users" EntityType="virapy_treasurehuntdbModel.user" />
           <EntitySet Name="userhunts" EntityType="virapy_treasurehuntdbModel.userhunt" />
           <EntitySet Name="userroles" EntityType="virapy_treasurehuntdbModel.userrole" />
+          <EntitySet Name="usersecurityquestions" EntityType="virapy_treasurehuntdbModel.usersecurityquestion" />
           <AssociationSet Name="huntparticipants_ibfk_1" Association="virapy_treasurehuntdbModel.huntparticipants_ibfk_1">
             <End Role="hunt" EntitySet="hunts" />
             <End Role="huntparticipants" EntitySet="huntparticipants" />
@@ -269,6 +304,10 @@
             <End Role="role" EntitySet="roles" />
             <End Role="userrole" EntitySet="userroles" />
           </AssociationSet>
+          <AssociationSet Name="usersecurityquestions_ibfk_1" Association="virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1">
+            <End Role="securityquestions" EntitySet="securityquestions" />
+            <End Role="usersecurityquestions" EntitySet="usersecurityquestions" />
+          </AssociationSet>
           <AssociationSet Name="userhunt_ibfk_1" Association="virapy_treasurehuntdbModel.userhunt_ibfk_1">
             <End Role="user" EntitySet="users" />
             <End Role="userhunt" EntitySet="userhunts" />
@@ -288,7 +327,6 @@
           </Key>
           <Property Name="HuntId" Type="Int64" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <Property Name="HuntName" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="30" Unicode="false" FixedLength="false" />
           <Property Name="HuntDescription" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
           <Property Name="EndDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="huntparticipants" Relationship="virapy_treasurehuntdbModel.huntparticipants_ibfk_1" FromRole="hunt" ToRole="huntparticipants" />
@@ -335,6 +373,14 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="65535" Unicode="false" FixedLength="false" />
           <NavigationProperty Name="userroles" Relationship="virapy_treasurehuntdbModel.userrole_ibfk_1" FromRole="role" ToRole="userrole" />
         </EntityType>
+        <EntityType Name="securityquestion">
+          <Key>
+            <PropertyRef Name="SecurityQuestionId" />
+          </Key>
+          <Property Name="SecurityQuestionId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="SecurityQuestion1" Type="String" Nullable="false" MaxLength="65535" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="usersecurityquestions" Relationship="virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1" FromRole="securityquestions" ToRole="usersecurityquestions" />
+        </EntityType>
         <EntityType Name="user">
           <Key>
             <PropertyRef Name="UserId" />
@@ -371,6 +417,16 @@
           <NavigationProperty Name="role" Relationship="virapy_treasurehuntdbModel.userrole_ibfk_1" FromRole="userrole" ToRole="role" />
           <NavigationProperty Name="user" Relationship="virapy_treasurehuntdbModel.userrole_ibfk_2" FromRole="userrole" ToRole="user" />
           <NavigationProperty Name="userhunts" Relationship="virapy_treasurehuntdbModel.userhunt_ibfk_3" FromRole="userrole" ToRole="userhunt" />
+        </EntityType>
+        <EntityType Name="usersecurityquestion">
+          <Key>
+            <PropertyRef Name="UserSecurityId" />
+          </Key>
+          <Property Name="UserSecurityId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="SecurityQuestionId" Type="Int32" Nullable="false" />
+          <Property Name="Answer" Type="String" Nullable="false" MaxLength="30" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="securityquestion" Relationship="virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1" FromRole="usersecurityquestions" ToRole="securityquestions" />
         </EntityType>
         <Association Name="huntparticipants_ibfk_1">
           <End Role="hunt" Type="virapy_treasurehuntdbModel.hunt" Multiplicity="1" />
@@ -444,6 +500,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="usersecurityquestions_ibfk_1">
+          <End Role="securityquestions" Type="virapy_treasurehuntdbModel.securityquestion" Multiplicity="1" />
+          <End Role="usersecurityquestions" Type="virapy_treasurehuntdbModel.usersecurityquestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="securityquestions">
+              <PropertyRef Name="SecurityQuestionId" />
+            </Principal>
+            <Dependent Role="usersecurityquestions">
+              <PropertyRef Name="SecurityQuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="userhunt_ibfk_1">
           <End Role="user" Type="virapy_treasurehuntdbModel.user" Multiplicity="1" />
           <End Role="userhunt" Type="virapy_treasurehuntdbModel.userhunt" Multiplicity="*" />
@@ -491,7 +559,6 @@
               <MappingFragment StoreEntitySet="hunt">
                 <ScalarProperty Name="HuntId" ColumnName="HuntId" />
                 <ScalarProperty Name="HuntName" ColumnName="HuntName" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="HuntDescription" ColumnName="HuntDescription" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
               </MappingFragment>
@@ -535,6 +602,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="securityquestions">
+            <EntityTypeMapping TypeName="virapy_treasurehuntdbModel.securityquestion">
+              <MappingFragment StoreEntitySet="securityquestions">
+                <ScalarProperty Name="SecurityQuestionId" ColumnName="SecurityQuestionId" />
+                <ScalarProperty Name="SecurityQuestion1" ColumnName="SecurityQuestion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="virapy_treasurehuntdbModel.user">
               <MappingFragment StoreEntitySet="user">
@@ -563,6 +638,16 @@
                 <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usersecurityquestions">
+            <EntityTypeMapping TypeName="virapy_treasurehuntdbModel.usersecurityquestion">
+              <MappingFragment StoreEntitySet="usersecurityquestions">
+                <ScalarProperty Name="UserSecurityId" ColumnName="UserSecurityId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="SecurityQuestionId" ColumnName="SecurityQuestionId" />
+                <ScalarProperty Name="Answer" ColumnName="Answer" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

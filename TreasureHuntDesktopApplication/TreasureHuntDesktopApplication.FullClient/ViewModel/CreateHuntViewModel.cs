@@ -84,30 +84,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-
-        private String password;
-        public String Password
-        {
-            get { return this.password; }
-            set
-            {
-
-                this.password = value;
-                RaisePropertyChanged("Password");
-            }
-        }
-
-        private String retypedPassword;
-        public String RetypedPassword
-        {
-            get { return this.retypedPassword; }
-            set
-            {
-                this.retypedPassword = value;
-                RaisePropertyChanged("RetypedPassword");
-            }
-        }
-
         private user currentUser;
         public user CurrentUser
         {
@@ -151,22 +127,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        public int PasswordMinLength
-        {
-            get
-            {
-                return 6;
-            }
-        }
-
-        public int PasswordMaxLength
-        {
-            get
-            {
-                return 30;
-            }
-        }
-
         public int HuntNameMaxLength
         {
             get 
@@ -202,7 +162,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 hunt newHunt = new hunt();
                 newHunt.HuntName = this.huntName;
-                newHunt.Password = this.Password;
                 newHunt.HuntDescription = this.Description;
                 newHunt.EndDate = EndDate;
 
@@ -226,8 +185,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
 
                 HuntName = null;
-                Password = null;
-                RetypedPassword = null;
                 Description = null;
             }
             else 
@@ -263,8 +220,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
             HuntName = null;
-            Password = String.Empty;
-            RetypedPassword = String.Empty;
             Description = String.Empty;
         }
 
@@ -291,8 +246,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         static readonly string[] ValidatedProperties = 
         { 
             "HuntName",
-            "Password",
-            "RetypedPassword",
             "Description"
         };
 
@@ -313,16 +266,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 case "HuntName":
                     {
                         result = ValidateHuntName();
-                        break;
-                    }
-                case "Password":
-                    {
-                        result = ValidatePassword();
-                        break;
-                    }
-                case "RetypedPassword":
-                    {
-                        result = ValidateMatchingPasswords();
                         break;
                     }
                 case "Description":
@@ -350,44 +293,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 return "Hunt name is an invalid length!";
             }          
-            return null;
-        }
-
-        private String ValidatePassword()
-        {
-            if (Validation.IsNullOrEmpty(Password))
-            {
-                return "Password cannot be empty!";
-            }
-            //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(Password))
-            {
-                return "There are invalid characters";
-            }
-            if (!Validation.IsValidLength(Password, PasswordMaxLength, PasswordMinLength))
-            {
-                return "Password is an invalid length!";
-            }
-
-            return null;
-        }
-
-        private String ValidateMatchingPasswords()
-        {
-            if (Validation.IsNullOrEmpty(RetypedPassword))
-            {
-                return "This field cannot be empty!";
-            }
-            //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(RetypedPassword))
-            {
-                return "There are invalid characters";
-            }
-            if (!Validation.ArePasswordsMatching(Password, RetypedPassword))
-            {
-                return "Passwords do not match";
-            }
-
             return null;
         }
 

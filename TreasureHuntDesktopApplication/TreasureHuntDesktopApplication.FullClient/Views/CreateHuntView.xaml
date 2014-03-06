@@ -38,21 +38,17 @@
             <!--<Label FontSize="9" FontFamily="Arial" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=HuntNameTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="266,102,0,0" VerticalAlignment="Top" Height="29" Width="278" RenderTransformOrigin="0.5,0.5">
 
             </Label>-->
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Set Password:" HorizontalAlignment="Left" Margin="74,135,0,0" VerticalAlignment="Top" RenderTransformOrigin="-4.763,0.192" Height="36"/>
             <!--<Label FontFamily="Arial"  FontSize="9" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="266,176,0,0" VerticalAlignment="Top" Height="24" Width="278"/>-->
-            <PasswordBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="PasswordTextBox" validation:PasswordBoxAssistant.BindPassword="true" validation:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="215,136,0,0" VerticalAlignment="Top" Width="278" Height="44"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Retype Password:" HorizontalAlignment="Left" Margin="40,185,0,0" VerticalAlignment="Top" Height="50"/>
             <!--<Label FontFamily="Arial"  FontSize="9" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=RetypePasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="271,239,0,0" VerticalAlignment="Top" Height="21" Width="273"/>-->
-            <PasswordBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=RetypePasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="RetypePasswordTextBox" validation:PasswordBoxAssistant.BindPassword="true" validation:PasswordBoxAssistant.BoundPassword="{Binding RetypedPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="215,185,0,0" VerticalAlignment="Top" Width="278" Height="46"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Hunt description:" HorizontalAlignment="Left" Margin="48,240,0,0" VerticalAlignment="Top" Height="51"/>
-            <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Name="DescriptionBox" HorizontalAlignment="Left" Height="70" Margin="215,236,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" RenderTransformOrigin="0.491,0.125"/>
+            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Hunt description:" HorizontalAlignment="Left" Margin="38,130,0,0" VerticalAlignment="Top" Height="51"/>
+            <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Name="DescriptionBox" HorizontalAlignment="Left" Height="144" Margin="214,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" RenderTransformOrigin="0.491,0.125"/>
             <!--http://stackoverflow.com/questions/20659070/wpf-datepicker-returns-previously-selected-date-using-mvvm-->
             <!--http://stackoverflow.com/questions/3885912/wpf-datepicker-default-to-todays-date-->
-            <DatePicker DisplayDateStart="{Binding Today, Mode=OneWay}" IsTodayHighlighted="True" Name="HuntEndDate" SelectedDate="{Binding EndDate, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="215,320,0,0" VerticalAlignment="Top">
+            <DatePicker DisplayDateStart="{Binding Today, Mode=OneWay}" IsTodayHighlighted="True" Name="HuntEndDate" SelectedDate="{Binding EndDate, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="214,307,0,0" VerticalAlignment="Top">
        
             </DatePicker>
             <!--<Label FontFamily="Arial"  FontSize="9" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="171,393,0,0" VerticalAlignment="Top" Height="23" Width="278"/>-->
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="End Date:" HorizontalAlignment="Left" Margin="115,306,0,0" VerticalAlignment="Top" Height="51"/>
+            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="End Date:" HorizontalAlignment="Left" Margin="105,293,0,0" VerticalAlignment="Top" Height="51"/>
 
         </Grid>
 

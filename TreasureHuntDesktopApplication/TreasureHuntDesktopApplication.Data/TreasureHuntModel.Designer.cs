@@ -25,6 +25,7 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "huntparticipants_ibfk_2", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "huntparticipants", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.huntparticipant), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "huntquestions_ibfk_2", "questions", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.question), "huntquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.huntquestion), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userrole_ibfk_1", "role", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.role), "userrole", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userrole), true)]
+[assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "usersecurityquestions_ibfk_1", "securityquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.securityquestion), "usersecurityquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.usersecurityquestion), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_1", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "userhunt", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userhunt), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userrole_ibfk_2", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "userrole", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userrole), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_3", "userrole", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.userrole), "userhunt", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userhunt), true)]
@@ -162,6 +163,22 @@ namespace TreasureHuntDesktopApplication.Data
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
+        public ObjectSet<securityquestion> securityquestions
+        {
+            get
+            {
+                if ((_securityquestions == null))
+                {
+                    _securityquestions = base.CreateObjectSet<securityquestion>("securityquestions");
+                }
+                return _securityquestions;
+            }
+        }
+        private ObjectSet<securityquestion> _securityquestions;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
         public ObjectSet<user> users
         {
             get
@@ -206,6 +223,22 @@ namespace TreasureHuntDesktopApplication.Data
             }
         }
         private ObjectSet<userrole> _userroles;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<usersecurityquestion> usersecurityquestions
+        {
+            get
+            {
+                if ((_usersecurityquestions == null))
+                {
+                    _usersecurityquestions = base.CreateObjectSet<usersecurityquestion>("usersecurityquestions");
+                }
+                return _usersecurityquestions;
+            }
+        }
+        private ObjectSet<usersecurityquestion> _usersecurityquestions;
 
         #endregion
 
@@ -252,6 +285,14 @@ namespace TreasureHuntDesktopApplication.Data
         }
     
         /// <summary>
+        /// Deprecated Method for adding a new object to the securityquestions EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTosecurityquestions(securityquestion securityquestion)
+        {
+            base.AddObject("securityquestions", securityquestion);
+        }
+    
+        /// <summary>
         /// Deprecated Method for adding a new object to the users EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
         public void AddTousers(user user)
@@ -273,6 +314,14 @@ namespace TreasureHuntDesktopApplication.Data
         public void AddTouserroles(userrole userrole)
         {
             base.AddObject("userroles", userrole);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the usersecurityquestions EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTousersecurityquestions(usersecurityquestion usersecurityquestion)
+        {
+            base.AddObject("usersecurityquestions", usersecurityquestion);
         }
 
         #endregion
@@ -298,14 +347,12 @@ namespace TreasureHuntDesktopApplication.Data
         /// </summary>
         /// <param name="huntId">Initial value of the HuntId property.</param>
         /// <param name="huntName">Initial value of the HuntName property.</param>
-        /// <param name="password">Initial value of the Password property.</param>
         /// <param name="huntDescription">Initial value of the HuntDescription property.</param>
-        public static hunt Createhunt(global::System.Int64 huntId, global::System.String huntName, global::System.String password, global::System.String huntDescription)
+        public static hunt Createhunt(global::System.Int64 huntId, global::System.String huntName, global::System.String huntDescription)
         {
             hunt hunt = new hunt();
             hunt.HuntId = huntId;
             hunt.HuntName = huntName;
-            hunt.Password = password;
             hunt.HuntDescription = huntDescription;
             return hunt;
         }
@@ -364,30 +411,6 @@ namespace TreasureHuntDesktopApplication.Data
         private global::System.String _HuntName;
         partial void OnHuntNameChanging(global::System.String value);
         partial void OnHuntNameChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Password
-        {
-            get
-            {
-                return _Password;
-            }
-            set
-            {
-                OnPasswordChanging(value);
-                ReportPropertyChanging("Password");
-                _Password = StructuralObject.SetValidValue(value, false, "Password");
-                ReportPropertyChanged("Password");
-                OnPasswordChanged();
-            }
-        }
-        private global::System.String _Password;
-        partial void OnPasswordChanging(global::System.String value);
-        partial void OnPasswordChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1208,6 +1231,114 @@ namespace TreasureHuntDesktopApplication.Data
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="virapy_treasurehuntdbModel", Name="securityquestion")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class securityquestion : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new securityquestion object.
+        /// </summary>
+        /// <param name="securityQuestionId">Initial value of the SecurityQuestionId property.</param>
+        /// <param name="securityQuestion1">Initial value of the SecurityQuestion1 property.</param>
+        public static securityquestion Createsecurityquestion(global::System.Int32 securityQuestionId, global::System.String securityQuestion1)
+        {
+            securityquestion securityquestion = new securityquestion();
+            securityquestion.SecurityQuestionId = securityQuestionId;
+            securityquestion.SecurityQuestion1 = securityQuestion1;
+            return securityquestion;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 SecurityQuestionId
+        {
+            get
+            {
+                return _SecurityQuestionId;
+            }
+            set
+            {
+                if (_SecurityQuestionId != value)
+                {
+                    OnSecurityQuestionIdChanging(value);
+                    ReportPropertyChanging("SecurityQuestionId");
+                    _SecurityQuestionId = StructuralObject.SetValidValue(value, "SecurityQuestionId");
+                    ReportPropertyChanged("SecurityQuestionId");
+                    OnSecurityQuestionIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _SecurityQuestionId;
+        partial void OnSecurityQuestionIdChanging(global::System.Int32 value);
+        partial void OnSecurityQuestionIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String SecurityQuestion1
+        {
+            get
+            {
+                return _SecurityQuestion1;
+            }
+            set
+            {
+                OnSecurityQuestion1Changing(value);
+                ReportPropertyChanging("SecurityQuestion1");
+                _SecurityQuestion1 = StructuralObject.SetValidValue(value, false, "SecurityQuestion1");
+                ReportPropertyChanged("SecurityQuestion1");
+                OnSecurityQuestion1Changed();
+            }
+        }
+        private global::System.String _SecurityQuestion1;
+        partial void OnSecurityQuestion1Changing(global::System.String value);
+        partial void OnSecurityQuestion1Changed();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "usersecurityquestions_ibfk_1", "usersecurityquestions")]
+        public EntityCollection<usersecurityquestion> usersecurityquestions
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<usersecurityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "usersecurityquestions");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<usersecurityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "usersecurityquestions", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
     [EdmEntityTypeAttribute(NamespaceName="virapy_treasurehuntdbModel", Name="user")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
@@ -1915,6 +2046,182 @@ namespace TreasureHuntDesktopApplication.Data
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<userhunt>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userhunt", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="virapy_treasurehuntdbModel", Name="usersecurityquestion")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class usersecurityquestion : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new usersecurityquestion object.
+        /// </summary>
+        /// <param name="userSecurityId">Initial value of the UserSecurityId property.</param>
+        /// <param name="userId">Initial value of the UserId property.</param>
+        /// <param name="securityQuestionId">Initial value of the SecurityQuestionId property.</param>
+        /// <param name="answer">Initial value of the Answer property.</param>
+        public static usersecurityquestion Createusersecurityquestion(global::System.Int32 userSecurityId, global::System.Int64 userId, global::System.Int32 securityQuestionId, global::System.String answer)
+        {
+            usersecurityquestion usersecurityquestion = new usersecurityquestion();
+            usersecurityquestion.UserSecurityId = userSecurityId;
+            usersecurityquestion.UserId = userId;
+            usersecurityquestion.SecurityQuestionId = securityQuestionId;
+            usersecurityquestion.Answer = answer;
+            return usersecurityquestion;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 UserSecurityId
+        {
+            get
+            {
+                return _UserSecurityId;
+            }
+            set
+            {
+                if (_UserSecurityId != value)
+                {
+                    OnUserSecurityIdChanging(value);
+                    ReportPropertyChanging("UserSecurityId");
+                    _UserSecurityId = StructuralObject.SetValidValue(value, "UserSecurityId");
+                    ReportPropertyChanged("UserSecurityId");
+                    OnUserSecurityIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _UserSecurityId;
+        partial void OnUserSecurityIdChanging(global::System.Int32 value);
+        partial void OnUserSecurityIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int64 UserId
+        {
+            get
+            {
+                return _UserId;
+            }
+            set
+            {
+                OnUserIdChanging(value);
+                ReportPropertyChanging("UserId");
+                _UserId = StructuralObject.SetValidValue(value, "UserId");
+                ReportPropertyChanged("UserId");
+                OnUserIdChanged();
+            }
+        }
+        private global::System.Int64 _UserId;
+        partial void OnUserIdChanging(global::System.Int64 value);
+        partial void OnUserIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 SecurityQuestionId
+        {
+            get
+            {
+                return _SecurityQuestionId;
+            }
+            set
+            {
+                OnSecurityQuestionIdChanging(value);
+                ReportPropertyChanging("SecurityQuestionId");
+                _SecurityQuestionId = StructuralObject.SetValidValue(value, "SecurityQuestionId");
+                ReportPropertyChanged("SecurityQuestionId");
+                OnSecurityQuestionIdChanged();
+            }
+        }
+        private global::System.Int32 _SecurityQuestionId;
+        partial void OnSecurityQuestionIdChanging(global::System.Int32 value);
+        partial void OnSecurityQuestionIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Answer
+        {
+            get
+            {
+                return _Answer;
+            }
+            set
+            {
+                OnAnswerChanging(value);
+                ReportPropertyChanging("Answer");
+                _Answer = StructuralObject.SetValidValue(value, false, "Answer");
+                ReportPropertyChanged("Answer");
+                OnAnswerChanged();
+            }
+        }
+        private global::System.String _Answer;
+        partial void OnAnswerChanging(global::System.String value);
+        partial void OnAnswerChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "usersecurityquestions_ibfk_1", "securityquestions")]
+        public securityquestion securityquestion
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<securityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "securityquestions").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<securityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "securityquestions").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<securityquestion> securityquestionReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<securityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "securityquestions");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<securityquestion>("virapy_treasurehuntdbModel.usersecurityquestions_ibfk_1", "securityquestions", value);
                 }
             }
         }

@@ -35,6 +35,12 @@
             </Button>
             <Button Command="{Binding LogoutCommand}" FontFamily="Stereofidelic" FontSize="20" Background="#FF54C8E2" Content="Logout" HorizontalAlignment="Left" Margin="645,10,0,0" VerticalAlignment="Top" Width="75"/>
 
+            <Button FontSize="30"  FontFamily="Stereofidelic" Background="#FF54C8E2" Command="{Binding ResetCompanyPasswordCommand}" Content="Reset Company Password" HorizontalAlignment="Left" Margin="528,331,0,0" VerticalAlignment="Top" Width="192" Height="39" Foreground="#FF3E3E3E">
+                <Button.BitmapEffect>
+                    <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
+                    <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
+                </Button.BitmapEffect>
+            </Button>
         </Grid>
 
 

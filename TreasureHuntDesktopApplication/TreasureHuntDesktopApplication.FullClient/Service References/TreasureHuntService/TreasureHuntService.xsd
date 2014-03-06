@@ -44,7 +44,6 @@
           <xs:element minOccurs="0" name="HuntDescription" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="HuntId" type="xs:long" />
           <xs:element minOccurs="0" name="HuntName" nillable="true" type="xs:string" />
-          <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="huntparticipants" nillable="true" type="tns:ArrayOfhuntparticipant" />
           <xs:element minOccurs="0" name="huntquestions" nillable="true" type="tns:ArrayOfhuntquestion" />
           <xs:element minOccurs="0" name="userhunts" nillable="true" type="tns:ArrayOfuserhunt" />
@@ -168,4 +167,43 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfuser" nillable="true" type="tns:ArrayOfuser" />
+  <xs:complexType name="usersecurityquestion">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q9="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q9:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Answer" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SecurityQuestionId" type="xs:int" />
+          <xs:element minOccurs="0" name="UserId" type="xs:long" />
+          <xs:element minOccurs="0" name="UserSecurityId" type="xs:int" />
+          <xs:element minOccurs="0" name="securityquestion" nillable="true" type="tns:securityquestion" />
+          <xs:element minOccurs="0" name="securityquestionReference" nillable="true" type="q9:EntityReferenceOfsecurityquestionotu8m0Go" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="usersecurityquestion" nillable="true" type="tns:usersecurityquestion" />
+  <xs:complexType name="securityquestion">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q10="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" base="q10:EntityObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="SecurityQuestion1" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SecurityQuestionId" type="xs:int" />
+          <xs:element minOccurs="0" name="usersecurityquestions" nillable="true" type="tns:ArrayOfusersecurityquestion" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="securityquestion" nillable="true" type="tns:securityquestion" />
+  <xs:complexType name="ArrayOfusersecurityquestion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="usersecurityquestion" nillable="true" type="tns:usersecurityquestion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfusersecurityquestion" nillable="true" type="tns:ArrayOfusersecurityquestion" />
+  <xs:complexType name="ArrayOfsecurityquestion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="securityquestion" nillable="true" type="tns:securityquestion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfsecurityquestion" nillable="true" type="tns:ArrayOfsecurityquestion" />
 </xs:schema>

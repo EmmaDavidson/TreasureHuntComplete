@@ -62,5 +62,23 @@ namespace TreasureHuntDesktopApplication.DataService
 
         [OperationContract]
         user GetParticipantName(long participant);
+
+        [OperationContract]
+        void SaveUserSecurityQuestion(usersecurityquestion userSecurityQuestion);
+
+        [OperationContract]
+        IEnumerable<securityquestion> getListOfSecurityQuestions();
+
+        [OperationContract]
+        securityquestion getUserSecurityQuestion(user user);
+
+        [OperationContract]
+        usersecurityquestion getUserSecurityAnswer(user currentUser);
+
+        [OperationContract]
+        void updateUserPassword(user currentUser, String newPassword);
+
+        [OperationContract]
+        void updateCompanyPassword(user currentUser, String newPassword);
     }
 }

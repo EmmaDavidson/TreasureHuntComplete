@@ -38,5 +38,20 @@
             </views:LeaderboardView>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:RetrieveEmailViewModel}">
+            <views:RetrieveEmailView>
+            </views:RetrieveEmailView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ResetPasswordViewModel}">
+            <views:ResetPasswordView>
+            </views:ResetPasswordView>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ResetCompanyPasswordViewModel}">
+            <views:ResetCompanyPasswordView>
+            </views:ResetCompanyPasswordView>
+        </DataTemplate>
+
     </Application.Resources>
 </Application>

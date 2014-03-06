@@ -24,7 +24,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         readonly static LoginViewModel loginViewModel = new LoginViewModel(serviceClient);
         readonly static RegisterViewModel registerViewModel = new RegisterViewModel(serviceClient);
         readonly static LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel(serviceClient);
-
+        readonly static RetrieveEmailViewModel retrieveEmailViewModel = new RetrieveEmailViewModel(serviceClient);
+        readonly static ResetPasswordViewModel resetPasswordViewModel = new ResetPasswordViewModel(serviceClient);
+        readonly static ResetCompanyPasswordViewModel resetCompanyPasswordViewModel = new ResetCompanyPasswordViewModel(serviceClient);
 
         public ViewModelBase CurrentViewModel
         {
@@ -83,6 +85,18 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             else if (requestedUpdateViewModel == "LeaderboardViewModel")
             {
                 CurrentViewModel = MainViewModel.leaderboardViewModel;
+            }
+            else if (requestedUpdateViewModel == "RetrieveEmailViewModel")
+            {
+                CurrentViewModel = MainViewModel.retrieveEmailViewModel;
+            }
+            else if (requestedUpdateViewModel == "ResetPasswordViewModel")
+            {
+                CurrentViewModel = MainViewModel.resetPasswordViewModel;
+            }
+            else if (requestedUpdateViewModel == "ResetCompanyPasswordViewModel")
+            {
+                CurrentViewModel = MainViewModel.resetCompanyPasswordViewModel;
             }
 
         }
