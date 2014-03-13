@@ -148,10 +148,12 @@
     <Compile Include="Messages\CurrentUserMessage.cs" />
     <Compile Include="Messages\LeaderboardMessage.cs" />
     <Compile Include="Messages\PrintMessage.cs" />
+    <Compile Include="Messages\RegenerateListMessage.cs" />
     <Compile Include="Messages\SelectedHuntMessage.cs" />
     <Compile Include="Messages\SelectedQuestionMessage.cs" />
     <Compile Include="Messages\UpdateViewMessage.cs" />
     <Compile Include="Messages\ViewUpdatedMessage.cs" />
+    <Compile Include="Project Utilities\InternetConnectionChecker.cs" />
     <Compile Include="Project Utilities\PasswordBoxAssistant.cs" />
     <Compile Include="Project Utilities\StringValidationRule.cs" />
     <Compile Include="Project Utilities\Validation.cs" />
@@ -292,6 +294,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.companydetail.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\TreasureHuntService\TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

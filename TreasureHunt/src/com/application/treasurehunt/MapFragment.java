@@ -1,17 +1,12 @@
 package com.application.treasurehunt;
 
 import com.application.treasurehunt.R;
-import com.application.treasurehunt.R.id;
-import com.application.treasurehunt.R.layout;
-
 import sqlLiteDatabase.LastLocationLoader;
 import sqlLiteDatabase.MapData;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

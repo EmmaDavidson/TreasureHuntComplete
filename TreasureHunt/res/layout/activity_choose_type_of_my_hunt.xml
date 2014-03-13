@@ -16,7 +16,7 @@
         android:layout_height="140dp"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/current_hunts_button"
-        android:text="Not started" 
+        android:text="@string/not_started" 
         android:background="#FF54C8E2"
 		android:textColor="#FFFFFF"/>
 
@@ -27,7 +27,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
-        android:text="Current"
+        android:text="@string/current_hunts"
         android:background="#FF54C8E2" 
         android:textColor="#FFFFFF" />
 
@@ -39,7 +39,7 @@
         android:layout_below="@+id/not_started_hunts_button"
         android:layout_marginTop="16dp"
         android:background="#FF54C8E2"
-        android:text="Completed"
+        android:text="@string/completed_hunts"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

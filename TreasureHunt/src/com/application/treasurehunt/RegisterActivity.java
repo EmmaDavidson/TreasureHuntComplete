@@ -2,14 +2,12 @@ package com.application.treasurehunt;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.application.treasurehunt.LoginActivity.UserLoginTask;
-
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,10 +16,11 @@ import android.os.Handler;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -36,6 +35,8 @@ public class RegisterActivity extends Activity {
 
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
+	
+	InternetUtility internetUtility;
 	
 	public JSONParser jsonParser = new JSONParser();
 	
@@ -72,13 +73,21 @@ public class RegisterActivity extends Activity {
 		mPasswordView = (EditText) findViewById(R.id.register_password);
 		mNameView = (EditText) findViewById(R.id.register_name);
 		mAnswerView = (EditText) findViewById(R.id.security_question_answer);
+		
+		internetUtility = InternetUtility.getInstance(this);
 							
 		findViewById(R.id.register_save_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						attemptRegister();
-						
+						if(internetUtility.isInternetConnected())
+						{
+							attemptRegister();
+						}
+						else
+						{
+							Toast.makeText(RegisterActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+						}
 					}
 				});
 		
@@ -236,6 +245,7 @@ public class RegisterActivity extends Activity {
 				{
 					if(mUserRoleTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
+						pDialog.cancel();
 						mUserRoleTask.cancel(true);
 						Toast.makeText(RegisterActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 					}
@@ -276,7 +286,7 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 		{
 			super.onPreExecute();
 			pDialog = new ProgressDialog(RegisterActivity.this);
-            pDialog.setMessage("Attempting register...");
+            pDialog.setMessage("Attempting to register...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
@@ -329,15 +339,30 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 		protected void onPostExecute(final String fileUrl) {
 			mAuthTask = null;
 			
-
-			if (fileUrl != null) {
-				Toast.makeText(RegisterActivity.this, fileUrl, Toast.LENGTH_LONG).show();
-				if(userSucessfullyRegistered)
-				{
-					attemptUserRoleRegister();
-				}
-			} else {
-				Toast.makeText(RegisterActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			if(userSucessfullyRegistered)
+			{
+				attemptUserRoleRegister();
+				Log.i("Register", fileUrl);
+			}
+			else
+			{
+				Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
+				alertForFailedRegistration.setTitle("Register");
+				alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
+				alertForFailedRegistration.setCancelable(false);
+				alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForFailedRegistration.create();
+				alertForFailedRegistration.show();
+				
+				Log.e("Register", "Failure to register user.");
+			
 			}
 			
 
@@ -395,19 +420,31 @@ public class SetUserRoleTask extends AsyncTask<String, String, String> {
 		mUserRoleTask = null;
 		pDialog.cancel();
 		
-		if (fileUrl != null) {
-			if(userRoleSuccessful)
-			{
-			Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-			finish();
-			startActivity(loginActivityIntent);
-			}
-			
-		} else {
-			Toast.makeText(RegisterActivity.this, "Couldn't set up user role", Toast.LENGTH_LONG).show();
+		if(userRoleSuccessful)
+		{
+			Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);	
+			Log.i("Register", fileUrl);
+			startActivity(loginActivityIntent); //finish() taken out!
 		}
-	
-
+		else
+		{
+			Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
+			alertForFailedRegistration.setTitle("Register");
+			alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
+			alertForFailedRegistration.setCancelable(false);
+			alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			alertForFailedRegistration.create();
+			alertForFailedRegistration.show();
+			
+			Log.e("Register", "Failure to register user as couldnt set up user role.");
+		}
 	}
 	
 	@Override

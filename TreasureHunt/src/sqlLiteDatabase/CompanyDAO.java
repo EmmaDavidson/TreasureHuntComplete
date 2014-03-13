@@ -2,7 +2,6 @@ package sqlLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import Utilities.MySQLiteHelper;
 import android.content.ContentValues;
 import android.content.Context;

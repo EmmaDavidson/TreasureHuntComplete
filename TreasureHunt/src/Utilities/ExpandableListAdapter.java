@@ -2,19 +2,14 @@ package Utilities;
 
 import java.util.HashMap;
 import java.util.List;
-
 import com.application.treasurehunt.R;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
-
 
 //ENTIRE CLASS COPIED IN FROM THE WEBSITE BELOW
 //http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/

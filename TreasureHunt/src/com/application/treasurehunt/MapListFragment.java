@@ -1,22 +1,9 @@
 package com.application.treasurehunt;
 
 import java.util.List;
-
 import com.application.treasurehunt.R;
-import com.application.treasurehunt.R.id;
-import com.application.treasurehunt.R.layout;
-import com.application.treasurehunt.R.menu;
-
-import sqlLiteDatabase.Leaderboard;
 import sqlLiteDatabase.MapData;
-import sqlLiteDatabase.MapDataDAO;
-import Utilities.LeaderboardListAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,13 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MapListFragment extends Fragment {

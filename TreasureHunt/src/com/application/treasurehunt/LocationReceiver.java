@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+
 //ALL TAKEN FROM THE BIG NERD RANCH BOOK
 public class LocationReceiver extends BroadcastReceiver {
 

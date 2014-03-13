@@ -68,36 +68,40 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
          }
 
          private void ExecuteCheckEmailAddressCommand()
-         { 
-             //Check here if the email address exists
-             user emailUser = this.serviceClient.GetUser(EmailAddress);
-             
-             //if it exists then move to the next view with the user
-             if (emailUser != null)
+         {
+             if (InternetConnectionChecker.IsInternetConnected())
              {
-
-                 userrole emailUserRole = this.serviceClient.GetUserRole(emailUser);
-
-                 if (emailUserRole.RoleId == 2)
-                 {
-                     MessageBoxResult messageBox = MessageBox.Show("You cannot reset this email address on this application", "Invalid user");
-                     EmailAddress = String.Empty;
-                 }
-                 else 
-                 {
-                     Messenger.Default.Send<CurrentUserMessage>(new CurrentUserMessage() { CurrentUser = emailUser });
-                     Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ResetPasswordViewModel" });
-                     EmailAddress = String.Empty;
-                 }
+                 //Check here if the email address exists
+                 user emailUser = this.serviceClient.GetUser(EmailAddress);
              
-            
+                 //if it exists then move to the next view with the user
+                 if (emailUser != null)
+                 {
+
+                     userrole emailUserRole = this.serviceClient.GetUserRole(emailUser);
+
+                     if (emailUserRole.RoleId == 2)
+                     {
+                         MessageBoxResult messageBox = MessageBox.Show("You cannot reset this email address on this application", "Invalid user");
+                         EmailAddress = String.Empty;
+                     }
+                     else 
+                     {
+                         Messenger.Default.Send<CurrentUserMessage>(new CurrentUserMessage() { CurrentUser = emailUser });
+                         Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ResetPasswordViewModel" });
+                         EmailAddress = String.Empty;
+                     }
              }
              else
              {
                   MessageBoxResult messageBox = MessageBox.Show("This email address does not exist.", "Invalid email address");
                   EmailAddress = String.Empty;
              }
-             //if it does not exist then pop up box 
+         }
+             else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            } 
          }
 
         #endregion

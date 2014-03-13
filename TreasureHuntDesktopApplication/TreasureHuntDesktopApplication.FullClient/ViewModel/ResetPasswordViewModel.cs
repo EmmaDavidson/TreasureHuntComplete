@@ -146,11 +146,18 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private void ExecuteCheckAnswerAndResetCommand()
         {
-            //update the database
-            this.serviceClient.updateUserPassword(currentUser, NewPassword);
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
+                //update the database
+                this.serviceClient.updateUserPassword(currentUser, NewPassword);
 
-            MessageBoxResult messageBox = MessageBox.Show("Your password has been updated.", "Updated password");
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
+                MessageBoxResult messageBox = MessageBox.Show("Your password has been updated.", "Updated password");
+                Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }
         #endregion
 

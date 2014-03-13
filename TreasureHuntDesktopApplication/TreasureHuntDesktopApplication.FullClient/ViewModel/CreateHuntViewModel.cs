@@ -38,6 +38,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             (action) => ReceiveCurrentUserMessage(action.CurrentUser)
 
             );
+
         }
         #endregion
 
@@ -158,50 +159,56 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         //Change this to private and use reflection for testing
         public void ExecuteSaveHuntNameCommand()
         {
-            if (!DoesHuntAlreadyExist(HuntName))
+            if (InternetConnectionChecker.IsInternetConnected())
             {
-                hunt newHunt = new hunt();
-                newHunt.HuntName = this.huntName;
-                newHunt.HuntDescription = this.Description;
-                newHunt.EndDate = EndDate;
+                if (!DoesHuntAlreadyExist())
+                {
+                    hunt newHunt = new hunt();
+                    newHunt.HuntName = this.huntName;
+                    newHunt.HuntDescription = this.Description;
+                    newHunt.EndDate = EndDate;
 
-                long huntId = this.serviceClient.SaveNewHunt(newHunt);
+                    long huntId = this.serviceClient.SaveNewHunt(newHunt);
 
-                userrole newUserRole = this.serviceClient.GetUserRole(this.currentUser);
+                    userhunt newUserHunt = new userhunt();
+                    newUserHunt.HuntId = huntId;
+                    newUserHunt.UserId = this.currentUser.UserId;
 
-                userhunt newUserHunt = new userhunt();
-                newUserHunt.HuntId = huntId;
-                newUserHunt.UserId = this.currentUser.UserId;
-                newUserHunt.UserRoleId = newUserRole.UserRoleId;
+                    this.serviceClient.SaveUserHunt(newUserHunt);
 
-                this.serviceClient.SaveUserHunt(newUserHunt);
-                
-                //Grabs the correct hunt's ID and passes it into the view hunt view.
-                //Ensures that the hunt has been saved to the database before it goes and grab's it
-                hunt huntToView = serviceClient.GetHuntBasedOnName(newHunt.HuntName);
+                    //Grabs the correct hunt's ID and passes it into the view hunt view.
+                    //Ensures that the hunt has been saved to the database before it goes and grab's it
+                    hunt huntToView = serviceClient.GetHuntBasedOnName(newHunt.HuntName, currentUser.UserId);
 
-                Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
-                Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
-                Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
+                    Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+                    Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
+                    Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
 
-                HuntName = null;
-                Description = null;
+                    HuntName = null;
+                    Description = null;
+                    EndDate = DateTime.Today;
+                }
+                else
+                {
+                    String messageBoxText = "This hunt already exists in the database.";
+                    String caption = "Hunt Already Exists";
+                    MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
+                    HuntName = null;
+                }
             }
-            else 
+            else
             {
-                String messageBoxText = "This hunt already exists in the database.";
-                String caption = "Hunt Already Exists";
-                MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
-                HuntName = null;
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
             }
         }
 
-        private bool DoesHuntAlreadyExist(string newQuestion)
+        private bool DoesHuntAlreadyExist()
         {
             //GetHuntQuestions
-            List<hunt> listOfHunts = serviceClient.GetTreasureHunts().ToList();
 
-            using (var currentHunts = listOfHunts.GetEnumerator())
+            List<hunt> listOfUserHunts = serviceClient.GetTreasureHuntsForParticularUser(currentUser).ToList();
+
+            using (var currentHunts = listOfUserHunts.GetEnumerator())
             {
                 while (currentHunts.MoveNext())
                 {
@@ -221,11 +228,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
             HuntName = null;
             Description = String.Empty;
+            //-http://stackoverflow.com/questions/3090198/reset-value-of-wpf-tookkit-datepicker-to-default-value
+            endDate = DateTime.Now;
         }
 
         private void ExecuteLogoutCommand()
         {
-
+            HuntName = null;
+            Description = String.Empty;
+            EndDate = DateTime.Now;
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
         }
 

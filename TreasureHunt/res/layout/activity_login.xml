@@ -2,21 +2,86 @@
 
 <!-- Auto Generated when adding Login Activity, although altered to suit my needs -->
 
-<RelativeLayout android:background="#FFBDA78A" android:id="@+id/login_form_layout" tools:context=".LoginActivity" android:paddingTop="@dimen/activity_vertical_margin" android:paddingRight="@dimen/activity_horizontal_margin" android:paddingLeft="@dimen/activity_horizontal_margin" android:paddingBottom="@dimen/activity_vertical_margin" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout 
+    android:background="#FFBDA78A" 
+    android:id="@+id/login_form_layout" 
+    tools:context=".LoginActivity" 
+    android:paddingTop="@dimen/activity_vertical_margin" 
+    android:paddingRight="@dimen/activity_horizontal_margin" 
+    android:paddingLeft="@dimen/activity_horizontal_margin" 
+    android:paddingBottom="@dimen/activity_vertical_margin" 
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" 
+    xmlns:tools="http://schemas.android.com/tools" 
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-<Button android:background="#FF54C8E2" android:id="@+id/register_on_login_button" android:layout_height="wrap_content" android:layout_width="match_parent" android:text="@string/register" android:layout_marginBottom="21dp" android:layout_alignParentBottom="true" android:layout_alignLeft="@+id/login_password"/>
+	<Button 
+	    android:background="#FF54C8E2" 
+	    android:id="@+id/register_on_login_button" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="match_parent" 
+	    android:text="@string/register" 
+	    android:layout_marginBottom="21dp" 
+	    android:layout_alignParentBottom="true" 
+	    android:layout_alignLeft="@+id/login_password"/>
 
-<Button android:background="#FF54C8E2" android:id="@+id/sign_in_button" android:layout_height="wrap_content" android:layout_width="match_parent" android:text="@string/login" android:layout_marginBottom="14dp" android:layout_alignLeft="@+id/register_on_login_button" android:layout_above="@+id/register_on_login_button"/>
+	<Button 
+	    android:background="#FF54C8E2" 
+	    android:id="@+id/sign_in_button" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="match_parent" 
+	    android:text="@string/login" 
+	    android:layout_marginBottom="14dp" 
+	    android:layout_alignLeft="@+id/register_on_login_button" 
+	    android:layout_above="@+id/register_on_login_button"/>
 
 
--<EditText android:id="@+id/login_email_address" android:layout_height="wrap_content" android:layout_width="match_parent" android:singleLine="true" android:maxLines="1" android:inputType="textEmailAddress" android:hint="@string/prompt_email" android:ems="10" android:layout_marginTop="40dp" android:layout_centerHorizontal="true" android:layout_alignParentTop="true">
+ 	<EditText 
+ 	    android:id="@+id/login_email_address" 
+ 	    android:layout_height="wrap_content" 
+ 	    android:layout_width="match_parent" 
+ 	    android:singleLine="true" 
+ 	    android:maxLines="1" 
+ 	    android:inputType="textEmailAddress" 
+ 	    android:hint="@string/prompt_email" 
+ 	    android:ems="10" 
+ 	    android:layout_marginTop="40dp" 
+ 	    android:layout_centerHorizontal="true" 
+ 	    android:layout_alignParentTop="true">
 
-<requestFocus/>
+		<requestFocus/>
 
-</EditText>
+	</EditText>
 
-<EditText android:id="@+id/login_password" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_alignLeft="@+id/login_email_address" android:singleLine="true" android:maxLines="1" android:inputType="textPassword" android:hint="@string/prompt_password" android:ems="10" android:layout_marginTop="19dp" android:layout_below="@+id/login_email_address"/>
+	<EditText 
+	    android:id="@+id/login_password" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="match_parent" 
+	    android:layout_alignLeft="@+id/login_email_address" 
+	    android:singleLine="true" android:maxLines="1" 
+	    android:inputType="textPassword" 
+	    android:hint="@string/prompt_password" 
+	    android:ems="10" 
+	    android:layout_marginTop="19dp"
+	    android:layout_below="@+id/login_email_address"/>
 
-<Button android:id="@+id/forgotten_password_button" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Forgot Password" android:layout_marginTop="14dp" android:layout_below="@+id/login_password" android:layout_alignRight="@+id/login_password" style="?android:attr/buttonStyleSmall"/>
+	<Button 
+	    android:id="@+id/forgotten_password_button" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="wrap_content" 
+	    android:text="@string/forgot_password" 
+	    android:layout_marginTop="14dp" 
+	    android:layout_below="@+id/login_password" 
+	    android:layout_alignRight="@+id/login_password" 
+	    style="?android:attr/buttonStyleSmall"/>
+
+	<Button
+	    android:id="@+id/licence_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/forgotten_password_button"
+	    android:layout_alignRight="@+id/forgotten_password_button"
+	    android:layout_below="@+id/forgotten_password_button"
+	    android:text="@string/licences" />
 
 </RelativeLayout>

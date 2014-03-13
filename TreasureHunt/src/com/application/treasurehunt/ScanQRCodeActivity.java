@@ -1,53 +1,37 @@
 package com.application.treasurehunt;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import sqlLiteDatabase.MapData;
 import sqlLiteDatabase.MapDataDAO;
-
-import com.application.treasurehunt.RegisterWithHuntActivity.CheckIfUserRegisteredTask;
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
-//import com.google.zxing.integration.android.IntentIntegrator;
-//import com.google.zxing.integration.android.IntentResult;
-
 import Utilities.JSONParser;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +39,10 @@ import android.widget.Toast;
 //https://github.com/DushyanthMaguluru/ZBarScanner for ZBAR - USING THIS CURRENTLY, referencing the source forge project
 //Whole Activity taken from this either of these websites - now with my own added features for timing and saving to the database
 
+
+//MIT Licence - http://opensource.org/licenses/MIT
+//is released under the MIT Open Source Initiative license (MIT) which is unrestricted usage rights providing
+//the copyright notice and permision notice at the link below should be included in the source code as comments.
 public class ScanQRCodeActivity extends Activity implements OnClickListener {
 
 	private static final String getHuntParticipantIdUrl = "http://lowryhosting.com/emmad/getHuntParticipantId.php";
@@ -65,12 +53,15 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
 	
+	private ProgressDialog pDialog; 
+	
 	private static JSONObject huntParticipantIdResult;
 	
 	private Button scanButton;
 	private TextView contentText;
 	
 	Builder alertForNoPin;
+	Builder alertForNoLocationServices;
 	
 	int userId;
 	int huntId;
@@ -89,7 +80,8 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 	
 	private Location mLastLocation;
 	
-	GetHuntParticipantIdTask mGetHuntParticipantIdTask;
+	private LocationManager mLocationManager;
+	
 	ScanResultTask mScanResultTask;
 	
 	@Override
@@ -115,6 +107,8 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 		mMapDataSource = new MapDataDAO(this);
 		mMapDataSource.open();
 		
+		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
 		settings = getSharedPreferences("UserPreferencesFile", 0);
 		editor = settings.edit();
 		
@@ -135,17 +129,29 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 		contentText = (TextView)findViewById(R.id.scan_content_received);
 		scanButton.setOnClickListener(this);
 		
-		/*if(!huntParticipantIdReturned)
+		//check here to see if location services are turned on... pop up warning
+		
+		//http://stackoverflow.com/questions/10311834/android-dev-how-to-check-if-location-services-are-enabled
+		if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 		{
-			getParticipantId();
+			alertForNoLocationServices = new Builder(ScanQRCodeActivity.this);
+			alertForNoLocationServices.setTitle("Location Services");
+			alertForNoLocationServices.setMessage("Location services are not turned on. Turn on to track your treasure hunt.");
+			alertForNoLocationServices.setCancelable(false);
+			alertForNoLocationServices.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+					
+				}
+			});
+			
+			alertForNoLocationServices.create();
+			alertForNoLocationServices.show();
 		}
-		else
-		{
-			huntParticipantId = settings.getInt(huntId + " userParticipantId", 0) ; 
-		}*/
 		
 		ScanQRCodeActivity.this.registerReceiver(mLocationReceiver, new IntentFilter(MapManager.ACTION_LOCATION));
-		
 	}
 	
 	//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
@@ -176,35 +182,6 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void getParticipantId()
-	{
-		if (mGetHuntParticipantIdTask != null) {
-			return;
-		} 	
-		
-		mGetHuntParticipantIdTask = new GetHuntParticipantIdTask();
-		mGetHuntParticipantIdTask.execute((String) null);
-
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mGetHuntParticipantIdTask!= null)
-				{
-					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mGetHuntParticipantIdTask.cancel(true);
-						Toast.makeText(ScanQRCodeActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-						
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
-	
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState)
 	{	
@@ -225,6 +202,7 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 	//For now - deciding to use ZBar within application so user does not have to have another application running to scan
 	@Override
 	public void onClick(View v) {	
+		contentText.setText("");
 		Intent intent = new Intent(this, ZBarScannerActivity.class);
 		startActivityForResult(intent, 1);
 	}
@@ -243,7 +221,22 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 			}
 			else
 			{
-				Toast.makeText(this, "This was an invalid scan for this hunt", Toast.LENGTH_SHORT).show();
+				Builder alertForNoData = new Builder(ScanQRCodeActivity.this);
+				alertForNoData.setTitle("Invalid Code");
+				alertForNoData.setMessage("This was an invalid scan for this particular treasure hunt. Please try again.");
+				alertForNoData.setCancelable(false);
+				alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForNoData.create();
+				alertForNoData.show();
+				
+				Log.e("ScanQRCode", "Invalid scan for hunt: " + huntId);
 			}
 
 	    } else if(resultCode == RESULT_CANCELED) {
@@ -270,6 +263,7 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 				{
 					if(mScanResultTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
+						pDialog.cancel();
 						mScanResultTask.cancel(true);
 						Toast.makeText(ScanQRCodeActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 						
@@ -281,6 +275,18 @@ public class ScanQRCodeActivity extends Activity implements OnClickListener {
 	}
 	
 public class ScanResultTask extends AsyncTask<String, String, String> {
+	
+	@Override
+	protected void onPreExecute()
+	{
+		super.onPreExecute();
+		pDialog = new ProgressDialog(ScanQRCodeActivity.this);
+        pDialog.setMessage("Attempting to retrieve scan result");
+		pDialog.setIndeterminate(false);
+		pDialog.setCancelable(false);
+		pDialog.show();
+	}
+	
 		
 		@Override
 		protected String doInBackground(String... args) {
@@ -342,6 +348,7 @@ public class ScanResultTask extends AsyncTask<String, String, String> {
 		@Override
 		protected void onPostExecute(final String fileUrl) {
 			mScanResultTask = null;
+			pDialog.dismiss();
 			
 			if(mLastLocation !=null)
 			{
@@ -349,10 +356,12 @@ public class ScanResultTask extends AsyncTask<String, String, String> {
 			}		
 			else
 			{
+				Toast.makeText(ScanQRCodeActivity.this, "Pin not saved.", Toast.LENGTH_LONG).show();
 				//http://www.mkyong.com/android/android-alert-dialog-example/
+				/*
 				alertForNoPin = new Builder(ScanQRCodeActivity.this);
 				alertForNoPin.setTitle("Pin not saved");
-				alertForNoPin.setMessage("No pin was saved to the map. This is probably due to location service issues.");
+				alertForNoPin.setMessage("No pin was saved to the map for this scan. This is probably due to location service issues.");
 				alertForNoPin.setCancelable(false);
 				alertForNoPin.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					
@@ -365,12 +374,16 @@ public class ScanResultTask extends AsyncTask<String, String, String> {
 				
 				alertForNoPin.create();
 				alertForNoPin.show();
+				*/
 			}
 			
-			if (fileUrl != null) {
-				Toast.makeText(ScanQRCodeActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
-			} else {
-				Toast.makeText(ScanQRCodeActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			if (fileUrl != null) 
+			{
+				Log.i("ScanQRCode", fileUrl);
+			} 
+			else 
+			{
+				Log.d("ScanQRCode", "Nothing returned");
 			}		
 		}
 
@@ -379,72 +392,6 @@ public class ScanResultTask extends AsyncTask<String, String, String> {
 			mScanResultTask = null;
 		}
 	}
-	
-	public class GetHuntParticipantIdTask extends AsyncTask<String, String, String> {
-		
-		@Override
-		protected String doInBackground(String... args) {
-			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-			
-				int success;
-
-				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-				
-				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				parameters.add(new BasicNameValuePair("huntId", Integer.toString(huntId)));
-				parameters.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-				
-				try{
-					Log.d("request", "starting");
-					JSONObject jsonGetHuntParticipantId = jsonParser.makeHttpRequest(getHuntParticipantIdUrl, "POST", parameters);
-					Log.d("Get User Id Attempt", jsonGetHuntParticipantId.toString());
-					success = jsonGetHuntParticipantId.getInt(tagSuccess);
-					
-					if(success == 1)
-					{
-						huntParticipantIdResult = jsonGetHuntParticipantId.getJSONObject("result");
-						currentParticipantId = huntParticipantIdResult.getInt("HuntParticipantId");
-						huntParticipantIdReturned = true;
-						Log.d("leaderboard", "hunt participant id is: " + currentParticipantId);
-						return jsonGetHuntParticipantId.getString(tagMessage);
-						
-					}
-					else
-					{
-						Log.d("Getting hunt participant Id failed!", jsonGetHuntParticipantId.getString(tagMessage));
-						return jsonGetHuntParticipantId.getString(tagMessage);
-					}
-				
-			} catch (JSONException e) {
-			
-			}
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(final String fileUrl) {
-			mGetHuntParticipantIdTask = null;
-			
-			if(huntParticipantIdReturned)
-			{
-				editor.putInt(huntId + " userParticipantId", currentParticipantId);
-				editor.putBoolean(huntId + " userParticipantIdReturned", true);
-				editor.commit(); 
-			}
-			if (fileUrl != null) {
-				Toast.makeText(ScanQRCodeActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
-			} else {
-				Toast.makeText(ScanQRCodeActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-			}		
-		}
-
-		@Override
-		protected void onCancelled() {
-			mGetHuntParticipantIdTask = null;
-		}
-	}
-
 	
 	private BroadcastReceiver mLocationReceiver = new LocationReceiver()
 	{

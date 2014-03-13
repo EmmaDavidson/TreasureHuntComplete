@@ -1,6 +1,5 @@
 package com.application.treasurehunt;
 
-
 import android.content.Context;
 import android.location.Location;
 

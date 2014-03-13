@@ -34,7 +34,7 @@ namespace TreasureHuntDesktopApplication.DataService
         void UpdateQuestion(question updatedQuestion);
 
         [OperationContract]
-        hunt GetHuntBasedOnName(String name);
+        hunt GetHuntBasedOnName(String name, long userId);
 
         [OperationContract]
         List<user> GetExistingUsers();
@@ -80,5 +80,11 @@ namespace TreasureHuntDesktopApplication.DataService
 
         [OperationContract]
         void updateCompanyPassword(user currentUser, String newPassword);
+
+        [OperationContract]
+        List<companydetail> getExistingCompanies();
+
+        [OperationContract]
+        void saveCompany(companydetail companyDetails);
     }
 }

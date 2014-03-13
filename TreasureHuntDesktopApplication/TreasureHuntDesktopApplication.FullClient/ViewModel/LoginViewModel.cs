@@ -119,19 +119,21 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
 
         public void ExecuteLoginUserCommand()
-        { 
+        {
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
                 user user = this.serviceClient.GetUser(this.emailAddress);
 
                 if (user == null)
                 {
-      
+
                     MessageBoxResult messageBox = MessageBox.Show("User does not exist", "Invalid details");
                     EmailAddress = String.Empty;
                     Password = String.Empty;
-                
+
                 }
                 else
-                { 
+                {
                     userrole userRole = this.serviceClient.GetUserRole(user);
                     if (userRole.RoleId == 1)
                     {
@@ -143,27 +145,33 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
                             Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
                         }
-                        else 
+                        else
                         {
-                            
+
                             MessageBoxResult messageBox = MessageBox.Show("Incorrect username or password", "Incorrect Details");
                             Password = String.Empty;
                         }
                     }
-                    else 
+                    else
                     {
                         MessageBoxResult messageBox = MessageBox.Show("You cannot access this application with your email address", "Invalid user for this application");
                         EmailAddress = String.Empty;
                         Password = String.Empty;
-                     
+
                     }
                 }
+            }
+            else 
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }
 
         private void ExecuteRegisterCommand()
         {
             EmailAddress = String.Empty;
             Password = String.Empty;
+            Messenger.Default.Send<RegenerateListMessage>(new RegenerateListMessage() { RegenerateList = true });
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "RegisterViewModel" });
         }
 

@@ -115,10 +115,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
 
         private void ExecuteResetCompanyPasswordCommand()
-        { 
-            this.serviceClient.updateCompanyPassword(currentUser, newPassword);
-            MessageBoxResult messageBox = MessageBox.Show("Company password has been updated.", "Updated password");
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
+        {
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
+                this.serviceClient.updateCompanyPassword(currentUser, newPassword);
+                MessageBoxResult messageBox = MessageBox.Show("Company password has been updated.", "Updated password");
+                Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }
 
         #endregion

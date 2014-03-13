@@ -43,7 +43,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="42dp"
-        android:text="Play" 
+        android:text="@string/play" 
         android:background="#FF54C8E2"/>
 
     <ProgressBar
@@ -53,6 +53,5 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/hunt_description_box"
         android:layout_centerHorizontal="true" />
-
 
 </RelativeLayout>

@@ -1,14 +1,12 @@
 package com.application.treasurehunt;
 
 import java.util.List;
-
 import sqlLiteDatabase.MapData;
 import sqlLiteDatabase.MapDataDAO;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;

@@ -148,6 +148,18 @@
   <wsdl:message name="ITreasureHuntService_updateCompanyPassword_OutputMessage">
     <wsdl:part name="parameters" element="tns:updateCompanyPasswordResponse" />
   </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getExistingCompanies_InputMessage">
+    <wsdl:part name="parameters" element="tns:getExistingCompanies" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_getExistingCompanies_OutputMessage">
+    <wsdl:part name="parameters" element="tns:getExistingCompaniesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_saveCompany_InputMessage">
+    <wsdl:part name="parameters" element="tns:saveCompany" />
+  </wsdl:message>
+  <wsdl:message name="ITreasureHuntService_saveCompany_OutputMessage">
+    <wsdl:part name="parameters" element="tns:saveCompanyResponse" />
+  </wsdl:message>
   <wsdl:portType name="ITreasureHuntService">
     <wsdl:operation name="SaveQuestion">
       <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/SaveQuestion" message="tns:ITreasureHuntService_SaveQuestion_InputMessage" />
@@ -240,6 +252,14 @@
     <wsdl:operation name="updateCompanyPassword">
       <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/updateCompanyPassword" message="tns:ITreasureHuntService_updateCompanyPassword_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/updateCompanyPasswordResponse" message="tns:ITreasureHuntService_updateCompanyPassword_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="getExistingCompanies">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/getExistingCompanies" message="tns:ITreasureHuntService_getExistingCompanies_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/getExistingCompaniesResponse" message="tns:ITreasureHuntService_getExistingCompanies_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="saveCompany">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITreasureHuntService/saveCompany" message="tns:ITreasureHuntService_saveCompany_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITreasureHuntService/saveCompanyResponse" message="tns:ITreasureHuntService_saveCompany_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_ITreasureHuntService" type="tns:ITreasureHuntService">
@@ -444,6 +464,24 @@
     </wsdl:operation>
     <wsdl:operation name="updateCompanyPassword">
       <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/updateCompanyPassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getExistingCompanies">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/getExistingCompanies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveCompany">
+      <soap:operation soapAction="http://tempuri.org/ITreasureHuntService/saveCompany" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

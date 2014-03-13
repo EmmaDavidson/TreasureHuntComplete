@@ -19,6 +19,7 @@ using System.Xml.Serialization;
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
 
+[assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "companydetails_ibfk_1", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "companydetails", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.companydetail), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "huntparticipants_ibfk_1", "hunt", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.hunt), "huntparticipants", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.huntparticipant), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "huntquestions_ibfk_1", "hunt", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.hunt), "huntquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.huntquestion), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_2", "hunt", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.hunt), "userhunt", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userhunt), true)]
@@ -28,7 +29,6 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "usersecurityquestions_ibfk_1", "securityquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.securityquestion), "usersecurityquestions", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.usersecurityquestion), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_1", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "userhunt", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userhunt), true)]
 [assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userrole_ibfk_2", "user", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.user), "userrole", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userrole), true)]
-[assembly: EdmRelationshipAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_3", "userrole", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(TreasureHuntDesktopApplication.Data.userrole), "userhunt", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(TreasureHuntDesktopApplication.Data.userhunt), true)]
 
 #endregion
 
@@ -79,6 +79,22 @@ namespace TreasureHuntDesktopApplication.Data
         #endregion
     
         #region ObjectSet Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<companydetail> companydetails
+        {
+            get
+            {
+                if ((_companydetails == null))
+                {
+                    _companydetails = base.CreateObjectSet<companydetail>("companydetails");
+                }
+                return _companydetails;
+            }
+        }
+        private ObjectSet<companydetail> _companydetails;
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -245,6 +261,14 @@ namespace TreasureHuntDesktopApplication.Data
         #region AddTo Methods
     
         /// <summary>
+        /// Deprecated Method for adding a new object to the companydetails EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTocompanydetails(companydetail companydetail)
+        {
+            base.AddObject("companydetails", companydetail);
+        }
+    
+        /// <summary>
         /// Deprecated Method for adding a new object to the hunts EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
         public void AddTohunts(hunt hunt)
@@ -331,6 +355,182 @@ namespace TreasureHuntDesktopApplication.Data
     #endregion
 
     #region Entities
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="virapy_treasurehuntdbModel", Name="companydetail")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class companydetail : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new companydetail object.
+        /// </summary>
+        /// <param name="companyId">Initial value of the CompanyId property.</param>
+        /// <param name="userId">Initial value of the UserId property.</param>
+        /// <param name="companyName">Initial value of the CompanyName property.</param>
+        /// <param name="companyPassword">Initial value of the CompanyPassword property.</param>
+        public static companydetail Createcompanydetail(global::System.Int64 companyId, global::System.Int64 userId, global::System.String companyName, global::System.String companyPassword)
+        {
+            companydetail companydetail = new companydetail();
+            companydetail.CompanyId = companyId;
+            companydetail.UserId = userId;
+            companydetail.CompanyName = companyName;
+            companydetail.CompanyPassword = companyPassword;
+            return companydetail;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int64 CompanyId
+        {
+            get
+            {
+                return _CompanyId;
+            }
+            set
+            {
+                if (_CompanyId != value)
+                {
+                    OnCompanyIdChanging(value);
+                    ReportPropertyChanging("CompanyId");
+                    _CompanyId = StructuralObject.SetValidValue(value, "CompanyId");
+                    ReportPropertyChanged("CompanyId");
+                    OnCompanyIdChanged();
+                }
+            }
+        }
+        private global::System.Int64 _CompanyId;
+        partial void OnCompanyIdChanging(global::System.Int64 value);
+        partial void OnCompanyIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int64 UserId
+        {
+            get
+            {
+                return _UserId;
+            }
+            set
+            {
+                OnUserIdChanging(value);
+                ReportPropertyChanging("UserId");
+                _UserId = StructuralObject.SetValidValue(value, "UserId");
+                ReportPropertyChanged("UserId");
+                OnUserIdChanged();
+            }
+        }
+        private global::System.Int64 _UserId;
+        partial void OnUserIdChanging(global::System.Int64 value);
+        partial void OnUserIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String CompanyName
+        {
+            get
+            {
+                return _CompanyName;
+            }
+            set
+            {
+                OnCompanyNameChanging(value);
+                ReportPropertyChanging("CompanyName");
+                _CompanyName = StructuralObject.SetValidValue(value, false, "CompanyName");
+                ReportPropertyChanged("CompanyName");
+                OnCompanyNameChanged();
+            }
+        }
+        private global::System.String _CompanyName;
+        partial void OnCompanyNameChanging(global::System.String value);
+        partial void OnCompanyNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String CompanyPassword
+        {
+            get
+            {
+                return _CompanyPassword;
+            }
+            set
+            {
+                OnCompanyPasswordChanging(value);
+                ReportPropertyChanging("CompanyPassword");
+                _CompanyPassword = StructuralObject.SetValidValue(value, false, "CompanyPassword");
+                ReportPropertyChanged("CompanyPassword");
+                OnCompanyPasswordChanged();
+            }
+        }
+        private global::System.String _CompanyPassword;
+        partial void OnCompanyPasswordChanging(global::System.String value);
+        partial void OnCompanyPasswordChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "companydetails_ibfk_1", "user")]
+        public user user
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<user>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "user").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<user>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "user").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<user> userReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<user>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "user");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<user>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "user", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
     
     /// <summary>
     /// No Metadata Documentation available.
@@ -1353,17 +1553,13 @@ namespace TreasureHuntDesktopApplication.Data
         /// <param name="name">Initial value of the Name property.</param>
         /// <param name="email">Initial value of the Email property.</param>
         /// <param name="password">Initial value of the Password property.</param>
-        /// <param name="companyPassword">Initial value of the CompanyPassword property.</param>
-        /// <param name="company">Initial value of the Company property.</param>
-        public static user Createuser(global::System.Int64 userId, global::System.String name, global::System.String email, global::System.String password, global::System.String companyPassword, global::System.String company)
+        public static user Createuser(global::System.Int64 userId, global::System.String name, global::System.String email, global::System.String password)
         {
             user user = new user();
             user.UserId = userId;
             user.Name = name;
             user.Email = email;
             user.Password = password;
-            user.CompanyPassword = companyPassword;
-            user.Company = company;
             return user;
         }
 
@@ -1469,58 +1665,32 @@ namespace TreasureHuntDesktopApplication.Data
         private global::System.String _Password;
         partial void OnPasswordChanging(global::System.String value);
         partial void OnPasswordChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String CompanyPassword
-        {
-            get
-            {
-                return _CompanyPassword;
-            }
-            set
-            {
-                OnCompanyPasswordChanging(value);
-                ReportPropertyChanging("CompanyPassword");
-                _CompanyPassword = StructuralObject.SetValidValue(value, false, "CompanyPassword");
-                ReportPropertyChanged("CompanyPassword");
-                OnCompanyPasswordChanged();
-            }
-        }
-        private global::System.String _CompanyPassword;
-        partial void OnCompanyPasswordChanging(global::System.String value);
-        partial void OnCompanyPasswordChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Company
-        {
-            get
-            {
-                return _Company;
-            }
-            set
-            {
-                OnCompanyChanging(value);
-                ReportPropertyChanging("Company");
-                _Company = StructuralObject.SetValidValue(value, false, "Company");
-                ReportPropertyChanged("Company");
-                OnCompanyChanged();
-            }
-        }
-        private global::System.String _Company;
-        partial void OnCompanyChanging(global::System.String value);
-        partial void OnCompanyChanged();
 
         #endregion
 
         #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "companydetails_ibfk_1", "companydetails")]
+        public EntityCollection<companydetail> companydetails
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<companydetail>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "companydetails");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<companydetail>("virapy_treasurehuntdbModel.companydetails_ibfk_1", "companydetails", value);
+                }
+            }
+        }
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1608,14 +1778,12 @@ namespace TreasureHuntDesktopApplication.Data
         /// <param name="userHuntId">Initial value of the UserHuntId property.</param>
         /// <param name="userId">Initial value of the UserId property.</param>
         /// <param name="huntId">Initial value of the HuntId property.</param>
-        /// <param name="userRoleId">Initial value of the UserRoleId property.</param>
-        public static userhunt Createuserhunt(global::System.Int64 userHuntId, global::System.Int64 userId, global::System.Int64 huntId, global::System.Int64 userRoleId)
+        public static userhunt Createuserhunt(global::System.Int64 userHuntId, global::System.Int64 userId, global::System.Int64 huntId)
         {
             userhunt userhunt = new userhunt();
             userhunt.UserHuntId = userHuntId;
             userhunt.UserId = userId;
             userhunt.HuntId = huntId;
-            userhunt.UserRoleId = userRoleId;
             return userhunt;
         }
 
@@ -1697,30 +1865,6 @@ namespace TreasureHuntDesktopApplication.Data
         private global::System.Int64 _HuntId;
         partial void OnHuntIdChanging(global::System.Int64 value);
         partial void OnHuntIdChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int64 UserRoleId
-        {
-            get
-            {
-                return _UserRoleId;
-            }
-            set
-            {
-                OnUserRoleIdChanging(value);
-                ReportPropertyChanging("UserRoleId");
-                _UserRoleId = StructuralObject.SetValidValue(value, "UserRoleId");
-                ReportPropertyChanged("UserRoleId");
-                OnUserRoleIdChanged();
-            }
-        }
-        private global::System.Int64 _UserRoleId;
-        partial void OnUserRoleIdChanging(global::System.Int64 value);
-        partial void OnUserRoleIdChanged();
 
         #endregion
 
@@ -1798,44 +1942,6 @@ namespace TreasureHuntDesktopApplication.Data
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<user>("virapy_treasurehuntdbModel.userhunt_ibfk_1", "user", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_3", "userrole")]
-        public userrole userrole
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<userrole>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userrole").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<userrole>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userrole").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<userrole> userroleReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<userrole>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userrole");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<userrole>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userrole", value);
                 }
             }
         }
@@ -2024,28 +2130,6 @@ namespace TreasureHuntDesktopApplication.Data
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<user>("virapy_treasurehuntdbModel.userrole_ibfk_2", "user", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("virapy_treasurehuntdbModel", "userhunt_ibfk_3", "userhunt")]
-        public EntityCollection<userhunt> userhunts
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<userhunt>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userhunt");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<userhunt>("virapy_treasurehuntdbModel.userhunt_ibfk_3", "userhunt", value);
                 }
             }
         }

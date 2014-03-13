@@ -1,11 +1,8 @@
 package com.application.treasurehunt;
 
 import java.util.List;
-
 import com.application.treasurehunt.R;
-
 import sqlLiteDatabase.MapData;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;

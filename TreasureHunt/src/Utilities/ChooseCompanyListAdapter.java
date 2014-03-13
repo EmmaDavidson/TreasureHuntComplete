@@ -1,9 +1,7 @@
 package Utilities;
 
 import java.util.List;
-
 import sqlLiteDatabase.Company;
-import sqlLiteDatabase.Hunt;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;

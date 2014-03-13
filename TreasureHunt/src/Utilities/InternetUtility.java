@@ -1,7 +1,5 @@
 package Utilities;
 
-import com.application.treasurehunt.RegisterWithHuntActivity;
-
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,22 +38,4 @@ public class InternetUtility {
 		return info != null && info.isConnected();
 	}
 	
-	//Not sure if this should be here... 
-	public synchronized void showNoConnectionMessage()
-	{
-		Builder noConnectionAlert;
-		noConnectionAlert = new Builder(currentContext);
-		noConnectionAlert.setTitle("No connection");
-		noConnectionAlert.setMessage("There is no internet connection. Connection required.");
-		noConnectionAlert.setCancelable(false);
-		noConnectionAlert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();	
-			}
-		});
-		
-		noConnectionAlert.create();
-	}
 }

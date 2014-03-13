@@ -37,7 +37,7 @@
         android:layout_alignLeft="@+id/scan_content_received"
         android:layout_below="@+id/scan_qr_code_button"
         android:layout_marginTop="17dp"
-        android:text="Result:"
+        android:text="@string/result"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

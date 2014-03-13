@@ -8,8 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.application.treasurehunt.RegisterActivity.SetUserRoleTask;
-
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +41,10 @@ public class ForgottenPasswordActivity extends Activity {
 	Button submitAnswerButton;
 	Button saveNewPasswordButton;
 	
+	InternetUtility internetUtility;
+	
+	private ProgressDialog pDialog; 
+	
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
 	
@@ -58,6 +62,8 @@ public class ForgottenPasswordActivity extends Activity {
 		setContentView(R.layout.activity_forgotten_password);
 		
 		Intent intent = getIntent();
+		
+		internetUtility = InternetUtility.getInstance(this);
 		
 		securityQuestion = intent.getStringExtra("SecurityQuestion");
 		securityAnswer = intent.getStringExtra("SecurityAnswer");
@@ -123,7 +129,14 @@ public class ForgottenPasswordActivity extends Activity {
 					public void onClick(View view) {
 						if (isValidPassword()) {
 				
-							attemptSaveNewPassword();
+							if(internetUtility.isInternetConnected())
+							{
+								attemptSaveNewPassword();
+							}
+							else
+							{
+								Toast.makeText(ForgottenPasswordActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+							}
 						}
 					}
 				});
@@ -147,6 +160,7 @@ public class ForgottenPasswordActivity extends Activity {
 				{
 					if(saveNewPasswordTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
+						pDialog.cancel();
 						saveNewPasswordTask.cancel(true);
 						Toast.makeText(ForgottenPasswordActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 					}
@@ -182,6 +196,17 @@ public class ForgottenPasswordActivity extends Activity {
 	}
 	
 	public class SaveNewPasswordTask extends AsyncTask<String, String, String> {
+		
+		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+			pDialog = new ProgressDialog(ForgottenPasswordActivity.this);
+	        pDialog.setMessage("Attempting to save new password");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(false);
+			pDialog.show();
+		}
 		
 		@Override
 		protected String doInBackground(String... arg0) {
@@ -225,6 +250,7 @@ public class ForgottenPasswordActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(final String fileUrl) {
+			pDialog.dismiss();
 			saveNewPasswordTask = null;
 			
 			if (fileUrl != null) {
@@ -248,7 +274,23 @@ public class ForgottenPasswordActivity extends Activity {
 				}
 				
 			} else {
-				Toast.makeText(ForgottenPasswordActivity.this, "Couldn't set the new password", Toast.LENGTH_LONG).show();
+				//Message on screen - password was not set
+				Builder alertForPasswordNotSaved = new Builder(ForgottenPasswordActivity.this);
+				alertForPasswordNotSaved.setTitle("Password reset");
+				alertForPasswordNotSaved.setMessage("Your password could not be reset. Please try again.");
+				alertForPasswordNotSaved.setCancelable(false);
+				alertForPasswordNotSaved.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();	
+					}
+				});
+				
+				alertForPasswordNotSaved.create();
+				alertForPasswordNotSaved.show();
+				
+				Log.e("Password reset", "Password for user identified by id " +  userId + " could not be reset.");
 			}
 		
 

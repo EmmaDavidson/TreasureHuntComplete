@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 public class ChooseTypeOfMyHuntActivity extends Activity {
 	

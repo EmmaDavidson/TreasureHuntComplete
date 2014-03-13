@@ -2,9 +2,7 @@ package com.application.treasurehunt;
 
 import Utilities.SingleFragmentActivity;
 import android.os.Build;
-import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;

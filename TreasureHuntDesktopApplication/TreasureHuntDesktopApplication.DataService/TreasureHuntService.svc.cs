@@ -22,7 +22,7 @@ namespace TreasureHuntDesktopApplication.DataService
             }
         }
 
-        public IEnumerable<hunt> GetTreasureHuntsForParticularUser(user user)
+        public IEnumerable<hunt> GetTreasureHuntsForParticularUser(user user) 
         {
             using (var context = new TreasureHuntEntities())
             {
@@ -106,13 +106,29 @@ namespace TreasureHuntDesktopApplication.DataService
             }
         }
 
-        public hunt GetHuntBasedOnName(String name)
+        public hunt GetHuntBasedOnName(String name, long userId)
         {
             using (var context = new TreasureHuntEntities())
             {
-                var returnedHunt = context.hunts.Where(c => c.HuntName == name).Single();
-                context.ObjectStateManager.ChangeObjectState(returnedHunt, System.Data.EntityState.Detached);
-                return returnedHunt;
+                //Get all of this users hunts ids
+                var returnedUserHunts = context.userhunts.Where(c => c.UserId == userId).ToList();
+                context.ObjectStateManager.ChangeObjectState(returnedUserHunts, System.Data.EntityState.Detached);
+
+                //For each of the hunt ids 
+                foreach (var userHunts in returnedUserHunts)
+                {
+                    //get that hunt
+                    var hunt = context.hunts.Where(c => c.HuntId == userHunts.HuntId).Single();
+                    context.ObjectStateManager.ChangeObjectState(hunt, System.Data.EntityState.Detached);
+
+                    //if that hunt name is the same as expected, return that hunt
+                    if (hunt.HuntName == name)
+                    {
+                        return hunt;
+                    }
+                }
+
+                return null;
             }
         }
 
@@ -268,11 +284,34 @@ namespace TreasureHuntDesktopApplication.DataService
         {
             using (var context = new TreasureHuntEntities())
             {
-                var userToChange = context.users.Where(c => c.UserId == currentUser.UserId).Single();
-                userToChange.CompanyPassword = newPassword;
+                var companyToChange = context.companydetails.Where(c => c.UserId == currentUser.UserId).Single();
+                companyToChange.CompanyPassword = newPassword;
                 context.SaveChanges();
-                context.ObjectStateManager.ChangeObjectState(userToChange, System.Data.EntityState.Modified);
+                context.ObjectStateManager.ChangeObjectState(companyToChange, System.Data.EntityState.Modified);
             }
         }
+
+        
+         public void saveCompany(companydetail companyDetails)
+          {
+               using(var context = new TreasureHuntEntities())
+                {
+                    context.companydetails.AddObject(companyDetails);
+                     context.SaveChanges();
+                     context.ObjectStateManager.ChangeObjectState(companyDetails, System.Data.EntityState.Added);
+                }
+          }
+
+         public List<companydetail> getExistingCompanies()
+         {
+             using (var context = new TreasureHuntEntities())
+             {
+                 var returnedCompanies = context.companydetails.ToList();
+                 returnedCompanies.ForEach(e => context.ObjectStateManager.ChangeObjectState(e, System.Data.EntityState.Detached));
+                 return returnedCompanies;
+
+             }
+         }
+         
     }
 }

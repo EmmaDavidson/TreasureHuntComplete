@@ -1,52 +1,36 @@
 package com.application.treasurehunt;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import sqlLiteDatabase.MapData;
-import sqlLiteDatabase.MapDataDAO;
-
-import com.application.treasurehunt.RegisterActivity.UserRegisterTask;
-
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class RegisterWithHuntActivity extends Activity{
 	
@@ -60,6 +44,8 @@ public class RegisterWithHuntActivity extends Activity{
 	
 	private static final String tagSuccess = "success";
 	private static final String tagMessage = "message";
+	
+	InternetUtility internetUtility;
 
 	Intent scanQRCodeActivity;
 	
@@ -83,6 +69,7 @@ public class RegisterWithHuntActivity extends Activity{
 	private GetHuntDescriptionTask mHuntDescriptionTask = null;
 	private CheckIfUserRegisteredTask mUserRegisteredTask = null;
 	private CheckIfHuntStartedTask mHuntStartedTask = null;
+	
 	private ProgressDialog pDialog;
 	
 	ProgressBar descriptionProgressBar;
@@ -128,6 +115,9 @@ public class RegisterWithHuntActivity extends Activity{
 		settings = getSharedPreferences("UserPreferencesFile", 0);
 		editor = settings.edit();
 		
+		internetUtility = InternetUtility.getInstance(this);
+
+		
 		//mPasswordView = (EditText) findViewById(R.id.register_hunt_password);
 		mhuntDescriptionView = (TextView) findViewById(R.id.hunt_description_box);
 		mHuntNameLabelView = (TextView) findViewById(R.id.hunt_name_label);
@@ -146,11 +136,18 @@ public class RegisterWithHuntActivity extends Activity{
 					public void onClick(View view) {
 	
 						if(currentHuntIdReturned){
-							attemptRegisterWithHunt();
+							if(internetUtility.isInternetConnected())
+							{
+								attemptRegisterWithHunt();
+							}
+							else
+							{
+								Toast.makeText(RegisterWithHuntActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+							}
 						}
 						else
 						{
-							Toast.makeText(RegisterWithHuntActivity.this, "Internal error", Toast.LENGTH_LONG).show();
+							Log.e("RegisterWithHunt", "Current Hunt Id not returned.");
 						}
 						
 					}
@@ -211,27 +208,35 @@ public class RegisterWithHuntActivity extends Activity{
 			}
 		} */
 		
-	
-		if(!currentHuntIdReturned)
+		if(internetUtility.isInternetConnected())
 		{
-			attemptToReturnHuntId();
+			if(!currentHuntIdReturned)
+			{
+				attemptToReturnHuntId();
+			}
+			if(!huntDescriptionreturned)
+			{
+				
+				attemptToReturnHuntDescription();
+			}
 		}
-		if(!huntDescriptionreturned)
+		else
 		{
-			attemptToReturnHuntDescription();
+			Toast.makeText(RegisterWithHuntActivity.this, "Internet connection required", Toast.LENGTH_SHORT).show();
 		}
-		
-
-		
-
-		
+			
 		mBeginHuntButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-					
-						getParticipantId();
-						
+						if(internetUtility.isInternetConnected())
+						{
+							getParticipantId();
+						}
+						else
+						{
+							Toast.makeText(RegisterWithHuntActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+						}
 					}
 				});
 		
@@ -560,14 +565,14 @@ public class RegisterWithHuntActivity extends Activity{
 				}	
 			}
 			
-			if (fileUrl != null) {
-				Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();
-				//mhuntDescriptionView.setText(currentHuntDescription);
+			if (fileUrl != null) 
+			{
+				Log.i("RegisterWithHunt", fileUrl);
 				
-				
-			} else {
-				//Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-				Toast.makeText(RegisterWithHuntActivity.this, "Couldn't retrieve hunt description", Toast.LENGTH_LONG).show();
+			} 
+			else 
+			{
+				mhuntDescriptionView.setText("Could not retrieve description.");
 			}
 		}
 
@@ -644,12 +649,27 @@ public class UserRegisterWithHuntTask extends AsyncTask<String, String, String> 
 				editor.putInt("userParticipantId", currentParticipantId);
 				editor.commit(); 
 				
+				Log.i("RegisterWithHunt", fileUrl);
 			}
-
-			if (fileUrl != null) {
-				Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			else
+			{
+				Builder alertForFailedRegistration = new Builder(RegisterWithHuntActivity.this);
+				alertForFailedRegistration.setTitle("Registration");
+				alertForFailedRegistration.setMessage("Registration for this treasure hunt failed. Please try again later.");
+				alertForFailedRegistration.setCancelable(false);
+				alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForFailedRegistration.create();
+				alertForFailedRegistration.show();
+				
+				Log.e("RegisterWithHunt", "Failed registration with hunt: " + huntId + "for participant: " + userId);
+			
 			}
 		}
 
@@ -712,22 +732,17 @@ public class GetHuntDescriptionTask extends AsyncTask<String, String, String> {
 		descriptionProgressBar.setVisibility(ProgressBar.GONE);
 		descriptionProgressBar.clearAnimation();
 		
-		if (fileUrl != null) {
-			Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
+			
 			if(huntDescriptionreturned)
 			{
 				mhuntDescriptionView.setText(currentHuntDescription);
-				
+				Log.i("RegisterWithHunt", fileUrl);
 			}
 			else
 			{
 				mhuntDescriptionView.setText("Hunt description could not be retrieved");
+				Log.e("RegisterWithHunt", "Hunt description could not be retrieved for hunt:"  + huntId);
 			}
-		} else {
-			Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-		}
-		
-		
 	}
 
 	@Override
@@ -785,6 +800,7 @@ public class CheckIfUserRegisteredTask extends AsyncTask<String, String, String>
 		{
 			mBeginHuntButton.setEnabled(false);
 			mRegisterButton.setEnabled(true);
+			Log.i("RegisterWithHunt", "user: " + userId + " has not yet registered with hunt: " + huntId);
 		}
 		else
 		{
@@ -793,9 +809,9 @@ public class CheckIfUserRegisteredTask extends AsyncTask<String, String, String>
 		}
 		
 		if (fileUrl != null) {
-			Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
+			Log.i("RegisterWithHunt",  fileUrl);
 		} else {
-			Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			Log.e("RegisterWithHunt", "Nothing returned from the database");
 		}		
 	}
 
@@ -855,12 +871,13 @@ public class SaveStartTimeTask extends AsyncTask<String, String, String> {
 			editor.commit(); 
 			startTimeSaved = true;
 		
-		if (fileUrl != null) {
-			
-			Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();
-		} else {
-			//Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-			Toast.makeText(RegisterWithHuntActivity.this, "Couldn't save start time", Toast.LENGTH_LONG).show();
+		if (fileUrl != null) 
+		{
+			Log.i("RegisterWithHunt", fileUrl);
+		} 
+		else 
+		{
+			Log.e("RegisterWithHunt", "Could not save the start time for user: " + userId);
 		}
 	}
 
@@ -929,12 +946,13 @@ public class CheckIfHuntStartedTask extends AsyncTask<String, String, String> {
 		editor.putLong(huntId + " startTime", (long) startTime);
 		editor.commit(); 
 		
-		
-		
-		if (fileUrl != null) {
-			Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
-		} else {
-			Toast.makeText(RegisterWithHuntActivity.this, "Couldn't retrieve if hunt started or not", Toast.LENGTH_LONG).show();
+		if (fileUrl != null) 
+		{
+			Log.i("RegisterWithHunt", fileUrl);	
+		} 
+		else 
+		{
+			Log.e("RegisterWithHunt", "Could not determine if hunt started or not");
 		}		
 	}
 
@@ -1030,10 +1048,13 @@ public class GetParticipantIdTask extends AsyncTask<String, String, String> {
 					startActivity(scanQRCodeActivity);
 				}
 			}
-			if (fileUrl != null) {
-				Toast.makeText(RegisterWithHuntActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
-			} else {
-				Toast.makeText(RegisterWithHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			if (fileUrl != null) 
+			{
+				Log.i("RegisterWithHunt", fileUrl);
+			} 
+			else 
+			{
+				Log.e("RegisterWithHunt", "Nothing returned from the database");
 			}		
 		}
 

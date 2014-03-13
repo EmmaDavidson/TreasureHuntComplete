@@ -1,16 +1,11 @@
 package com.application.treasurehunt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import sqlLiteDatabase.Company;
-
 import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.app.ActionBar;
@@ -18,7 +13,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,15 +20,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,14 +51,16 @@ public class LoginActivity extends Activity {
 	private ResetPasswordTask mPasswordTask = null;
 	
 	private UserLoginTask mAuthTask = null;
-	private ProgressDialog pDialog; //spinner thing
+	private ProgressDialog pDialog; 
+	private ProgressDialog resetPasswordDialog;
 	
 	private boolean existingEmailAddress;
 	
 	private String mEmail;
 	private String mPassword;
 	
-	private Button forgotPasswordButton;
+	private Button mForgotPasswordButton;
+	private Button mLicenceButton;
 	
 	private boolean loginSuccessful = false;
 
@@ -83,6 +75,7 @@ public class LoginActivity extends Activity {
 	Button mRegisterButton;
 	
 	boolean currentUserIdReturned;
+	boolean gettingUserIdSuccessful;
 	
 	EditText resetEmailAddress;
 	String submittedEmail;
@@ -101,11 +94,14 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		internetUtility = InternetUtility.getInstance(this);
 
 		setContentView(R.layout.activity_login);
 		mEmailView = (EditText) findViewById(R.id.login_email_address);
 		mPasswordView = (EditText) findViewById(R.id.login_password);
-		forgotPasswordButton = (Button) findViewById(R.id.forgotten_password_button);
+		mForgotPasswordButton = (Button) findViewById(R.id.forgotten_password_button);
+		mLicenceButton = (Button) findViewById(R.id.licence_button);
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
@@ -122,7 +118,30 @@ public class LoginActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						attemptLogin();
+						if(internetUtility.isInternetConnected())
+						{
+							pDialog = new ProgressDialog(LoginActivity.this);
+					        pDialog.setMessage("Attempting login...");
+							pDialog.setIndeterminate(false);
+							pDialog.setCancelable(false);
+							pDialog.show();
+							
+							attemptLogin();
+						}
+						else
+						{
+							Toast.makeText(LoginActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+						}
+					}
+				});
+		
+		//http://stackoverflow.com/questions/2734270/how-do-i-make-links-in-a-textview-clickable
+		mLicenceButton.setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent licenceIntent = new Intent(LoginActivity.this, LicenceActivity.class);
+						startActivity(licenceIntent);
 					}
 				});
 		
@@ -134,7 +153,7 @@ public class LoginActivity extends Activity {
 					}
 				});
 		
-		forgotPasswordButton.setOnClickListener(
+		mForgotPasswordButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
@@ -153,7 +172,14 @@ public class LoginActivity extends Activity {
 								resetEmailAddress = (EditText) emailView.findViewById(R.id.email_address_reset_text_field);
 								submittedEmail = resetEmailAddress.getText().toString();
 								//dialog.cancel();
-								attemptResetPassword();
+								if(internetUtility.isInternetConnected())
+								{
+									attemptResetPassword();
+								}
+								else
+								{
+									Toast.makeText(LoginActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+								}
 								
 								
 							}
@@ -173,7 +199,7 @@ public class LoginActivity extends Activity {
 					}
 				});
 		
-		internetUtility = InternetUtility.getInstance(this);
+		
 	}
 
 	private void goToRegister()
@@ -188,8 +214,7 @@ public class LoginActivity extends Activity {
 	
 	private void attemptLogin() {		
 
-		if(internetUtility.isInternetConnected())
-		{
+		
 			mEmail = mEmailView.getText().toString();
 			mPassword = mPasswordView.getText().toString();
 			
@@ -221,11 +246,7 @@ public class LoginActivity extends Activity {
 				//mEmailView.setText(null);
 				//mPasswordView.setText(null);
 			}	
-		}
-		else
-		{
-			internetUtility.showNoConnectionMessage();
-		}
+		
 	}
 	
 	
@@ -291,17 +312,6 @@ public class LoginActivity extends Activity {
 public class UserLoginTask extends AsyncTask<String, String, String>{
 	
 	@Override
-	protected void onPreExecute()
-	{
-		super.onPreExecute();
-		pDialog = new ProgressDialog(LoginActivity.this);
-        pDialog.setMessage("Attempting login...");
-		pDialog.setIndeterminate(false);
-		pDialog.setCancelable(false);
-		pDialog.show();
-	}
-	
-	@Override
 	protected String doInBackground(String... args) {
 		//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 		int success;
@@ -322,7 +332,7 @@ public class UserLoginTask extends AsyncTask<String, String, String>{
 			success = retrievedJsonObject.getInt(tagSuccess);
 			if(success == 1)
 			{
-				Log.d("Login Successful!", retrievedJsonObject.toString());
+				Log.i("Login Successful!", retrievedJsonObject.toString());
 				//finish();
 				loginSuccessful = true;
 				
@@ -330,7 +340,7 @@ public class UserLoginTask extends AsyncTask<String, String, String>{
 			}
 			else
 			{
-				Log.d("Login failed!", retrievedJsonObject.getString(tagMessage));
+				Log.e("Login failed!", retrievedJsonObject.getString(tagMessage));
 				return retrievedJsonObject.getString(tagMessage);
 			}
 			
@@ -338,28 +348,41 @@ public class UserLoginTask extends AsyncTask<String, String, String>{
 			e.printStackTrace();
 		}
 
-		return "This is my return message";
+		return "";
 	}
 
 	@Override
 	protected void onPostExecute(final String fileUrl) {
 		mAuthTask = null;
-		pDialog.dismiss();
 		
 		if(loginSuccessful)
 		{
-				attemptToReturnUserId();
+			Log.i("Login", "Login was successful");
+			attemptToReturnUserId();
 		}
 		else
-		{
+		{	
+			Builder alertForFailedLogin = new Builder(LoginActivity.this);
+			alertForFailedLogin.setTitle("Login unsuccessful");
+			alertForFailedLogin.setMessage("Login was unsuccessful. Please try again.");
+			alertForFailedLogin.setCancelable(false);
+			alertForFailedLogin.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
 			
+			alertForFailedLogin.create();
+			alertForFailedLogin.show();
+			
+			mEmailView.setText("");
+			mPasswordView.setText(""); 
+			
+			Log.e("Login", "Login failure for email address: " + mEmailView.getText());
 		}
-
-		if (fileUrl != null) {
-			Toast.makeText(LoginActivity.this, fileUrl, Toast.LENGTH_LONG).show();
-		} else {
-			Toast.makeText(LoginActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-		}
+				
 	}
 
 	@Override
@@ -415,7 +438,7 @@ public void attemptResetPassword()
 				if(mPasswordTask.getStatus() == AsyncTask.Status.RUNNING)
 				{
 					mPasswordTask.cancel(true);
-					pDialog.cancel();
+					resetPasswordDialog.cancel();
 					Toast.makeText(LoginActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 				}
 			}
@@ -448,9 +471,10 @@ public class GetUserIdTask extends AsyncTask<String, String, String> {
 				currentUserIdReturned = true;
 				userId = userIdResult.getInt("UserId");
 				userName = userIdResult.getString("Name");
+				gettingUserIdSuccessful = true;
 				homepageActivityIntent = new Intent(LoginActivity.this, HomepageActivity.class);
 				//homepageActivityIntent.putExtra("userName", userName);
-				startActivity(homepageActivityIntent);
+				
 				return jsonFindUserId.getString(tagMessage);
 				
 			}
@@ -470,17 +494,36 @@ public class GetUserIdTask extends AsyncTask<String, String, String> {
 	@Override
 	protected void onPostExecute(final String fileUrl) {
 		mUserTask = null;
-
-		if (fileUrl != null) {
-
+		pDialog.cancel();
+		
+		if(gettingUserIdSuccessful)
+		{
 			SharedPreferences settings = getSharedPreferences("UserPreferencesFile", 0);
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putInt("currentUserId", userId);
 			editor.putString("currentUserName", userName);
 			editor.commit();
+			
+			startActivity(homepageActivityIntent);
+		}
+		else
+		{
+			Builder alertForNoData = new Builder(LoginActivity.this);
+			alertForNoData.setTitle("Login unsuccessful");
+			alertForNoData.setMessage("Login was unsuccessful. Please try again.");
+			alertForNoData.setCancelable(false);
+			alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			alertForNoData.create();
+			alertForNoData.show();
 
-		} else {
-			Toast.makeText(LoginActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			Log.e("Login", "Login failure for email address: " + mEmailView.getText());
 		}
 	}
 
@@ -491,6 +534,17 @@ public class GetUserIdTask extends AsyncTask<String, String, String> {
 }
 
 public class ResetPasswordTask extends AsyncTask<String, String, String> {
+	
+	@Override
+	protected void onPreExecute()
+	{
+		super.onPreExecute();
+		resetPasswordDialog = new ProgressDialog(LoginActivity.this);
+		resetPasswordDialog.setMessage("Attempting to reset password");
+		resetPasswordDialog.setIndeterminate(false);
+		resetPasswordDialog.setCancelable(false);
+		resetPasswordDialog.show();
+	}
 
 	@Override
 	protected String doInBackground(String... arg0) {
@@ -533,6 +587,7 @@ public class ResetPasswordTask extends AsyncTask<String, String, String> {
 	@Override
 	protected void onPostExecute(final String fileUrl) {
 		mPasswordTask = null;
+		resetPasswordDialog.cancel();
 		
 		if(existingEmailAddress)
 		{

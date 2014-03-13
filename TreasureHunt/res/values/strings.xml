@@ -1,6 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Login Activity Strings --> 
+    <string name="register">Register</string>
+    
+    <!-- Choose Type Of My Hunt Activity Strings -->
+    <string name="not_started">Not started</string>
+    <string name="current_hunts">Current</string>
+    <string name="completed_hunts">Completed</string>
+    
+    <!-- Forgotten Password Activity Strings -->
+    <string name="new_password">New password:</string>
+    <string name="submit">Submit</string>
+    <string name="save_new_password">Save Password</string>
+    
+    <!-- Homepage Activity Strings -->
+    <string name="my_hunts">My Hunts</string>
+    <string name="browse_hunts">Browse Hunts</string> 
+    
+    <!-- Licence Activity Strings -->
+    <string name="zbar_scanner">ZBar Scanner</string>
+    <string name="zbar_licence"> Please see the above link for the MIT Open Source Initiative licence for the usage of ZBar scanner within this application.</string> 
+     
+    <!-- Login Activity Strings -->
+    <string name="forgot_password">Forgot Password</string>
+    <string name="licences">Licences</string>
+    
+    <!-- Register With Hunt Activity Strings -->
+    <string name="play">Play</string>
+    
+    <!-- Register Activity Strings -->
+    <string name="security_answer">Security Answer</string>
+    
+    <!--  Scan QR Code Activity Strings -->
+    <string name="result">Result</string>
+    
     <string name="app_name">Treasure Hunt</string>
     <string name="register_header">Register</string>
     <string name="login_header">Register</string>
@@ -10,7 +43,7 @@
     <string name="save">Save Details</string>
     <string name="title_activity_generate_hunt">GenerateHuntActivity</string>
     <string name="login">Login</string>
-    <string name="register">Register</string>
+    
     <string name="prompt_name">Name</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email</string>
@@ -52,7 +85,9 @@
     <string name="longtitude">Longtitude:</string>
     <string name="elapsed_time">Elapsed Time:</string>
     <string name="altitude">Altitude:</string>
-
+	<string name="zbar_scanner_licence_link">http://opensource.org/licenses/MIT</string>
+    
+    
     <color name="light_brown">#FFBDA78A</color>
 
     <string name="title_activity_map_list">MapListActivity</string>
@@ -61,7 +96,7 @@
     <string name="title_activity_choose_company">ChooseCompany</string>
     <string name="title_activity_company_password">CompanyPasswordActivity</string>
     <string name="title_activity_forgotten_password">ForgottenPasswordActivity</string>
-    
+
     <string-array name="security_choices_array">
         <item>What is your mothers maiden name</item>
         <item>What was the name of your first school</item>
@@ -69,5 +104,9 @@
         <item>What was your first pet called</item>
         <item>Where were you born</item>
     </string-array>
+    
+    
+
+    <string name="title_activity_licence">LicenceActivity</string>
 
 </resources>

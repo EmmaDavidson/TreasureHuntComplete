@@ -3,38 +3,37 @@ package com.application.treasurehunt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import sqlLiteDatabase.Hunt;
 import sqlLiteDatabase.HuntDAO;
-
 import Utilities.ChooseHuntListAdapter;
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+
 //http://net.tutsplus.com/tutorials/php/php-database-access-are-you-doing-it-correctly/
 public class ChooseHuntActivity extends Activity{
 
@@ -55,6 +54,8 @@ public class ChooseHuntActivity extends Activity{
 	
 	private ListView mListView;
 	
+	InternetUtility internetUtility;
+	
 	Handler handlerForUpdatingHuntList;
 	
 	MapManager mMapManager;
@@ -67,8 +68,16 @@ public class ChooseHuntActivity extends Activity{
 			@Override
 			public void run()
 			{
+				
 				huntDataSource.updateDatabaseLocally();
-				attemptReturnHunts();
+				if(internetUtility.isInternetConnected())
+				{
+					attemptReturnHunts();
+				}
+				else
+				{
+					Toast.makeText(ChooseHuntActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+				}
 				handlerForUpdatingHuntList.postDelayed(updateHuntsList, 10000);
 			}
 		};
@@ -79,6 +88,7 @@ public class ChooseHuntActivity extends Activity{
 		setContentView(R.layout.activity_choose_hunt);
 		huntDataSource = new HuntDAO(this);
 		huntDataSource.open();
+		internetUtility = InternetUtility.getInstance(this);
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
@@ -272,7 +282,22 @@ public class ReturnHuntsTask extends AsyncTask<String, String, String> {
 		} 
 		else 
 		{
-			Toast.makeText(ChooseHuntActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+			Builder alertForNoData = new Builder(ChooseHuntActivity.this);
+			alertForNoData.setTitle("Treasure Hunts");
+			alertForNoData.setMessage("There are currently no hunts to show for this company. Please check back later.");
+			alertForNoData.setCancelable(false);
+			alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			alertForNoData.create();
+			alertForNoData.show();
+			
+			Log.e("Treasure Hunts", "No treasure hunts returned from the database for the company identified by id " + currentCompanyId);
 		}
 	}
 

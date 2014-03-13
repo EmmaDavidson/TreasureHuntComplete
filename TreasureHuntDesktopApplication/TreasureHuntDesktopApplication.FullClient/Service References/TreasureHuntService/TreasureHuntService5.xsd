@@ -98,6 +98,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userId" type="xs:long" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -302,6 +303,30 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="updateCompanyPasswordResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getExistingCompanies">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getExistingCompaniesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getExistingCompaniesResult" nillable="true" type="q30:ArrayOfcompanydetail" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="saveCompany">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="companyDetails" nillable="true" type="q31:companydetail" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="saveCompanyResponse">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>

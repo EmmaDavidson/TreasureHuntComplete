@@ -27,7 +27,7 @@
         android:layout_below="@+id/homepage_username"
         android:layout_marginTop="28dp"
         android:background="#FF54C8E2"
-        android:text="My Hunts"
+        android:text="@string/my_hunts"
         android:textColor="#FFFFFF" />
 
     <Button
@@ -37,7 +37,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/homepage_username"
         android:background="#FF54C8E2"
-        android:text="Browse Hunts"
+        android:text="@string/browse_hunts"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

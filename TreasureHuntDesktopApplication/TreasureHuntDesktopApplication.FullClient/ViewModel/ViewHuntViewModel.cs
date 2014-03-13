@@ -119,21 +119,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         //make internal
         private void RefreshQuestions()
         {
-            if (this.currentTreasureHunt != null)
+            if (InternetConnectionChecker.IsInternetConnected())
             {
-                List<long> questionIds = this.serviceClient.GetHuntQuestions(this.currentTreasureHunt).ToList();
-                List<question> listOfQuestionsFromHunt = new List<question>();
-
-                using (var questionIdNumbers = questionIds.GetEnumerator())
+                if (this.currentTreasureHunt != null)
                 {
-                    while (questionIdNumbers.MoveNext())
-                    {
-                        question currentQuestionInList = this.serviceClient.GetQuestion(questionIdNumbers.Current);
-                        listOfQuestionsFromHunt.Add(currentQuestionInList);
-                    }
+                    List<long> questionIds = this.serviceClient.GetHuntQuestions(this.currentTreasureHunt).ToList();
+                    List<question> listOfQuestionsFromHunt = new List<question>();
 
-                    Questions = listOfQuestionsFromHunt.AsEnumerable();
+                    using (var questionIdNumbers = questionIds.GetEnumerator())
+                    {
+                        while (questionIdNumbers.MoveNext())
+                        {
+                            question currentQuestionInList = this.serviceClient.GetQuestion(questionIdNumbers.Current);
+                            listOfQuestionsFromHunt.Add(currentQuestionInList);
+                        }
+
+                        Questions = listOfQuestionsFromHunt.AsEnumerable();
+                    }
                 }
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
             }
         }
 
@@ -191,26 +198,33 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private void ExecuteSaveQuestionCommand()
         {
-            if (!DoesQuestionAlreadyExist(NewQuestion))
+            if (InternetConnectionChecker.IsInternetConnected())
             {
-                String locationOfQrCodeImage = myFileDirectory + "QRCodes\\" + this.CurrentTreasureHunt.HuntId + " " + this.newQuestion + ".png";
+                if (!DoesQuestionAlreadyExist(NewQuestion))
+                {
+                    String locationOfQrCodeImage = myFileDirectory + "QRCodes\\" + this.CurrentTreasureHunt.HuntId + " " + this.newQuestion + ".png";
 
-                question brandNewQuestion = new question();
-                brandNewQuestion.Question1 = this.newQuestion;
-                brandNewQuestion.URL = locationOfQrCodeImage;
-                long questionId = this.serviceClient.SaveQuestion(brandNewQuestion);
+                    question brandNewQuestion = new question();
+                    brandNewQuestion.Question1 = this.newQuestion;
+                    brandNewQuestion.URL = locationOfQrCodeImage;
+                    long questionId = this.serviceClient.SaveQuestion(brandNewQuestion);
 
-                SaveHuntQuestion(questionId);
-                EncodeQRCode(locationOfQrCodeImage);
+                    SaveHuntQuestion(questionId);
+                    EncodeQRCode(locationOfQrCodeImage);
 
-                this.NewQuestion = String.Empty;
+                    this.NewQuestion = String.Empty;
+                }
+                else
+                {
+                    String messageBoxText = "This question already exists.";
+                    String caption = "Question Already Exists";
+                    MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
+                    NewQuestion = String.Empty;  
+                }
             }
-            else 
+            else
             {
-                String messageBoxText = "This question already exists.";
-                String caption = "Question Already Exists";
-                MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
-                NewQuestion = String.Empty;
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
             }
         }
 
@@ -286,10 +300,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private void ExecuteLeaderboardCommand()
         {
-            hunt currentHunt = CurrentTreasureHunt;
-            Messenger.Default.Send<LeaderboardMessage>(new LeaderboardMessage() { CurrentHunt = currentHunt });
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LeaderboardViewModel" });
-           
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
+                hunt currentHunt = CurrentTreasureHunt;
+                Messenger.Default.Send<LeaderboardMessage>(new LeaderboardMessage() { CurrentHunt = currentHunt });
+                Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LeaderboardViewModel" });
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }
 
         private void ExecuteLogoutCommand()

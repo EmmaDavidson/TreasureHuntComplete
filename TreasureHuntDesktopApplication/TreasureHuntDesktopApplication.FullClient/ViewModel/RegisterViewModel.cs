@@ -23,12 +23,32 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public RegisterViewModel(ITreasureHuntService _serviceClient)
         {
+
             serviceClient = _serviceClient;
 
             RegisterUserCommand = new RelayCommand(() => ExecuteRegisterUserCommand(), () => IsValidDetails());
             BackCommand = new RelayCommand(() => ExecuteBackCommand());
 
-            SecurityQuestions = this.serviceClient.getListOfSecurityQuestions().AsEnumerable(); 
+            Messenger.Default.Register<RegenerateListMessage>
+             (
+
+             this,
+             (action) => ReceiveRegenerateListMessage(action.RegenerateList)
+
+             );
+        }
+        #endregion
+
+        #region Receiving messages
+        private void ReceiveRegenerateListMessage(bool updatedView)
+        {
+            if (updatedView)
+            {
+                if (InternetConnectionChecker.IsInternetConnected())
+                {
+                    SecurityQuestions = this.serviceClient.getListOfSecurityQuestions().AsEnumerable();
+                }
+            }  
         }
         #endregion
 
@@ -212,7 +232,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 4;
+                return 3;
 
             }
         }
@@ -240,16 +260,23 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public void ExecuteRegisterUserCommand()
         {
-            user newUser = new user();
-            newUser.Email = this.emailAddress;
-            newUser.Password = this.password;
-            newUser.Name = this.name;
-            newUser.Company = this.companyName;
-            newUser.CompanyPassword = this.companyPassword;
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
+                user newUser = new user();
+                newUser.Email = this.emailAddress;
+                newUser.Password = this.password;
+                newUser.Name = this.name;
 
-                if (!DoesUserOrCompanyAlreadyExist(newUser.Email, newUser.Company))
+                if (!DoesUserOrCompanyAlreadyExist(newUser.Email, this.companyName))
                 {
                     long userId = this.serviceClient.SaveUser(newUser);
+
+                    companydetail newCompany = new companydetail();
+                    newCompany.UserId = userId;
+                    newCompany.CompanyName = this.companyName;
+                    newCompany.CompanyPassword = this.companyPassword;
+
+                    this.serviceClient.saveCompany(newCompany);
 
                     userrole newUserRole = new userrole();
                     newUserRole.UserId = userId;
@@ -271,11 +298,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
                     EmailAddress = String.Empty;
                     Password = String.Empty;
-                    //RetypedPassword = String.Empty;
                     Name = String.Empty;
                     CompanyName = String.Empty;
                     CompanyPassword = String.Empty;
+                    securityAnswer = String.Empty ;
                 }
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }     
 
         private void ExecuteBackCommand()
@@ -283,9 +315,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             EmailAddress = String.Empty;
             Password = String.Empty;
             Name = String.Empty;
-            //RetypedPassword = String.Empty;
             CompanyName = String.Empty;
             CompanyPassword = String.Empty;
+            securityAnswer = String.Empty;
 
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
         }
@@ -293,6 +325,10 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         private bool DoesUserOrCompanyAlreadyExist(string emailAddress, string company)
         {
             List<user> listOfUsers = serviceClient.GetExistingUsers().ToList();
+            List<companydetail> listOfCompanies = serviceClient.getExistingCompanies().ToList();
+
+            bool userExists = false;
+            bool companyExists = false;
 
             if (listOfUsers != null)
             {
@@ -304,19 +340,35 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         {
                             MessageBoxResult messageBox = MessageBox.Show("This email address already exists!", "Invalid details");
                             EmailAddress = String.Empty;
-                            return true;
+                            userExists = true;
                         }
-                        else if (String.Equals(currentUsers.Current.Company, company, StringComparison.OrdinalIgnoreCase))
+                        
+                    }
+                }
+            }
+
+            if (listOfCompanies != null)
+            {
+                using (var currentCompanies = listOfCompanies.GetEnumerator())
+                {
+                    while (currentCompanies.MoveNext())
+                    {
+                        if (String.Equals(currentCompanies.Current.CompanyName, company, StringComparison.OrdinalIgnoreCase))
                         {
                             //-http://www.c-sharpcorner.com/UploadFile/mahesh/messagebox-in-wpf/
                             MessageBoxResult messageBox = MessageBox.Show("This company already exists!", "Invalid details");
                             CompanyName = String.Empty;
-                            return true; 
+                            companyExists = true;
                         }
                     }
                 }
             }
-            return false;
+
+            if (!companyExists && !userExists)
+            {
+                return false;
+            }
+            return true;
         }
 
         #endregion

@@ -2,16 +2,14 @@ package com.application.treasurehunt;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import sqlLiteDatabase.Leaderboard;
 import sqlLiteDatabase.LeaderboardDAO;
-import Utilities.ExpandableListAdapter;
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import Utilities.LeaderboardListAdapter;
 import android.os.AsyncTask;
@@ -20,23 +18,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class LeaderboardActivity extends Activity {
-
 	 
 	private JSONParser jsonParser;
 	
@@ -65,6 +59,8 @@ public class LeaderboardActivity extends Activity {
 	
 	MapManager mMapManager;
 	
+	InternetUtility internetUtility;
+	
 	//http://stackoverflow.com/questions/12220239/repeat-task-in-android
 	//http://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay/6242292#6242292
 	final Runnable updateLeaderboardList = new Runnable(){
@@ -72,7 +68,14 @@ public class LeaderboardActivity extends Activity {
 		public void run()
 		{
 			leaderboardDataSource.updateDatabaseLocally();
-			attemptToReturnLeaderboard();
+			if(internetUtility.isInternetConnected())
+			{
+				attemptToReturnLeaderboard();
+			}
+			else
+			{
+				Toast.makeText(LeaderboardActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+			}
 			handlerForUpdatingLeaderboard.postDelayed(updateLeaderboardList, 10000);
 		}
 	};
@@ -85,6 +88,8 @@ public class LeaderboardActivity extends Activity {
 		
 		leaderboardDataSource = new LeaderboardDAO(this);
 		leaderboardDataSource.open();
+		
+		internetUtility = InternetUtility.getInstance(this);
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
@@ -272,7 +277,22 @@ public class LeaderboardActivity extends Activity {
 			} 
 			else 
 			{
-				Toast.makeText(LeaderboardActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+				Builder alertForNoData = new Builder(LeaderboardActivity.this);
+				alertForNoData.setTitle("Leader board");
+				alertForNoData.setMessage("There is currently no data to show for this leader board. Please check back later.");
+				alertForNoData.setCancelable(false);
+				alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForNoData.create();
+				alertForNoData.show();
+				
+				Log.e("Leaderboard", "Nothing returned from the database for the leader board participants");
 			}
 		}
 

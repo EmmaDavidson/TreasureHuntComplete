@@ -3,20 +3,13 @@ package com.application.treasurehunt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.application.treasurehunt.ChooseHuntActivity.ReturnHuntsTask;
-
 import sqlLiteDatabase.Company;
 import sqlLiteDatabase.CompanyDAO;
-import sqlLiteDatabase.Hunt;
-import sqlLiteDatabase.HuntDAO;
 import Utilities.ChooseCompanyListAdapter;
-import Utilities.ChooseHuntListAdapter;
 import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
@@ -47,7 +40,6 @@ public class ChooseCompanyActivity extends Activity {
 
 	private ListView mCompanyListView;
 	
-	
 	public JSONParser jsonParser = new JSONParser();
 	private static final String myChooseCompaniesUrl =  "http://lowryhosting.com/emmad/chooseCompanies.php";
 	
@@ -62,7 +54,7 @@ public class ChooseCompanyActivity extends Activity {
 	//private ReturnCompaniesTask mCompaniesTask = null;
 	private ProgressDialog pDialog; 
 	
-	
+	InternetUtility internetUtility;
 	SharedPreferences.Editor editor;
 	SharedPreferences settings;
 	
@@ -81,8 +73,16 @@ public class ChooseCompanyActivity extends Activity {
 				public void run()
 				{
 					companyDataSource.updateDatabaseLocally();
-					attemptReturnCompanies();
+					
+					if(internetUtility.isInternetConnected())
+					{
+						attemptReturnCompanies();
 					//handlerForUpdatingCompanyList.postDelayed(updateCompanyList, 10000);
+					}
+					else
+					{
+						Toast.makeText(ChooseCompanyActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+					}
 				}
 			};
 	
@@ -94,6 +94,7 @@ public class ChooseCompanyActivity extends Activity {
 		
 		mCompanyListView = (ListView) findViewById(R.id.company_list_view);
 		
+		internetUtility = InternetUtility.getInstance(this);
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
@@ -153,8 +154,6 @@ public class ChooseCompanyActivity extends Activity {
 				return;
 			} 
 			
-			if(internetChecker.isInternetConnected())
-			{
 				mCompaniesTask = new ReturnCompaniesTask(); // Do ASYNC way
 				mCompaniesTask.execute((String) null);	
 					//http://stackoverflow.com/questions/7882739/android-setting-a-timeout-for-an-asynctask?rq=1
@@ -184,11 +183,6 @@ public class ChooseCompanyActivity extends Activity {
 					} catch (ExecutionException e) {
 						e.printStackTrace();
 					}
-			}
-			else
-			{
-				Toast.makeText(ChooseCompanyActivity.this, "Internet connection required", Toast.LENGTH_SHORT);
-			}
 		}
 		
 		public class ReturnCompaniesTask extends AsyncTask<String, String, String> {
@@ -229,7 +223,7 @@ public class ChooseCompanyActivity extends Activity {
 						//-http://stackoverflow.com/questions/8411154/null-pointer-exception-while-inserting-json-array-into-sqlite-database
 						for(int i=0; i < tagResult.length(); i++)
 						{
-							companyDataSource.addCompany(tagResult.getJSONObject(i).getInt("UserId"), tagResult.getJSONObject(i).getString("Company"), tagResult.getJSONObject(i).getString("CompanyPassword"));
+							companyDataSource.addCompany(tagResult.getJSONObject(i).getInt("UserId"), tagResult.getJSONObject(i).getString("CompanyName"), tagResult.getJSONObject(i).getString("CompanyPassword"));
 						}
 						
 						return tagMessage.toString();
@@ -359,7 +353,22 @@ public class ChooseCompanyActivity extends Activity {
 				} 
 				else 
 				{
-					Toast.makeText(ChooseCompanyActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+					Builder alertForNoData = new Builder(ChooseCompanyActivity.this);
+					alertForNoData.setTitle("Companies");
+					alertForNoData.setMessage("There are currently no companies to show. Please check back later.");
+					alertForNoData.setCancelable(false);
+					alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					
+					alertForNoData.create();
+					alertForNoData.show();
+					
+					Log.e("Companies", "No companies returned from the database");
 				}
 			}
 

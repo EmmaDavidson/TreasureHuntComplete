@@ -3,20 +3,15 @@ package com.application.treasurehunt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import sqlLiteDatabase.Hunt;
 import sqlLiteDatabase.HuntDAO;
-
-import com.application.treasurehunt.RegisterWithHuntActivity.GetHuntDescriptionTask;
-import com.application.treasurehunt.ScanQRCodeActivity.GetHuntParticipantIdTask;
-
 import Utilities.ExpandableListAdapter;
+import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,6 +20,8 @@ import android.os.Handler;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -32,7 +29,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Toast;
@@ -69,12 +65,15 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 	MapManager mMapManager;
 	
 	private ProgressDialog pDialog;
+	private ProgressDialog mapDataDialog;
 	
 	int currentUserId;
 	
 	private HuntDAO huntDataSource;
 	
 	Hunt chosenHunt;
+	
+	InternetUtility internetUtility;
 	
 	String typeOfHunt;
 	
@@ -85,6 +84,8 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 		
 		huntDataSource = new HuntDAO(this);
 		huntDataSource.open();
+		
+		internetUtility = InternetUtility.getInstance(this);
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 		{
@@ -106,7 +107,14 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 		
 		currentUserId = settings.getInt("currentUserId", 0);
 		
-		attemptToReturnUserHunts();
+		if(internetUtility.isInternetConnected())
+		{
+			attemptToReturnUserHunts();
+		}
+		else
+		{
+			Toast.makeText(MyHuntsActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+		}
 		
 	}
 	
@@ -121,7 +129,15 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 	{
 		super.onResume();
 		huntDataSource.updateDatabaseLocally();
-		attemptToReturnUserHunts();
+		
+		if(internetUtility.isInternetConnected())
+		{
+			attemptToReturnUserHunts();
+		}
+		else
+		{
+			Toast.makeText(MyHuntsActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+		}
 	}
 	
 	private void attemptToReturnUserHunts()
@@ -142,6 +158,7 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 				{
 					if(mReturnUserHuntsTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
+						pDialog.cancel();
 						mReturnUserHuntsTask.cancel(true);
 						Toast.makeText(MyHuntsActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 					}
@@ -170,6 +187,7 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 				{
 					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING)
 					{
+						mapDataDialog.cancel();
 						mGetHuntParticipantIdTask.cancel(true);
 						Toast.makeText(MyHuntsActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();	
 					}
@@ -296,55 +314,49 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 			int success;
 			
 			try {
-				
-				
-				
-				//look for hunts that 
-				
-				
-				Log.d("request", "starting");
-				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-				parameters.add(new BasicNameValuePair("userId", Integer.toString(currentUserId)));
-				
-				JSONObject json = new JSONObject();
-				
-				//look for hunts that have start times that are 0 i.e. registered but not started
-				if(typeOfHunt.equals("NotStarted"))
-				{
-					json = jsonParser.makeHttpRequest(returnUserHuntsNotStartedUrl, "POST", parameters);
-				}
-				else if(typeOfHunt.equals("Current"))
-				{
-					json = jsonParser.makeHttpRequest(returnUserHuntsCurrentUrl, "POST", parameters);
-				}
-				else
-				{	//look for hunts where hunt end date is less than current date
-					json = jsonParser.makeHttpRequest(returnUserHuntsCompletedUrl, "POST", parameters);
-				}
-				
-				Log.d("Get hunts attempt", json.toString());
-				
-				success = json.getInt(tagSuccess);
-				if(success == 1)
-				{
-					Log.d("Returning of hunts successful!", json.toString());
-					tagResult = json.getJSONArray("results");
-					tagIdResult = json.getJSONArray("huntIds");
+					Log.d("request", "starting");
+					List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+					parameters.add(new BasicNameValuePair("userId", Integer.toString(currentUserId)));
 					
-					//-http://stackoverflow.com/questions/8411154/null-pointer-exception-while-inserting-json-array-into-sqlite-database
-					for(int i=0; i < tagResult.length(); i++)
+					JSONObject json = new JSONObject();
+					
+					//look for hunts that have start times that are 0 i.e. registered but not started
+					if(typeOfHunt.equals("NotStarted"))
 					{
-						huntDataSource.addUserHunt(tagIdResult.getJSONObject(i).getInt("HuntId"), tagResult.getJSONArray(i).getJSONObject(0).getString("HuntName"));
+						json = jsonParser.makeHttpRequest(returnUserHuntsNotStartedUrl, "POST", parameters);
+					}
+					else if(typeOfHunt.equals("Current"))
+					{
+						json = jsonParser.makeHttpRequest(returnUserHuntsCurrentUrl, "POST", parameters);
+					}
+					else
+					{	//look for hunts where hunt end date is less than current date
+						json = jsonParser.makeHttpRequest(returnUserHuntsCompletedUrl, "POST", parameters);
 					}
 					
-					return tagMessage.toString();
-				}
-				else
-				{
-					Log.d("Returning of hunts failed! ", json.getString(tagMessage));
+					Log.d("Get hunts attempt", json.toString());
 					
-					return json.getString(tagMessage);
-				}
+					success = json.getInt(tagSuccess);
+					if(success == 1)
+					{
+						Log.d("Returning of hunts successful!", json.toString());
+						tagResult = json.getJSONArray("results");
+						tagIdResult = json.getJSONArray("huntIds");
+						
+						//-http://stackoverflow.com/questions/8411154/null-pointer-exception-while-inserting-json-array-into-sqlite-database
+						for(int i=0; i < tagResult.length(); i++)
+						{
+							huntDataSource.addUserHunt(tagIdResult.getJSONObject(i).getInt("HuntId"), tagResult.getJSONArray(i).getJSONObject(0).getString("HuntName"));
+						}
+						
+						return tagMessage.toString();
+					}
+					else
+					{
+						Log.d("Returning of hunts failed! ", json.getString(tagMessage));
+						
+						return json.getString(tagMessage);
+					}
 				
 			} catch (JSONException e) {
 				Log.d("Leaderboard", e.toString());
@@ -367,7 +379,8 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 		        listDataHeader = new ArrayList<String>();
 		        listDataChild = new HashMap<String, List<String>>();
 				
-				Toast.makeText(MyHuntsActivity.this, fileUrl, Toast.LENGTH_LONG).show();
+		        Log.i("ReturnedHunts","fileUrl");
+		        
 				List<Hunt> listOfHunts = huntDataSource.getAllUserHunts();
 				
 				//For every listOfHunts, add the header with its name
@@ -382,12 +395,26 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 					listDataChild.put(listDataHeader.get(i), huntOptions);		
 				}
 				
-		        
 				updateUI(listDataHeader, listDataChild);
 			} 
 			else 
 			{
-				Toast.makeText(MyHuntsActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
+				Builder alertForNoData = new Builder(MyHuntsActivity.this);
+				alertForNoData.setTitle("Treasure Hunts");
+				alertForNoData.setMessage("There are currently no treasure hunts to show. Please check back later.");
+				alertForNoData.setCancelable(false);
+				alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForNoData.create();
+				alertForNoData.show();
+				
+				Log.e("MyHunts", "No treasure hunts returned from the database");
 			}
 		}
 
@@ -407,6 +434,17 @@ public class MyHuntsActivity extends Activity implements OnChildClickListener{
 public class GetHuntParticipantIdTask extends AsyncTask<String, String, String> {
 		
 		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+			mapDataDialog = new ProgressDialog(MyHuntsActivity.this);
+			mapDataDialog.setMessage("Attempting to return data for map");
+			mapDataDialog.setIndeterminate(false);
+			mapDataDialog.setCancelable(true);
+			mapDataDialog.show();
+		}
+	
+		@Override
 		protected String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
@@ -421,7 +459,7 @@ public class GetHuntParticipantIdTask extends AsyncTask<String, String, String> 
 				try{
 					Log.d("request", "starting");
 					JSONObject jsonGetHuntParticipantId = jsonParser.makeHttpRequest(getHuntParticipantIdUrl, "POST", parameters);
-					Log.d("Get User Id Attempt", jsonGetHuntParticipantId.toString());
+					Log.i("MyHunts", "Get User Id Attempt: " + jsonGetHuntParticipantId.toString());
 					success = jsonGetHuntParticipantId.getInt(tagSuccess);
 					
 					if(success == 1)
@@ -429,13 +467,13 @@ public class GetHuntParticipantIdTask extends AsyncTask<String, String, String> 
 						huntParticipantIdResult = jsonGetHuntParticipantId.getJSONObject("result");
 						huntParticipantId = huntParticipantIdResult.getInt("HuntParticipantId");
 						huntParticipantIdReturned = true;
-						Log.d("leaderboard", "hunt participant id is: " + huntParticipantId);
+						Log.i("MyHunts", "hunt participant id is: " + huntParticipantId);
 						return jsonGetHuntParticipantId.getString(tagMessage);
 						
 					}
 					else
 					{
-						Log.d("Getting hunt participant Id failed!", jsonGetHuntParticipantId.getString(tagMessage));
+						Log.d("MyHunts", jsonGetHuntParticipantId.getString(tagMessage));
 						return jsonGetHuntParticipantId.getString(tagMessage);
 					}
 				
@@ -449,26 +487,38 @@ public class GetHuntParticipantIdTask extends AsyncTask<String, String, String> 
 		@Override
 		protected void onPostExecute(final String fileUrl) {
 			mGetHuntParticipantIdTask = null;
+			mapDataDialog.cancel();
 			
 			if(huntParticipantIdReturned)
 			{
-				//listOfLeaderboardResults = mMapDAO.getAllMapDataForParticularParticipantId(currentParticipantId, currentHuntId);
 				editor.putInt("userParticipantId", huntParticipantId);
 				editor.commit(); 
-				
-				//Intent mapActivity = new Intent(MyHuntsActivity.this, MapActivity.class);
-				//mapActivity.putExtra("userParticipantIdForMap", huntParticipantId);
-				//startActivity(mapActivity);
-				
+		
 				Intent googleMapActivity = new Intent(MyHuntsActivity.this, GoogleMapActivity.class);
 				googleMapActivity.putExtra("userParticipantIdForMap", huntParticipantId);
 				startActivity(googleMapActivity);
+				
+				Log.i("MyHunts", fileUrl);
 			}
-			if (fileUrl != null) {
-				Toast.makeText(MyHuntsActivity.this, fileUrl, Toast.LENGTH_LONG).show();	
-			} else {
-				Toast.makeText(MyHuntsActivity.this, "Nothing returned from the database", Toast.LENGTH_LONG).show();
-			}		
+			else
+			{
+				Builder alertForNoIdRetrieved = new Builder(MyHuntsActivity.this);
+				alertForNoIdRetrieved.setTitle("Failure");
+				alertForNoIdRetrieved.setMessage("Could not retrieve data for map. Please check back later.");
+				alertForNoIdRetrieved.setCancelable(false);
+				alertForNoIdRetrieved.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForNoIdRetrieved.create();
+				alertForNoIdRetrieved.show();
+				
+				Log.d("MyHunts", "No Hunt Participant Id has been returned from the database for user " + currentUserId + " to use with map.");	
+			}			
 		}
 
 		@Override

@@ -3,7 +3,7 @@
 	require("config.inc.php");
 
 	try {		
-		$query = $db->prepare("SELECT * FROM user WHERE Company != ''");
+		$query = $db->prepare("SELECT * FROM companydetails");
 		$result = $query->execute();
 	    }
 

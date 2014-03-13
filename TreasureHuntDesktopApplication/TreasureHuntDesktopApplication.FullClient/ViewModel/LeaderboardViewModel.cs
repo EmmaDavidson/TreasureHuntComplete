@@ -7,8 +7,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using TreasureHuntDesktopApplication.FullClient.Messages;
+using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 using TreasureHuntDesktopApplication.FullClient.Utilities;
 
@@ -98,24 +100,25 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public void RefreshLeaderboard()
         {
-            if (this.currentTreasureHunt != null)
-            {
-                var results = new ObservableCollection<Participant>();
-
-                List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipants(CurrentTreasureHunt).ToList();
-
-                using (var participants = huntParticipants.GetEnumerator())
+                if (this.currentTreasureHunt != null)
                 {
-                    while (participants.MoveNext())
+                    var results = new ObservableCollection<Participant>();
+
+                    List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipants(CurrentTreasureHunt).ToList();
+
+                    using (var participants = huntParticipants.GetEnumerator())
                     {
-                        user currentUser = this.serviceClient.GetParticipantName(participants.Current.UserId);
-                        Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime );
-                        results.Add(newParticipant);
+                        while (participants.MoveNext())
+                        {
+                            user currentUser = this.serviceClient.GetParticipantName(participants.Current.UserId);
+                            Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
+                            results.Add(newParticipant);
+                        }
+                        //Learnt this from previous similar scenario in agile module
+                        LeaderboardResults = results;
                     }
-                    //Learnt this from previous similar scenario in agile module
-                    LeaderboardResults = results;
                 }
-            }
+            
         }
         #endregion
     }

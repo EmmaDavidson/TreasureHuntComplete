@@ -1,17 +1,13 @@
 package Utilities;
 
 import java.util.List;
-
 import sqlLiteDatabase.Hunt;
-import sqlLiteDatabase.Leaderboard;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
-import com.application.treasurehunt.LeaderboardActivity;
 import com.application.treasurehunt.R;
 
 //The big nerd ranch guide

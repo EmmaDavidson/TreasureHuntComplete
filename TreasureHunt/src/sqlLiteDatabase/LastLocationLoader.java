@@ -1,7 +1,6 @@
 package sqlLiteDatabase;
 
 import com.application.treasurehunt.MapManager;
-
 import android.content.Context;
 import android.location.Location;
 

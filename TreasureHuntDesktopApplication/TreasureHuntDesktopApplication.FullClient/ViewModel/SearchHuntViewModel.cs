@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using TreasureHuntDesktopApplication.FullClient.Messages;
+using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
@@ -129,9 +131,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         #region Commands
         private void ExecuteSearchHuntCommand()
         {
-            //Takes the user to the selected hunt page.
-            Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = this.currentTreasureHunt });
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+            //(-http://etaktix.blogspot.co.uk/2013/01/check-if-internet-connection-is.html)
+            if (InternetConnectionChecker.IsInternetConnected())
+            {
+                //Takes the user to the selected hunt page.
+                Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = this.currentTreasureHunt });
+                Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+            }
         }
 
         private void ExecuteCreateHuntCommand()
