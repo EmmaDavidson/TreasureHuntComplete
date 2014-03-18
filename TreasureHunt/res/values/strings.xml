@@ -30,10 +30,24 @@
     
     <!-- Register Activity Strings -->
     <string name="security_answer">Security Answer</string>
+    <string name="error_answer_invalid_length">Length must be between 3 and 30 characters</string>
+    <string name="error_password_invalid_length">Length must be between 6 and 10 characters</string>
+    <string name="error_name_invalid_length">Length must be between 3 and 30 characters</string>
+    <string name="error_email_invalid_length">Length must be between 10 and 30 characters</string>
     
     <!--  Scan QR Code Activity Strings -->
     <string name="result">Result</string>
     
+    <!--  Temporary Data Strings -->
+    <string name="temp">Temp Data</string>
+    
+    <!-- Password Dialog Strings -->
+    <string name="enter_password">Enter Password:</string>
+    <string name="save_password">Save Password</string>
+    
+    <!-- Email Address Dialog Strings -->
+    <string name="enter_email_address">Enter Email Address</string>
+     
     <string name="app_name">Treasure Hunt</string>
     <string name="register_header">Register</string>
     <string name="login_header">Register</string>

@@ -76,22 +76,9 @@
             android:label="@string/title_activity_my_hunts" >
         </activity>
         <activity
-            android:name="com.application.treasurehunt.StatsActivity"
-            android:label="@string/title_activity_stats" >
-        </activity>
-        <activity
             android:name="com.application.treasurehunt.LeaderboardActivity"
             android:label="@string/title_activity_leaderboard" >
         </activity>
-        <activity
-            android:name="com.application.treasurehunt.MapActivity"
-            android:label="@string/title_activity_map" >
-        </activity>
-        <activity
-            android:name="com.application.treasurehunt.MapListActivity"
-            android:label="@string/title_activity_map_list" >
-        </activity>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

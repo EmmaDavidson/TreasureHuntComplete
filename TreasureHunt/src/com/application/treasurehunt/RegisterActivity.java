@@ -1,14 +1,5 @@
 package com.application.treasurehunt;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import Utilities.InternetUtility;
-import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,31 +18,37 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import Utilities.InternetUtility;
+import Utilities.JSONParser;
+import Utilities.PHPHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/*The purpose of this Activity is to allow a participant to register with the application.
+ * [See Dissertation Section 2.4.2.1]*/
+
 public class RegisterActivity extends Activity {
 
-	private static final String myRegisterUrl =  "http://lowryhosting.com/emmad/register.php";
-	private static final String getUserIdUrl =  "http://lowryhosting.com/emmad/returnCurrentUserId.php";
-	private static final String setUserRoleUrl =  "http://lowryhosting.com/emmad/setUserRole.php";
-
-	private static final String tagSuccess = "success";
-	private static final String tagMessage = "message";
+	/*
+	 * Global variables used within RegisterActivity.
+	 */
+	private static final String REGISTER_URL =  "http://lowryhosting.com/emmad/register.php";
 	
-	InternetUtility internetUtility;
+	private ProgressDialog mRegisterDialog;
+	
+	private InternetUtility mInternetUtility;
 	
 	public JSONParser jsonParser = new JSONParser();
-	
-	private UserRegisterTask mAuthTask = null;
-	private SetUserRoleTask mUserRoleTask = null;
-	
-	private ProgressDialog pDialog; 
-	
-	private static JSONObject userIdResult;
+	private UserRegisterTask mRegisterTask = null;
 
-	String currentUser;
-	boolean userSucessfullyRegistered = false;
-	boolean userIdSucessfullyReturned = false;
-	boolean userRoleSuccessful = false;
-	int userId = 0;
+	private boolean mUserSucessfullyRegistered = false;
 	
 	private String mEmail;
 	private String mPassword;
@@ -63,61 +60,83 @@ public class RegisterActivity extends Activity {
 	private EditText mNameView;
 	private EditText mAnswerView;
 	
-	Spinner securityQuestionSpinner;
+	private Spinner mSecurityQuestionSpinner;
 	
+	private String mConnectionTimeout = "Connection timeout. Please try again.";
+	
+	/*
+	 * Method called when the Activity is created (as part of the android life cycle) which sets up this Activity's variables.
+	 * It also handles what happens when a participant selects the 'Save' button on screen.
+	 * */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		mEmailView = (EditText) findViewById(R.id.register_email_address);
-		mPasswordView = (EditText) findViewById(R.id.register_password);
-		mNameView = (EditText) findViewById(R.id.register_name);
-		mAnswerView = (EditText) findViewById(R.id.security_question_answer);
 		
-		internetUtility = InternetUtility.getInstance(this);
-							
-		findViewById(R.id.register_save_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						if(internetUtility.isInternetConnected())
-						{
-							attemptRegister();
-						}
-						else
-						{
-							Toast.makeText(RegisterActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
-						}
-					}
-				});
-		
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		{
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setTitle("Treasure Hunt");
 			actionBar.setSubtitle("Register");
 		}
 		
-		//http://developer.android.com/guide/topics/ui/controls/spinner.html
-		securityQuestionSpinner = (Spinner) findViewById(R.id.security_question_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.security_choices_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		securityQuestionSpinner.setAdapter(adapter);
+		mEmailView = (EditText) findViewById(R.id.register_email_address);
+		mPasswordView = (EditText) findViewById(R.id.register_password);
+		mNameView = (EditText) findViewById(R.id.register_name);
+		mAnswerView = (EditText) findViewById(R.id.security_question_answer);
 		
+		mInternetUtility = InternetUtility.getInstance(this);
+		
+		//http://developer.android.com/guide/topics/ui/controls/spinner.html
+		mSecurityQuestionSpinner = (Spinner) findViewById(R.id.security_question_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.security_choices_array,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSecurityQuestionSpinner.setAdapter(adapter);
+							
+		findViewById(R.id.register_save_button).setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						if(mInternetUtility.isInternetConnected()) {
+							attemptRegister();
+						}
+						else {
+							//-http://stackoverflow.com/questions/4238921/android-detect-whether-there-is-an-internet-connection-available
+							Toast.makeText(RegisterActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
+						}
+					}
+				});
+	}
+	
+	/*
+	 * Method saves the current details that have been entered on screen when the Activity is paused.
+	 * */
+	//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {	
+		savedInstanceState.putString("REGISTER_EMAIL_ADDRESS", mEmailView.getText().toString());
+		savedInstanceState.putString("REGISTER_NAME", mNameView.getText().toString());
+		savedInstanceState.putString("REGISTER_PASSWORD", mPasswordView.getText().toString());	
+		
+		super.onSaveInstanceState(savedInstanceState);
 	}
 
-	/*@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.register, menu);
-		return true;
-	} */
+	/*
+	 * Method restores the current details that were entered on screen when the Activity resumes.
+	 * */
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		mEmailView.setText(savedInstanceState.getString("REGISTER_EMAIL_ADDRESS"));
+		mNameView.setText(savedInstanceState.getString("REGISTER_NAME"));
+		mPasswordView.setText(savedInstanceState.getString("REGISTER_PASSWORD"));	
+	}
 	
-	//PUT IN A CHECK THAT IT NEEDS TO CHECK IF THERES AN INTERNET CONNECTION
-	//-http://stackoverflow.com/questions/4238921/android-detect-whether-there-is-an-internet-connection-available
-	
+	/* Method to call the asynchronous class 'UserRegisterTask'. If call to the database takes too long then a timeout should occur.*/
 	private void attemptRegister() {
-		if (mAuthTask != null) {
+		
+		if (mRegisterTask != null) {
 			return;
 		} 		
 		
@@ -130,171 +149,136 @@ public class RegisterActivity extends Activity {
 		mName = mNameView.getText().toString();
 		mAnswer = mAnswerView.getText().toString();
 		
-		if((isValidEmailAddress() && isValidPassword() && isValidName() && isValidAnswer()))
-		{		
-			mAuthTask = new UserRegisterTask(); // Do ASYNC way
-			mAuthTask.execute((String) null);
+		if((isValidEmailAddress() && isValidPassword() && isValidName() && isValidAnswer())) {		
+			mRegisterTask = new UserRegisterTask(); // Do ASYNC way
+			mRegisterTask.execute((String) null);
 			
 			//http://stackoverflow.com/questions/7882739/android-setting-a-timeout-for-an-asynctask?rq=1
 			Handler handler = new Handler();
-			handler.postDelayed(new Runnable()
-			{
+			handler.postDelayed(new Runnable() {
 				@Override
-				public void run()
-				{
-					if(mAuthTask!= null)
-					{
-						if(mAuthTask.getStatus() == AsyncTask.Status.RUNNING)
-						{
-							mAuthTask.cancel(true);
-							pDialog.cancel();
-							Toast.makeText(RegisterActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+				public void run() {
+					if(mRegisterTask!= null) {
+						if(mRegisterTask.getStatus() == AsyncTask.Status.RUNNING) {
+							mRegisterTask.cancel(true);
+							mRegisterDialog.cancel();
+							Toast.makeText(RegisterActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
 						}
 					}
 				}
 			}
 			, 10000);
 		}
-		
 	}
 	
-	private boolean isValidEmailAddress()
-	{	
+	/* Method to check if the email address entered on screen conforms with the validation rules for this field.*/
+	private boolean isValidEmailAddress() {	
+		
 		if (TextUtils.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_email_null));
 			return false;
 			
 		}
-		else if(mEmail.length() < 10 || mEmail.length() >= 30)
-		{
-			mEmailView.setError(getString(R.string.error_email_too_short));	
+		else if(mEmail.length() < 10 || mEmail.length() > 30) {
+			mEmailView.setError(getString(R.string.error_email_invalid_length));	
 			return false;
 		}
-		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches())
-		{
+		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches()) {
 			mEmailView.setError(getString(R.string.error_email_incorrect_format));	
 			return false;
 		}
 		
-		return true;
-		
+		return true;	
 	}
 	
-	private boolean isValidAnswer()
-	{
+	/* Method to check if the security question answer entered on screen conforms with the validation rules for this field.*/
+	private boolean isValidAnswer() {
+		
 		if (TextUtils.isEmpty(mAnswer)) {
 			mAnswerView.setError(getString(R.string.error_answer_null));
 			return false;
 		}
-		
-		//MUST BE LONGER THAN 3 AND SHORTER THAN 30
+		else if(mAnswer.length() < 3 || mAnswer.length() > 30) {
+			mAnswerView.setError(getString(R.string.error_answer_invalid_length));	
+			return false;
+		}
 		return true;
 	}
 	
-	private boolean isValidPassword()
-	{
+	/* Method to check if the password entered on screen conforms with the validation rules for this field.*/
+	private boolean isValidPassword() {
+		
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_password_null));
 			return false;
 			
 		}
-		else if(mPassword.length() < 6 || mPassword.length() >= 10)
-		{
-			mPasswordView.setError(getString(R.string.error_password_too_short));	
+		else if(mPassword.length() < 6 || mPassword.length() > 10) {
+			mPasswordView.setError(getString(R.string.error_password_invalid_length));	
 			return false;
 		}
 		
 		return true;
-		
 	}
 	
-	private boolean isValidName()
-	{
+	/* Method to check if the name entered on screen conforms with the validation rules for this field.*/
+	private boolean isValidName() {
+		
 		if (TextUtils.isEmpty(mName)) {
 			mNameView.setError(getString(R.string.error_name_null));
 			return false;
 			
 		}
-		else if(mName.length() < 3 || mName.length() > 30)
-		{
-			mNameView.setError(getString(R.string.error_name_too_short));	
+		else if(mName.length() < 3 || mName.length() > 30) {
+			mNameView.setError(getString(R.string.error_name_invalid_length));	
 			return false;
 		}
-		
-		//THIS DOESNT CHECK FORMAT HERE
-		
-		return true;
-		
+		return true;	
 	}
 	
-	private void attemptUserRoleRegister()
-	{
-		if (mUserRoleTask != null) {
-			return;
-		} 	
-		mUserRoleTask = new SetUserRoleTask();
-		mUserRoleTask.execute((String) null);
-
-		Handler handlerForUserRoleTask = new Handler();
-		handlerForUserRoleTask.postDelayed(new Runnable()
-		{
+	/* Method to show dialog on screen if participant registration fails. 
+	 * Associated with UserRegisterTask OnPostExecute() method.*/
+	public void showFailedRegistrationMessage() {
+		
+		Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
+		alertForFailedRegistration.setTitle("Register");
+		alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
+		alertForFailedRegistration.setCancelable(false);
+		alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			
 			@Override
-			public void run()
-			{
-				if(mUserRoleTask!= null)
-				{
-					if(mUserRoleTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						pDialog.cancel();
-						mUserRoleTask.cancel(true);
-						Toast.makeText(RegisterActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-					}
-				}
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
 			}
-		}
-		, 10000);	
+		});
 		
+		alertForFailedRegistration.create();
+		alertForFailedRegistration.show();
+		
+		Log.w("Register", "Failure to register user.");
 	}
 	
-		//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
-		@Override
-		public void onSaveInstanceState(Bundle savedInstanceState)
-		{	
-			savedInstanceState.putString("REGISTER_EMAIL_ADDRESS", mEmailView.getText().toString());
-			savedInstanceState.putString("REGISTER_NAME", mNameView.getText().toString());
-			savedInstanceState.putString("REGISTER_PASSWORD", mPasswordView.getText().toString());	
-			
-			super.onSaveInstanceState(savedInstanceState);
-		}
 
-		@Override
-		public void onRestoreInstanceState(Bundle savedInstanceState)
-		{
-			super.onRestoreInstanceState(savedInstanceState);
-			
-			mEmailView.setText(savedInstanceState.getString("REGISTER_EMAIL_ADDRESS"));
-			mNameView.setText(savedInstanceState.getString("REGISTER_NAME"));
-			mPasswordView.setText(savedInstanceState.getString("REGISTER_PASSWORD"));	
-		}
-	
-
-	
-public class UserRegisterTask extends AsyncTask<String, String, String> {
+	/* This internal class attempts to register a participant with the application using the details submitted on screen.*/
+	public class UserRegisterTask extends AsyncTask<String, String, String> {
 		
+		/* A dialog will appear on screen to show the participant a save is being made.*/
 		@Override
-		protected void onPreExecute()
-		{
+		protected void onPreExecute() {
+			
 			super.onPreExecute();
-			pDialog = new ProgressDialog(RegisterActivity.this);
-            pDialog.setMessage("Attempting to register...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
+			mRegisterDialog = new ProgressDialog(RegisterActivity.this);
+            mRegisterDialog.setMessage("Attempting to register...");
+			mRegisterDialog.setIndeterminate(false);
+			mRegisterDialog.setCancelable(false);
+			mRegisterDialog.show();
 		}
 		
+		/* Method calling the database to save the details submitted on screen. It will also save the user role of this 
+		 * participant as a role of the same name.*/
 		@Override
 		protected String doInBackground(String... args) {
-//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 			int success;
 			
@@ -304,156 +288,73 @@ public class UserRegisterTask extends AsyncTask<String, String, String> {
 				parameters.add(new BasicNameValuePair("email", mEmail));
 				parameters.add(new BasicNameValuePair("password", mPassword));
 				parameters.add(new BasicNameValuePair("name", mName));
-				parameters.add(new BasicNameValuePair("securityQuestionId", Long.toString(securityQuestionSpinner.getSelectedItemId())));
+				parameters.add(new BasicNameValuePair("securityQuestionId", Long.toString(mSecurityQuestionSpinner.getSelectedItemId())));
 				parameters.add(new BasicNameValuePair("answer", mAnswer));
 				
-				Log.d("request", "starting");
-				JSONObject json = jsonParser.makeHttpRequest(myRegisterUrl, "POST", parameters);
-				Log.d("Login attempt", json.toString());
+				Log.i("Register", "starting");
+				JSONObject jsonResult = jsonParser.makeHttpRequest(REGISTER_URL, "POST", parameters);
+				Log.i("Register", jsonResult.toString());
 				
-				success = json.getInt(tagSuccess);
-				if(success == 1)
-				{
-					Log.d("Login Successful!", json.toString());
-					userSucessfullyRegistered = true;
-					currentUser = mEmail;
-					userIdResult = json.getJSONObject("result");
-					userIdSucessfullyReturned = true;
-					userId = userIdResult.getInt("UserId");
-					return json.getString(tagMessage);
+				success = jsonResult.getInt(PHPHelper.SUCCESS);
+				if(success == 1) {
+					Log.i("Register", jsonResult.toString());
+					mUserSucessfullyRegistered = true;
+					return jsonResult.getString(PHPHelper.MESSAGE);
 				}
-				else
-				{
-					Log.d("Login failed!", json.getString(tagMessage));
-					return json.getString(tagMessage);
+				else {
+					Log.w("Register", jsonResult.getString(PHPHelper.MESSAGE));
+					return jsonResult.getString(PHPHelper.MESSAGE);
 				}
 				
 			} catch (JSONException e) {
-			
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 			return null;
 		}
 
+		/* Method called after the database call has been made. If the participant has been successfully registered,
+		 * then they are notified and taken to the login screen; else, the participant is notified of an error on screen.*/
 		@Override
 		protected void onPostExecute(final String fileUrl) {
-			mAuthTask = null;
 			
-			if(userSucessfullyRegistered)
-			{
-				attemptUserRoleRegister();
+			mRegisterTask = null;
+			
+			if(mUserSucessfullyRegistered) {
+				
 				Log.i("Register", fileUrl);
-			}
-			else
-			{
-				Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
-				alertForFailedRegistration.setTitle("Register");
-				alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
-				alertForFailedRegistration.setCancelable(false);
-				alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+					
+				Builder mAlertForFailedStartTimeSave = new Builder(RegisterActivity.this);
+				mAlertForFailedStartTimeSave.setTitle("Success");
+				mAlertForFailedStartTimeSave.setMessage("Registration was successful!");
+				mAlertForFailedStartTimeSave.setCancelable(false);
+				mAlertForFailedStartTimeSave.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
+						Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+						startActivity(loginActivityIntent);
 					}
 				});
 				
-				alertForFailedRegistration.create();
-				alertForFailedRegistration.show();
-				
-				Log.e("Register", "Failure to register user.");
-			
+				mAlertForFailedStartTimeSave.create();
+				mAlertForFailedStartTimeSave.show();		
 			}
-			
-
+			else {
+				showFailedRegistrationMessage();
+			}
 		}
 
+		/* Method to cancel the current task.*/
 		@Override
 		protected void onCancelled() {
-			mAuthTask = null;
-			pDialog.cancel();
+			mRegisterTask = null;
+			mRegisterDialog.cancel();
 		}
-	}
-
-public class SetUserRoleTask extends AsyncTask<String, String, String> {
-	
-	@Override
-	protected String doInBackground(String... arg0) {
-		
-		int success;
-		//GETTING THE USER ID
-		List<NameValuePair> parametersForUserRoleId = new ArrayList<NameValuePair>();
-		//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-		parametersForUserRoleId.add(new BasicNameValuePair("roleid", Integer.toString(2)));
-		parametersForUserRoleId.add(new BasicNameValuePair("userid", Integer.toString(userId)));
-
-		try
-		{
-			Log.d("request", "starting");
-			JSONObject jsonSetUserRoleId = jsonParser.makeHttpRequest(setUserRoleUrl, "POST", parametersForUserRoleId);
-			Log.d("Set userrole Attempt", jsonSetUserRoleId.toString());
-			success = jsonSetUserRoleId.getInt(tagSuccess);
-			
-			if(success == 1)
-			{
-				Log.d("Setting user role was successful!", jsonSetUserRoleId.getString(tagMessage));
-				userRoleSuccessful = true;
-				return jsonSetUserRoleId.getString(tagMessage);
-			}
-			else
-			{
-				Log.d("Setting user role failed!", jsonSetUserRoleId.getString(tagMessage));
-				return jsonSetUserRoleId.getString(tagMessage);
-			}
-		}
-		catch (JSONException e) 
-		{
-			
-		}
-		
-		
-		return null;
-	}
-	
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mUserRoleTask = null;
-		pDialog.cancel();
-		
-		if(userRoleSuccessful)
-		{
-			Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);	
-			Log.i("Register", fileUrl);
-			startActivity(loginActivityIntent); //finish() taken out!
-		}
-		else
-		{
-			Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
-			alertForFailedRegistration.setTitle("Register");
-			alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
-			alertForFailedRegistration.setCancelable(false);
-			alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			});
-			
-			alertForFailedRegistration.create();
-			alertForFailedRegistration.show();
-			
-			Log.e("Register", "Failure to register user as couldnt set up user role.");
-		}
-	}
-	
-	@Override
-	protected void onCancelled() {
-		mUserRoleTask = null;
-		pDialog.cancel();
-	}
-
-	
-
 	}
 }

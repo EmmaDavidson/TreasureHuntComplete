@@ -1,17 +1,21 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+
 package com.application.treasurehunt;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-import sqlLiteDatabase.MapData;
-import Utilities.InternetUtility;
-import Utilities.JSONParser;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,217 +36,171 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RegisterWithHuntActivity extends Activity{
-	
-	//Home
-	private static final String getHuntIdUrl =  "http://lowryhosting.com/emmad/returnCurrentHuntId.php";
-	private static final String registerUserWithHuntUrl =  "http://lowryhosting.com/emmad/huntParticipantSave.php";
-	private static final String getHuntDescriptionUrl = "http://lowryhosting.com/emmad/getHuntDescription.php";
-	private static final String checkIfUserRegisteredUrl = "http://lowryhosting.com/emmad/checkUserHuntRegistration.php";
-	private static final String saveStartTimeUrl = "http://lowryhosting.com/emmad/saveHuntStartTime.php";
-	private static final String checkIfHuntStartedUrl = "http://lowryhosting.com/emmad/checkIfHuntStarted.php";
-	
-	private static final String tagSuccess = "success";
-	private static final String tagMessage = "message";
-	
-	InternetUtility internetUtility;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
-	Intent scanQRCodeActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import sqlLiteDatabase.MapData;
+
+import Mapping.MapManager;
+
+import Utilities.InternetUtility;
+import Utilities.JSONParser;
+import Utilities.PHPHelper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/* The purpose of this Activity is to allow a participant to do one of the following things:
+ * 1. Register with a given treasure hunt;
+ * 2. Play a given treasure hunt.
+ * [See Dissertation Section 2.4.2.5]*/
+public class RegisterWithHuntActivity extends Activity {
 	
-	GetParticipantIdTask mGetHuntParticipantIdTask;
-	private static final String getHuntParticipantIdUrl = "http://lowryhosting.com/emmad/getHuntParticipantId.php";
-	boolean huntParticipantIdReturned;
-	private JSONParser jsonParser = new JSONParser();
+	/*
+	 * Global variables used within RegisterWithHuntActivity.
+	 */
+	private static final String GET_HUNT_ID_URL =  "http://lowryhosting.com/emmad/returnCurrentHuntId.php";
+	private static final String REGISTER_WITH_HUNT_URL =  "http://lowryhosting.com/emmad/huntParticipantSave.php";
+	private static final String CHECK_REGISTRATION_URL = "http://lowryhosting.com/emmad/checkUserHuntRegistration.php";
+	private static final String SAVE_START_TIME_URL = "http://lowryhosting.com/emmad/saveHuntStartTime.php";
+	private static final String CHECK_IF_HUNT_STARTED_URL = "http://lowryhosting.com/emmad/checkIfHuntStarted.php";
+	private static final String GET_HUNT_PARTICIPANT_ID_URL = "http://lowryhosting.com/emmad/getHuntParticipantId.php";
 	
-	boolean startTimeSaved;
+	private TextView mhuntDescriptionView;
+	private TextView mHuntNameLabelView;
 	
-	private static JSONObject huntParticipantIdResult;
-	private static JSONObject huntIdResult;
-	private static JSONObject currentHuntDescriptionResult;
-	private static JSONObject saveStartTimeResult;
-	private static JSONObject startTimeResult;
-	private static JSONObject saveHuntParticipantResult;
-	private static JSONObject checkIfHuntOverResult;
+	private Button mBeginHuntButton;
+	private Button mRegisterButton;
+	
+	private ProgressDialog mRegisterDialog;
+	private ProgressDialog mCheckStatusDialog;
+	private ProgressDialog mSavingStartTimeDialog;
+	private ProgressDialog mPreparationDialog;
+	private ProgressBar mDescriptionProgressBar;
+
+	private Intent mScanQRCodeIntent;
+	
+	public JSONParser jsonParser = new JSONParser();
+	
+	private static JSONObject sHuntParticipantIdResult;
+	private static JSONObject sHuntIdResult;
+	private static JSONObject sStartTimeResult;
 	
 	private SaveStartTimeTask mSaveStartTimeTask = null;
-	private UserRegisterWithHuntTask mAuthTask = null;
-	private GetHuntDescriptionTask mHuntDescriptionTask = null;
+	private UserRegisterWithHuntTask mRegisterWithHuntTask = null;
 	private CheckIfUserRegisteredTask mUserRegisteredTask = null;
 	private CheckIfHuntStartedTask mHuntStartedTask = null;
+	private GetParticipantIdTask mGetHuntParticipantIdTask;
 	
-	private ProgressDialog pDialog;
-	
-	ProgressBar descriptionProgressBar;
-	
+	private InternetUtility mInternetUtility;
 	private MapData mMap;
 	private MapManager mMapManager;
 	
-	int userId;
-	int currentParticipantId;
-	GetHuntIdTask mHuntIdTask;
+	private int mUserId;
+	private int mHuntParticipantId;
 	
-	String currentHunt;
-	String currentHuntDescription;
+	private String mCurrentHunt;
+	private String mCurrentHuntDescription;
+	private String mEndDate;
 	
-	boolean currentHuntIdReturned = false;
-	boolean registrationSuccessful = false;
-	boolean huntDescriptionreturned = false;
-	boolean userAlreadyRegistered = false;
-	boolean huntAlreadyStarted = false;
-	boolean huntAlreadyFinished = false;
+	private boolean mHuntParticipantIdReturned = false;
+	private boolean mCurrentHuntIdReturned = false;
+	private boolean mRegistrationSuccessful = false;
+	private boolean mHuntDescriptionreturned = false;
+	private boolean mUserAlreadyRegistered = false;
+	private boolean mHuntAlreadyStarted = false;
+	private boolean mHuntAlreadyFinished = false;
+	private boolean startTimeSaved = false;
 	
-	long startTime;
+	private long mStartTime;
 	
-	TextView mhuntDescriptionView;
-	TextView mHuntNameLabelView;
+	private SharedPreferences.Editor mEditor;
+	private SharedPreferences mSettings;
 	
-	Button mBeginHuntButton;
-	Button mRegisterButton;
+	private int mHuntId;
 	
-	SharedPreferences.Editor editor;
-	SharedPreferences settings;
-	
-	int huntId;
-	int currentUserId;
-	
-	Builder alertForHuntOver;
+	private Builder mAlertForHuntOver;
 
+	/*
+	 * Method called when the Activity is created (as part of the Android Life Cycle) which sets up this Activity's variables.
+	 * It also decides what to do when on screen buttons are pressed. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register_with_hunt);
 		
-		settings = getSharedPreferences("UserPreferencesFile", 0);
-		editor = settings.edit();
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setTitle("Treasure Hunt");
+			actionBar.setSubtitle("Register with hunt");
+		}
 		
-		internetUtility = InternetUtility.getInstance(this);
-
-		
-		//mPasswordView = (EditText) findViewById(R.id.register_hunt_password);
 		mhuntDescriptionView = (TextView) findViewById(R.id.hunt_description_box);
 		mHuntNameLabelView = (TextView) findViewById(R.id.hunt_name_label);
 		
 		mBeginHuntButton = (Button) findViewById(R.id.start_treasure_hunt_button);
 		mBeginHuntButton.setEnabled(false);
-		
 		mRegisterButton = (Button) findViewById(R.id.register_hunt_button);
 		mRegisterButton.setEnabled(false);
+
+		mDescriptionProgressBar = (ProgressBar) findViewById(R.id.hunt_description_progress_bar);
+		mDescriptionProgressBar.setIndeterminate(true);
+		mDescriptionProgressBar.setVisibility(ProgressBar.INVISIBLE);
 		
+		mInternetUtility = InternetUtility.getInstance(this);
 		mMapManager = MapManager.get(this);
+
+		showHuntNoLongerAvailableMessage();
+
+		mSettings = getSharedPreferences("UserPreferencesFile", 0);
+		mEditor = mSettings.edit();
 		
+		retrieveHuntDetails();	
+		checkIfHuntFinished();
+			
 		mRegisterButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
 	
-						if(currentHuntIdReturned){
-							if(internetUtility.isInternetConnected())
-							{
+						if(mCurrentHuntIdReturned){
+							if(mInternetUtility.isInternetConnected()) {
 								attemptRegisterWithHunt();
 							}
-							else
-							{
-								Toast.makeText(RegisterWithHuntActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+							else {
+								Toast.makeText(RegisterWithHuntActivity.this, InternetUtility.INTERNET_DISCONNECTED, 
+											Toast.LENGTH_LONG).show();
 							}
 						}
-						else
-						{
-							Log.e("RegisterWithHunt", "Current Hunt Id not returned.");
-						}
-						
+						else {
+							Log.w("RegisterWithHunt", "Current Hunt Id not returned.");
+						}	
 					}
 				});
 		
-		
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		{
-			ActionBar actionBar = getActionBar();
-			actionBar.setTitle("Treasure Hunt");
-			actionBar.setSubtitle("Register with a hunt");
-		}
-		
-		//http://developer.android.com/guide/topics/data/data-storage.html#pref
-		settings = getSharedPreferences("UserPreferencesFile", 0);
-
-		//http://www.mkyong.com/android/android-alert-dialog-example/
-		alertForHuntOver = new Builder(this);
-		alertForHuntOver.setTitle("Hunt over");
-		alertForHuntOver.setMessage("This hunt is no longer available. You can no longer participate in this hunt.");
-		alertForHuntOver.setCancelable(false);
-		alertForHuntOver.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				RegisterWithHuntActivity.this.finish();
-				
-			}
-		});
-		
-		alertForHuntOver.create();
-		
-		
-		descriptionProgressBar = (ProgressBar) findViewById(R.id.hunt_description_progress_bar);
-		descriptionProgressBar.setIndeterminate(true);
-		descriptionProgressBar.setVisibility(ProgressBar.INVISIBLE);
-
-		currentHunt = settings.getString("currentHuntName", "");
-		currentUserId = settings.getInt("currentUserId", 0);
-		mHuntNameLabelView.setText(currentHunt);
-		
-		//http://developer.android.com/guide/topics/data/data-storage.html#pref
-		userId = settings.getInt("currentUserId", 0);
-		
-		/*if(savedInstanceState != null)
-		{
-			mhuntDescriptionView.setText(savedInstanceState.getString("HUNT_REGISTRATION_CURRENT_HUNT_DESCRIPTION"));
-			userAlreadyRegistered = savedInstanceState.getBoolean("HUNT_REGISTRATION_HAS_USER_REGISTERED");
-			currentHuntIdReturned = savedInstanceState.getBoolean("HUNT_REGISTRATION_HAS_HUNT_ID_RETURNED");
-			huntDescriptionreturned = savedInstanceState.getBoolean("HUNT_REGISTRATION_HAS_HUNT_DESCRIPTION_RETURNED");
-			//huntAlreadyStarted = savedInstanceState.getBoolean("HUNT_REGISTRATION_HAS_HUNT_ALREADY_STARTED");
-			Log.d("leaderboard", "Value saved in SavedInstanceState for huntAlreadyStarted is " + huntAlreadyStarted);
-			
-			if(userAlreadyRegistered)
-			{
-				mBeginHuntButton.setEnabled(true);
-				mRegisterButton.setEnabled(false);
-			}
-		} */
-		
-		if(internetUtility.isInternetConnected())
-		{
-			if(!currentHuntIdReturned)
-			{
-				attemptToReturnHuntId();
-			}
-			if(!huntDescriptionreturned)
-			{
-				
-				attemptToReturnHuntDescription();
-			}
-		}
-		else
-		{
-			Toast.makeText(RegisterWithHuntActivity.this, "Internet connection required", Toast.LENGTH_SHORT).show();
-		}
-			
 		mBeginHuntButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if(internetUtility.isInternetConnected())
-						{
-							getParticipantId();
+						if(mInternetUtility.isInternetConnected()) {
+								getHuntParticipantId();
+							
 						}
-						else
-						{
-							Toast.makeText(RegisterWithHuntActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+						else {
+							Toast.makeText(RegisterWithHuntActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
 						}
 					}
 				});
-		
 	}
 	
-	//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -251,54 +209,41 @@ public class RegisterWithHuntActivity extends Activity{
 		return true;
 	} 
 	
-	//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch(item.getItemId())
-		{
+	public boolean onOptionsItemSelected(MenuItem item) {
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+		switch(item.getItemId()) {
 		case 1:
-			SharedPreferences settings = getSharedPreferences("UserPreferencesFile", 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.clear();
-			editor.commit();
-			Intent loginActivityIntent = new Intent(RegisterWithHuntActivity.this, LoginActivity.class);
+			mEditor.clear();
+			mEditor.commit();
+			
 			mMapManager.stopLocationUpdates();
+			
+			Intent loginActivityIntent = new Intent(RegisterWithHuntActivity.this, LoginActivity.class);
 			startActivity(loginActivityIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void attemptToSaveStartTime()
-	{
-		if (mSaveStartTimeTask != null) {
-			return;
-		} 	
-		mSaveStartTimeTask = new SaveStartTimeTask();
-		mSaveStartTimeTask.execute((String) null);
-
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mSaveStartTimeTask!= null)
-				{
-					if(mSaveStartTimeTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mSaveStartTimeTask.cancel(true);
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
+	/*
+	 * Method saves the details about the current treasure hunt when the activity is paused to prevent a database recall.
+	 * */
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {	
+		
+		savedInstanceState.putString("HUNT_REGISTRATION_CURRENT_HUNT_DESCRIPTION", mhuntDescriptionView.getText().toString());
+		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_USER_REGISTERED", mUserAlreadyRegistered);
+		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ID_RETURNED", mCurrentHuntIdReturned);
+		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_DESCRIPTION_RETURNED", mHuntDescriptionreturned);
+		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ALREADY_STARTED", mHuntAlreadyStarted);
+		
+		//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
+		super.onSaveInstanceState(savedInstanceState);
+	}	
 	
-	private void checkIfUserHasAlreadyRegistered()
-	{
+	/* Method to call the asynchronous class 'CheckIfUserRegisteredTask'. If call to the database takes too long then a timeout should occur.*/
+	private void checkIfUserHasAlreadyRegistered() {
 		if (mUserRegisteredTask != null) {
 			return;
 		} 	
@@ -307,16 +252,13 @@ public class RegisterWithHuntActivity extends Activity{
 		mUserRegisteredTask.execute((String) null);
 
 		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
+		handlerForUserTask.postDelayed(new Runnable() {
 			@Override
-			public void run()
-			{
-				if(mUserRegisteredTask!= null)
-				{
-					if(mUserRegisteredTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
+			public void run() {
+				if(mUserRegisteredTask!= null) {
+					if(mUserRegisteredTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mUserRegisteredTask.cancel(true);
+						mCheckStatusDialog.cancel();
 						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 					}
 				}
@@ -324,92 +266,9 @@ public class RegisterWithHuntActivity extends Activity{
 		}
 		, 10000);	
 	}
-	
-	private void attemptToReturnHuntDescription()
-	{
-		if (mHuntDescriptionTask != null) {
-			return;
-		} 	
-		mHuntDescriptionTask = new GetHuntDescriptionTask();
-		mHuntDescriptionTask.execute((String) null);
 
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mHuntDescriptionTask!= null)
-				{
-					if(mHuntDescriptionTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mHuntDescriptionTask.cancel(true);
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
-	
-	private void attemptToReturnHuntId()
-	{
-		if (mHuntIdTask != null) {
-			return;
-		} 	
-		mHuntIdTask = new GetHuntIdTask();
-		mHuntIdTask.execute((String) null);
-
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mHuntIdTask!= null)
-				{
-					if(mHuntIdTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mHuntIdTask.cancel(true);
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
-	
-	private void getParticipantId()
-	{
-		if (mGetHuntParticipantIdTask != null) {
-			return;
-		} 	
-		
-		mGetHuntParticipantIdTask = new GetParticipantIdTask();
-		mGetHuntParticipantIdTask.execute((String) null);
-
-		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(mGetHuntParticipantIdTask!= null)
-				{
-					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
-						mGetHuntParticipantIdTask.cancel(true);
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-						
-					}
-				}
-			}
-		}
-		, 10000);	
-	}
-
-	private void checkIfHuntAlreadyStarted()
-	{
+	/* Method to call the asynchronous class 'CheckIfHuntStartedTask'. If call to the database takes too long then a timeout should occur.*/
+	private void checkIfHuntAlreadyStarted() {
 		if (mHuntStartedTask != null) {
 			return;
 		} 	
@@ -418,16 +277,13 @@ public class RegisterWithHuntActivity extends Activity{
 		mHuntStartedTask.execute((String) null);
 
 		Handler handlerForUserTask = new Handler();
-		handlerForUserTask.postDelayed(new Runnable()
-		{
+		handlerForUserTask.postDelayed(new Runnable() {
 			@Override
-			public void run()
-			{
-				if(mHuntStartedTask!= null)
-				{
-					if(mHuntStartedTask.getStatus() == AsyncTask.Status.RUNNING)
-					{
+			public void run() {
+				if(mHuntStartedTask!= null) {
+					if(mHuntStartedTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mHuntStartedTask.cancel(true);
+						mPreparationDialog.cancel();
 						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 						//mRefreshButton.setVisibility(Button.VISIBLE);
 					}
@@ -437,638 +293,681 @@ public class RegisterWithHuntActivity extends Activity{
 		, 10000);	
 	}
 	
+	/* Method to call the asynchronous class 'UserRegisterWithHuntTask'. If call to the database takes too long then a timeout should occur.*/
 	private void attemptRegisterWithHunt() {	
-		if (mAuthTask != null) {
+		if (mRegisterWithHuntTask != null) {
 			return;
 		} 		
 			
-			mAuthTask = new UserRegisterWithHuntTask(); // Do ASYNC way
-			mAuthTask.execute((String) null);
+			mRegisterWithHuntTask = new UserRegisterWithHuntTask(); // Do ASYNC way
+			mRegisterWithHuntTask.execute((String) null);
 			
 			//http://stackoverflow.com/questions/7882739/android-setting-a-timeout-for-an-asynctask?rq=1
 			Handler handlerForMAuth = new Handler();
-			handlerForMAuth.postDelayed(new Runnable()
-			{
+			handlerForMAuth.postDelayed(new Runnable() {
 				@Override
-				public void run()
-				{
-					if(mAuthTask!= null)
-					{
-						if(mAuthTask.getStatus() == AsyncTask.Status.RUNNING)
-						{
-							mAuthTask.cancel(true);
-							pDialog.cancel();
+				public void run() {
+					if(mRegisterWithHuntTask!= null) {
+						if(mRegisterWithHuntTask.getStatus() == AsyncTask.Status.RUNNING) {
+							mRegisterWithHuntTask.cancel(true);
+							mRegisterDialog.cancel();
 							Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 						}
 					}
 				}
 			}
-			, 100000);			
-			
+			, 100000);				
 	}
 	
-	//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{	
-		savedInstanceState.putString("HUNT_REGISTRATION_CURRENT_HUNT_DESCRIPTION", mhuntDescriptionView.getText().toString());
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_USER_REGISTERED", userAlreadyRegistered);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ID_RETURNED", currentHuntIdReturned);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_DESCRIPTION_RETURNED", huntDescriptionreturned);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ALREADY_STARTED", huntAlreadyStarted);
+	/* Method to call the asynchronous class 'GetParticipantIdTask'. If call to the database takes too long then a timeout should occur.*/
+	private void getHuntParticipantId() {
+		if (mGetHuntParticipantIdTask != null) {
+			return;
+		} 	
 		
-		super.onSaveInstanceState(savedInstanceState);
-	}	
-	
-	public class GetHuntIdTask extends AsyncTask<String, String, String> {
+		mGetHuntParticipantIdTask = new GetParticipantIdTask();
+		mGetHuntParticipantIdTask.execute((String) null);
 
-		@Override
-		protected String doInBackground(String... arg0) {
-			int huntIdSuccess;		
-			
-			try {
-						
-				//GETTING THE HUNT ID
-				List<NameValuePair> parametersForHuntId = new ArrayList<NameValuePair>();
-				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				parametersForHuntId.add(new BasicNameValuePair("hunt", currentHunt));
-				
-				
-				
-				Log.d("request", "starting");
-				JSONObject jsonFindHuntId = jsonParser.makeHttpRequest(getHuntIdUrl, "POST", parametersForHuntId);
-				Log.d("Register With Hunt Attempt", jsonFindHuntId.toString());
-				huntIdSuccess = jsonFindHuntId.getInt(tagSuccess);
-				if(huntIdSuccess == 1)
-				{
-					huntIdResult = jsonFindHuntId.getJSONObject("result");
-					huntId = huntIdResult.getInt("HuntId");	
-
-					Date today = new Date();
-
-					String retrievedEndDate = huntIdResult.getString("EndDate");
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Date endDate;
-					try {
-						//http://stackoverflow.com/questions/15761101/how-to-get-a-date-from-a-json-object
-						endDate = format.parse(retrievedEndDate);
-						if(today.after(endDate))
-						{
-							huntAlreadyFinished = true;
-						}
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+		Handler handlerForUserTask = new Handler();
+		handlerForUserTask.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if(mGetHuntParticipantIdTask!= null) {
+					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING) {
+						mSavingStartTimeDialog.cancel();
+						mGetHuntParticipantIdTask.cancel(true);
+						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();	
 					}
-					
-					Log.d("leaderboard", "current Hunt Id returned and saved to sharedPref");
-					currentHuntIdReturned = true;
-						
-					return jsonFindHuntId.getString(tagMessage);			
 				}
-				else
-				{
-					Log.d("Getting Hunt Id failed!", jsonFindHuntId.getString(tagMessage));
-					return jsonFindHuntId.getString(tagMessage);
-				}
-			}catch (JSONException e) {
-				
-				}
-			return null;	
-		}
-
-		@Override
-		protected void onPostExecute(final String fileUrl) {
-			mHuntIdTask = null;
-			
-			if(currentHuntIdReturned)
-			{
-				editor.putInt("currentHuntId", huntId);
-				editor.commit();
-			}
-			
-			if(huntAlreadyFinished)
-			{
-				mBeginHuntButton.setEnabled(false);
-				mRegisterButton.setEnabled(false);
-				alertForHuntOver.show();
-			}
-			else
-			{
-				if(!userAlreadyRegistered)
-				{
-					checkIfUserHasAlreadyRegistered();	
-				}
-				if(!huntAlreadyStarted)
-				{
-					checkIfHuntAlreadyStarted();
-				}	
-			}
-			
-			if (fileUrl != null) 
-			{
-				Log.i("RegisterWithHunt", fileUrl);
-				
-			} 
-			else 
-			{
-				mhuntDescriptionView.setText("Could not retrieve description.");
 			}
 		}
-
-		@Override
-		protected void onCancelled() {
-			mHuntIdTask = null;
-		}
+		, 10000);	
 	}
 	
-public class UserRegisterWithHuntTask extends AsyncTask<String, String, String> {
-		
-		@Override
-		protected void onPreExecute()
-		{
-			super.onPreExecute();
-			pDialog = new ProgressDialog(RegisterWithHuntActivity.this);
-            pDialog.setMessage("Attempting register...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(true);
-			pDialog.show();
-		}
-		
-		@Override
-		protected String doInBackground(String... args) {
-			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-			
-			int success;
-				//Check to make sure password is correct
-				List<NameValuePair> parametersForPasswordCheck = new ArrayList<NameValuePair>();
-				
-				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				parametersForPasswordCheck.add(new BasicNameValuePair("huntid", Integer.toString(huntId)));
-				parametersForPasswordCheck.add(new BasicNameValuePair("userid", Integer.toString(userId)));
-				//parametersForPasswordCheck.add(new BasicNameValuePair("huntname", currentHunt));
-				
-				try{
-				Log.d("request", "starting");
-				JSONObject json = jsonParser.makeHttpRequest(registerUserWithHuntUrl, "POST", parametersForPasswordCheck);
-				Log.d("Register With Hunt Attempt", json.toString());
-					
-				success = json.getInt(tagSuccess);
-				if(success == 1)
-				{							
-					Log.d("Registration Successful!", json.toString());
-					Log.d("leaderboard", "User has just registered with: " + huntId);
-					
-					saveHuntParticipantResult = json.getJSONObject("result");
-					currentParticipantId = saveHuntParticipantResult.getInt("HuntParticipantId");
-					registrationSuccessful = true;
-					return json.getString(tagMessage);
-				}
-				else
-				{
-					Log.d("Registration failed!", json.getString(tagMessage));
-					return json.getString(tagMessage);
-				}
-				
-			} catch (JSONException e) {
-			
-			}
+	/* Method to call the asynchronous class 'SaveStartTimeTask'. If call to the database takes too long then a timeout should occur.*/
+	private void attemptToSaveStartTime() {
+		if (mSaveStartTimeTask != null) {
+			return;
+		} 	
+		mSaveStartTimeTask = new SaveStartTimeTask();
+		mSaveStartTimeTask.execute((String) null);
 
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(final String fileUrl) {
-			mAuthTask = null;
-			pDialog.dismiss();
-			
-			if(registrationSuccessful)
-			{
-				mBeginHuntButton.setEnabled(true);
-				mRegisterButton.setEnabled(false);
-				editor.putInt("userParticipantId", currentParticipantId);
-				editor.commit(); 
-				
-				Log.i("RegisterWithHunt", fileUrl);
-			}
-			else
-			{
-				Builder alertForFailedRegistration = new Builder(RegisterWithHuntActivity.this);
-				alertForFailedRegistration.setTitle("Registration");
-				alertForFailedRegistration.setMessage("Registration for this treasure hunt failed. Please try again later.");
-				alertForFailedRegistration.setCancelable(false);
-				alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
+		Handler handlerForUserTask = new Handler();
+		handlerForUserTask.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if(mSaveStartTimeTask!= null) {
+					if(mSaveStartTimeTask.getStatus() == AsyncTask.Status.RUNNING) {
+						mSaveStartTimeTask.cancel(true);
+						mSavingStartTimeDialog.cancel();
+						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
 					}
-				});
-				
-				alertForFailedRegistration.create();
-				alertForFailedRegistration.show();
-				
-				Log.e("RegisterWithHunt", "Failed registration with hunt: " + huntId + "for participant: " + userId);
-			
+				}
 			}
 		}
-
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-		}
-	}
-
-public class GetHuntDescriptionTask extends AsyncTask<String, String, String> {
-
-	@Override
-	protected void onPreExecute()
-	{
-		super.onPreExecute();
-		descriptionProgressBar.setVisibility(ProgressBar.VISIBLE);
+		, 10000);	
 	}
 	
-	@Override
-	protected String doInBackground(String... args) {
-		//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+	/* Method that retrieves the data sent by the previous Activity and assigns it to the relevant variables. */
+	public void retrieveHuntDetails() {
 		
-			int success;
-			//Check to make sure password is correct
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			
-			//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-			parameters.add(new BasicNameValuePair("huntId", Integer.toString(huntId)));
-			
-			try{
-			Log.d("request", "starting");
-			JSONObject json = jsonParser.makeHttpRequest(getHuntDescriptionUrl, "POST", parameters);
-			Log.d("Return hunt description attempt", json.toString());
-				
-			success = json.getInt(tagSuccess);
-			if(success == 1)
-			{							
-				Log.d("Got hunt description!", json.toString());
-				currentHuntDescriptionResult = json.getJSONObject("result");
-				currentHuntDescription = currentHuntDescriptionResult.getString("HuntDescription");
-				huntDescriptionreturned = true;
-				return json.getString(tagMessage);
-			}
-			else
-			{
-				Log.d("Return hunt description failed!", json.getString(tagMessage));
-				return json.getString(tagMessage);
-			}
-			
-		} catch (JSONException e) {
+		mHuntId = mSettings.getInt("currentHuntId", 0);
+		mCurrentHunt = mSettings.getString("currentHuntName", "");
+		mCurrentHuntDescription = mSettings.getString("currentHuntDescription", "No description retrieved.");
+		mEndDate = mSettings.getString("currentEndDate", "");
+		mUserId = mSettings.getInt("currentUserId", 0); //http://developer.android.com/guide/topics/data/data-storage.html#pref
 		
+		if(mHuntId != 0) {
+			mEditor.putInt("currentHuntId", mHuntId);
+			mEditor.commit();
+			mCurrentHuntIdReturned = true;
 		}
-
-		return null;
-	}
-
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mHuntDescriptionTask = null;
-		descriptionProgressBar.setVisibility(ProgressBar.GONE);
-		descriptionProgressBar.clearAnimation();
-		
-			
-			if(huntDescriptionreturned)
-			{
-				mhuntDescriptionView.setText(currentHuntDescription);
-				Log.i("RegisterWithHunt", fileUrl);
-			}
-			else
-			{
-				mhuntDescriptionView.setText("Hunt description could not be retrieved");
-				Log.e("RegisterWithHunt", "Hunt description could not be retrieved for hunt:"  + huntId);
-			}
-	}
-
-	@Override
-	protected void onCancelled() {
-		mHuntDescriptionTask = null;
-	}
-}
-
-public class CheckIfUserRegisteredTask extends AsyncTask<String, String, String> {
-	
-	@Override
-	protected String doInBackground(String... args) {
-		//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-		
-			int success;
-
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			
-			//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-			parameters.add(new BasicNameValuePair("huntId", Integer.toString(huntId)));
-			parameters.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-			
-			try{
-			Log.d("request", "starting");
-			JSONObject json = jsonParser.makeHttpRequest(checkIfUserRegisteredUrl, "POST", parameters);
-			Log.d("Check user registered attempt", json.toString());
-				
-			success = json.getInt(tagSuccess);
-			if(success == 1)
-			{							
-				Log.d("leaderboard","User is already registered");
-				
-				userAlreadyRegistered = true;
-				return json.getString(tagMessage);
-			}
-			else
-			{
-				Log.d("leaderboard","User has not registered previously");
-				userAlreadyRegistered = false;
-				return json.getString(tagMessage);
-			}
-			
-		} catch (JSONException e) {
-		
-		}
-
-		return null;
-	}
-
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mUserRegisteredTask = null;
-		
-		if(!userAlreadyRegistered)
-		{
-			mBeginHuntButton.setEnabled(false);
-			mRegisterButton.setEnabled(true);
-			Log.i("RegisterWithHunt", "user: " + userId + " has not yet registered with hunt: " + huntId);
-		}
-		else
-		{
-			mBeginHuntButton.setEnabled(true);
+		else {
 			mRegisterButton.setEnabled(false);
+			showCouldNotRetrieveDetailsMessage();
 		}
 		
-		if (fileUrl != null) {
-			Log.i("RegisterWithHunt",  fileUrl);
-		} else {
-			Log.e("RegisterWithHunt", "Nothing returned from the database");
-		}		
+		mHuntNameLabelView.setText(mCurrentHunt);
+		mhuntDescriptionView.setText(mCurrentHuntDescription);
 	}
-
-	@Override
-	protected void onCancelled() {
-		mUserRegisteredTask = null;
-	}
-}
-
-public class SaveStartTimeTask extends AsyncTask<String, String, String> {
-
-	@Override
-	protected String doInBackground(String... arg0) {
-		int startTimeSuccess;		
+	
+	/* Method that will check if the current treasure hunt is out of date i.e. it is no longer playable. If so,
+	 * prevent the participant from registering or playing the given hunt. Else, check if the hunt has already
+	 * been registered with or started. */
+	public void checkIfHuntFinished() {
+		
+		Date today = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date endDate;
 		
 		try {
-			Log.d("leaderboard", "SaveStartTimeTask has begun");
-			startTime = System.currentTimeMillis();
-					
-			//GETTING THE HUNT ID
-			List<NameValuePair> parametersForHuntId = new ArrayList<NameValuePair>();
-			parametersForHuntId.add(new BasicNameValuePair("userId", Long.toString(userId)));
-			parametersForHuntId.add(new BasicNameValuePair("huntId", Long.toString(huntId)));
-			parametersForHuntId.add(new BasicNameValuePair("startTime", Long.toString(startTime)));
-			
-			Log.d("request", "starting");
-			JSONObject saveStartTimeObject = jsonParser.makeHttpRequest(saveStartTimeUrl, "POST", parametersForHuntId);
-			Log.d("Attempt to save original start time", saveStartTimeObject.toString());
-			
-			startTimeSuccess = saveStartTimeObject.getInt(tagSuccess);
-			
-			if(startTimeSuccess == 1)
-			{
-				Log.d("leaderboard", "start time for " + huntId + " is " + startTime );
-				saveStartTimeResult = saveStartTimeObject.getJSONObject("result");
-				huntAlreadyStarted = true;
-				
-				return saveStartTimeObject.getString(tagMessage);			
+			//http://stackoverflow.com/questions/15761101/how-to-get-a-date-from-a-json-object
+			endDate = format.parse(mEndDate);
+			if(today.after(endDate)) {
+				mHuntAlreadyFinished = true;
 			}
-			else
-			{
-				Log.d("Saving start time failed!", saveStartTimeObject.getString(tagMessage));
-				return saveStartTimeObject.getString(tagMessage);
+		} catch (ParseException e) {
+			try {
+				throw new ParseException(mEndDate, 0);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
 			}
-		}catch (JSONException e) {
-			
-			}
-		return null;	
-	}
-
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mSaveStartTimeTask = null;
-	
-			editor.putBoolean(huntId + " isHuntAlreadyStarted", huntAlreadyStarted);
-			editor.putLong(huntId + " startTime", startTime);
-			editor.commit(); 
-			startTimeSaved = true;
-		
-		if (fileUrl != null) 
-		{
-			Log.i("RegisterWithHunt", fileUrl);
-		} 
-		else 
-		{
-			Log.e("RegisterWithHunt", "Could not save the start time for user: " + userId);
 		}
-	}
-
-	@Override
-	protected void onCancelled() {
-		mSaveStartTimeTask = null;
-	}
-}
-
-public class CheckIfHuntStartedTask extends AsyncTask<String, String, String> {
-	
-	@Override
-	protected String doInBackground(String... args) {
-		//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-			Log.d("leaderboard", "CheckIfHuntStartedTask has begun");
-			int success;
-			
-			try{
-				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-				
-				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				parameters.add(new BasicNameValuePair("huntId", Integer.toString(huntId)));
-				parameters.add(new BasicNameValuePair("userId", Integer.toString(userId)));
-			Log.d("request", "starting");
-			Log.d("leaderboard", "Checking if hunt started - Current Hunt Id:" + huntId);
-			Log.d("leaderboard", "Checking if hunt started - Current Hunt Id:" + userId);
-			
-			Log.d("leaderboard", "Attempting to see if hunt has already started");
-			JSONObject checkIfAlreadyStartedJson = jsonParser.makeHttpRequest(checkIfHuntStartedUrl, "POST", parameters);
-			Log.d("Check hunt started attempt", checkIfAlreadyStartedJson.toString());
-				
-			success = checkIfAlreadyStartedJson.getInt(tagSuccess);
-			Log.d("leaderboard","Check hunt started attempt SUCCESS:" + success);
-			if(success == 1)
-			{	//http://stackoverflow.com/questions/1576243/php-check-for-null				
-				Log.d("leaderboard", huntId + " has already started");
-				huntAlreadyStarted = true;
-				Log.d("leaderboard", huntAlreadyStarted + " huntAlreadyStarted value");
-				startTimeResult = checkIfAlreadyStartedJson.getJSONObject("result");
-				Log.d("leaderboard", checkIfAlreadyStartedJson.getJSONObject("result")+"");
-				startTime = startTimeResult.getLong("StartTime");
-				
-				//Cant do shared pref in here because its ui thread
-				return checkIfAlreadyStartedJson.getString(tagMessage);
-			}
-			else
-			{
-				Log.d("leaderboard", huntId + " has not already started");
-				huntAlreadyStarted = false;
-				//save that hunt has already started with the shared pref
-				return checkIfAlreadyStartedJson.getString(tagMessage);
-			}
-			
-		} catch (JSONException e) {
-			Log.d("leaderboard", e.toString());
+		
+		if(mHuntAlreadyFinished) {
+			mBeginHuntButton.setEnabled(false);
+			mRegisterButton.setEnabled(false);
+			mAlertForHuntOver.show();
 		}
-
-		return null;
+		else {
+			if(!mUserAlreadyRegistered) {
+				checkIfUserHasAlreadyRegistered();	
+			}
+			if(!mHuntAlreadyStarted) {
+				checkIfHuntAlreadyStarted();
+			}	
+		}	
 	}
-
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mHuntStartedTask = null;
-
-		editor.putBoolean(huntId + " isHuntAlreadyStarted", huntAlreadyStarted);
-		editor.putLong(huntId + " startTime", (long) startTime);
-		editor.commit(); 
-		
-		if (fileUrl != null) 
-		{
-			Log.i("RegisterWithHunt", fileUrl);	
-		} 
-		else 
-		{
-			Log.e("RegisterWithHunt", "Could not determine if hunt started or not");
-		}		
-	}
-
-	@Override
-	protected void onCancelled() {
-		mHuntStartedTask = null;
-	}
-}
 	
-public class GetParticipantIdTask extends AsyncTask<String, String, String> {
+	/* Method to display a dialog to alert the participant if the treasure hunt they seek to access is no longer available i.e. 
+	 * it is out of date and can no longer be played.*/
+	private void showHuntNoLongerAvailableMessage() {
+		//http://www.mkyong.com/android/android-alert-dialog-example/
+		mAlertForHuntOver = new Builder(this);
+		mAlertForHuntOver.setTitle("Hunt over");
+		mAlertForHuntOver.setMessage("This hunt is no longer available. You can no longer participate in this hunt.");
+		mAlertForHuntOver.setCancelable(false);
+		mAlertForHuntOver.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				RegisterWithHuntActivity.this.finish();
+				
+			}
+		});
 		
+		mAlertForHuntOver.create();
+	}
+	
+	/* Method to display a dialog to alert the participant that the start time could not be saved when attempting to begin the treasure hunt 
+	 * for the first time. */
+	private void showSaveTimeFailureMessage() {
+		//http://www.mkyong.com/android/android-alert-dialog-example/
+		Builder mAlertForFailedStartTimeSave = new Builder(this);
+		mAlertForFailedStartTimeSave.setTitle("Application Error");
+		mAlertForFailedStartTimeSave.setMessage("Application error. Please try again.");
+		mAlertForFailedStartTimeSave.setCancelable(false);
+		mAlertForFailedStartTimeSave.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+				
+			}
+		});
+		
+		mAlertForFailedStartTimeSave.create();
+		mAlertForFailedStartTimeSave.show();
+	}
+	
+	private void showCouldNotRetrieveDetailsMessage() {
+		
+		Builder mAlertForFailedDetails = new Builder(this);
+		mAlertForFailedDetails.setTitle("Application Error");
+		mAlertForFailedDetails.setMessage("Application error. Could not retrieve details");
+		mAlertForFailedDetails.setCancelable(false);
+		mAlertForFailedDetails.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();	
+			}
+		});
+		
+		mAlertForFailedDetails.create();
+		mAlertForFailedDetails.show();
+		
+		mRegisterButton.setEnabled(false);
+		mBeginHuntButton.setEnabled(false);
+	}
+	
+	/* Method to display a dialog if registration with the given treasure hunt has failed.*/
+	private void showFailedRegistrationMessage() {
+		Builder alertForFailedRegistration = new Builder(RegisterWithHuntActivity.this);
+		alertForFailedRegistration.setTitle("Registration");
+		alertForFailedRegistration.setMessage("Registration for this treasure hunt failed. Please try again later.");
+		alertForFailedRegistration.setCancelable(false);
+		alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		
+		alertForFailedRegistration.create();
+		alertForFailedRegistration.show();
+		
+		Log.w("RegisterWithHunt", "Failed registration with hunt: " + mHuntId + "for participant: " + mUserId);
+	}
+	
+	/* This internal class attempts to check whether or not a given participant has already registered with a given application. */
+	public class CheckIfUserRegisteredTask extends AsyncTask<String, String, String> {
+		
+		/* A dialog will appear on screen to show the participant a check is being made.*/
+		@Override
+		protected void onPreExecute() {
+			
+			super.onPreExecute();
+			mCheckStatusDialog = new ProgressDialog(RegisterWithHuntActivity.this);
+			mCheckStatusDialog.setMessage("Attempting status check...");
+			mCheckStatusDialog.setIndeterminate(false);
+			mCheckStatusDialog.setCancelable(true);
+			mCheckStatusDialog.show();
+		}
+		
+		/* Method calling the database to check if the given participant's details have already been saved for the given treasure hunt.*/
 		@Override
 		protected String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 				int success;
-
 				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 				
 				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				parameters.add(new BasicNameValuePair("huntId", Integer.toString(huntId)));
-				parameters.add(new BasicNameValuePair("userId", Integer.toString(userId)));
+				parameters.add(new BasicNameValuePair("huntId", Integer.toString(mHuntId)));
+				parameters.add(new BasicNameValuePair("userId", Integer.toString(mUserId)));
 				
 				try{
-					Log.d("request", "starting");
-					JSONObject jsonGetHuntParticipantId = jsonParser.makeHttpRequest(getHuntParticipantIdUrl, "POST", parameters);
-					Log.d("Get User Id Attempt", jsonGetHuntParticipantId.toString());
-					success = jsonGetHuntParticipantId.getInt(tagSuccess);
+				Log.i("RegisterWithHunt", "starting");
+				JSONObject json = jsonParser.makeHttpRequest(CHECK_REGISTRATION_URL, "POST", parameters);
+				Log.i("RegisterWithHunt", json.toString());
 					
-					if(success == 1)
-					{
-						huntParticipantIdResult = jsonGetHuntParticipantId.getJSONObject("result");
-						currentParticipantId = huntParticipantIdResult.getInt("HuntParticipantId");
-						huntParticipantIdReturned = true;
-						Log.d("leaderboard", "hunt participant id is: " + currentParticipantId);
-						return jsonGetHuntParticipantId.getString(tagMessage);
+				success = json.getInt(PHPHelper.SUCCESS);
+				if(success == 1) {							
+					Log.i("RegisterWithHunt","User is already registered");
+					
+					mUserAlreadyRegistered = true;
+					return json.getString(PHPHelper.MESSAGE);
+				}
+				else {
+					Log.w("RegisterWithHunt","User has not registered previously");
+					mUserAlreadyRegistered = false;
+					return json.getString(PHPHelper.MESSAGE);
+				}
+				
+			} catch (JSONException e) {
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
+			}
+	
+			return null;
+		}
+	
+		/* Method called after the database call has been made. If the participant has not already registered then the 'Register' button becomes available
+		 * whilst the 'Play' button becomes unavailable, else, vice versa for a registered participant. */
+		@Override
+		protected void onPostExecute(final String fileUrl) {
+			mUserRegisteredTask = null;
+			mCheckStatusDialog.cancel();
+			
+			if(!mUserAlreadyRegistered) {
+				mBeginHuntButton.setEnabled(false);
+				mRegisterButton.setEnabled(true);
+				Log.i("RegisterWithHunt", "user: " + mUserId + " has not yet registered with hunt: " + mHuntId);
+			}
+			else {
+				mBeginHuntButton.setEnabled(true);
+				mRegisterButton.setEnabled(false);
+			}
+			
+			if (fileUrl != null) {
+				Log.i("RegisterWithHunt",  fileUrl);
+			} else {
+				Log.w("RegisterWithHunt", "Nothing returned from the database");
+			}		
+		}
+	
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			mUserRegisteredTask = null;
+			mCheckStatusDialog.cancel();
+		}
+	}
+
+	/* This internal class attempts to check whether or not a participant has begun playing the given treasure hunt 
+	 * i.e. it may be the case where a participant
+	 * has registered but not yet decided to play.*/
+	public class CheckIfHuntStartedTask extends AsyncTask<String, String, String> {
+		
+		/* A dialog will appear on screen to show the participant a check is being made.*/
+		@Override
+		protected void onPreExecute() {
+			
+			super.onPreExecute();
+			mPreparationDialog = new ProgressDialog(RegisterWithHuntActivity.this);
+			mPreparationDialog.setMessage("Preparation...");
+			mPreparationDialog.setIndeterminate(false);
+			mPreparationDialog.setCancelable(true);
+			mPreparationDialog.show();
+		}
+		
+		/* Method calling the database to check if a start time has been associated with the given participant and treasure hunt.*/
+		@Override
+		protected String doInBackground(String... args) {
+			
+			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+				Log.i("RegisterWithHunt", "CheckIfHuntStartedTask has begun");
+				int success;
+				
+				try{
+					List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+					
+					//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
+					parameters.add(new BasicNameValuePair("huntId", Integer.toString(mHuntId)));
+					parameters.add(new BasicNameValuePair("userId", Integer.toString(mUserId)));
+					Log.i("RegisterWithHunt", "starting");
+					Log.i("RegisterWithHunt", "Checking if hunt started - Current Hunt Id:" + mHuntId);
+					Log.i("RegisterWithHunt", "Checking if hunt started - Current User Id:" + mUserId);
+					
+					Log.i("RegisterWithHunt", "Attempting to see if hunt has already started");
+					JSONObject jsonResult = jsonParser.makeHttpRequest(CHECK_IF_HUNT_STARTED_URL, "POST", parameters);
+					Log.i("RegisterWithHunt", jsonResult.toString());
 						
+					success = jsonResult.getInt(PHPHelper.SUCCESS);
+					
+					if(success == 1) {	//http://stackoverflow.com/questions/1576243/php-check-for-null				
+						Log.i("RegisterWithHunt", mHuntId + " has already started");
+						
+						mHuntAlreadyStarted = true;
+						sStartTimeResult = jsonResult.getJSONObject("result");
+						Log.i("RegisterWithHunt", jsonResult.getJSONObject("result")+"");
+						mStartTime = sStartTimeResult.getLong("StartTime");
+			
+						return jsonResult.getString(PHPHelper.MESSAGE);
 					}
-					else
-					{
-						Log.d("Getting hunt participant Id failed!", jsonGetHuntParticipantId.getString(tagMessage));
-						return jsonGetHuntParticipantId.getString(tagMessage);
+					else {
+						Log.w("RegisterWithHunt", mHuntId + " has not already started");
+						mHuntAlreadyStarted = false;
+						//save that hunt has already started with the shared pref
+						return jsonResult.getString(PHPHelper.MESSAGE);
+					}
+					
+				} catch (JSONException e) {
+					try {
+						throw new JSONException(e.toString());
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+				}
+		
+				return null;
+		}
+	
+		/* Method called after the database call has been made. Indicates in shared preferences if the hunt has already been started by the given participant.*/
+		@Override
+		protected void onPostExecute(final String fileUrl) {
+			mHuntStartedTask = null;
+			mPreparationDialog.cancel();
+	
+			mEditor.putBoolean(mHuntId + " isHuntAlreadyStarted", mHuntAlreadyStarted);
+			mEditor.putLong(mHuntId + " startTime", (long) mStartTime);
+			mEditor.commit(); 
+			
+			if (fileUrl != null)  {
+				Log.i("RegisterWithHunt", fileUrl);	
+			} 
+			else {
+				Log.w("RegisterWithHunt", "Could not determine if hunt started or not");
+			}		
+		}
+	
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			mHuntStartedTask = null;
+			mPreparationDialog.cancel();
+		}
+	}
+	
+	/* This internal class attempts to register the given participant with the given treasure hunt.  */
+	public class UserRegisterWithHuntTask extends AsyncTask<String, String, String> {
+		
+		/* A dialog will appear on screen to show the participant a save is being made.*/
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mRegisterDialog = new ProgressDialog(RegisterWithHuntActivity.this);
+            mRegisterDialog.setMessage("Attempting registration...");
+			mRegisterDialog.setIndeterminate(false);
+			mRegisterDialog.setCancelable(true);
+			mRegisterDialog.show();
+		}
+		
+		/* Method calling the database to register the participant with the given hunt.*/
+		@Override
+		protected String doInBackground(String... args) {
+			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+			
+			int success;
+				List<NameValuePair> parametersForPasswordCheck = new ArrayList<NameValuePair>();
+				
+				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
+				parametersForPasswordCheck.add(new BasicNameValuePair("huntid", Integer.toString(mHuntId)));
+				parametersForPasswordCheck.add(new BasicNameValuePair("userid", Integer.toString(mUserId)));
+				
+				try{
+				Log.i("RegisterWithHunt", "starting");
+				JSONObject json = jsonParser.makeHttpRequest(REGISTER_WITH_HUNT_URL, "POST", parametersForPasswordCheck);
+				Log.i("RegisterWithHunt", json.toString());
+					
+				success = json.getInt(PHPHelper.SUCCESS);
+				if(success == 1) {							
+					Log.i("RegisterWithHunt", json.toString());
+					Log.i("RegisterWithHunt", "User has just registered with: " + mHuntId);
+		
+					mRegistrationSuccessful = true;
+					return json.getString(PHPHelper.MESSAGE);
+				}
+				else {
+					Log.w("RegisterWithHunt", json.getString(PHPHelper.MESSAGE));
+					return json.getString(PHPHelper.MESSAGE);
+				}
+				
+			} catch (JSONException e) {
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		/* Method called after the database call has been made. If registration has been successful
+		 * then the 'Play' button becomes available to use whilst the participant can no longer press the 'Register' button, else,
+		 * the participant is notified of an error on screen.*/
+		@Override
+		protected void onPostExecute(final String fileUrl) {
+			mRegisterWithHuntTask = null;
+			mRegisterDialog.dismiss();
+			
+			if(mRegistrationSuccessful) {
+				mBeginHuntButton.setEnabled(true);
+				mRegisterButton.setEnabled(false);
+				
+				//mEditor.putInt("userParticipantId", mCurrentParticipantId);
+				//mEditor.commit(); 
+				
+				Log.i("RegisterWithHunt", fileUrl);
+			}
+			else {
+				showFailedRegistrationMessage();
+			}
+		}
+
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			mRegisterWithHuntTask = null;
+		}
+	}
+	/* This internal class attempts to retrieve the given participant's HuntParticipantId for a given treasure hunt. 
+	 * This id is utilised when the participant is 
+	 * directed to the ScanQRCodeActivity.*/
+	public class GetParticipantIdTask extends AsyncTask<String, String, String> {
+		
+		/* A dialog will appear on screen to show the participant a save is being made.*/
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mSavingStartTimeDialog = new ProgressDialog(RegisterWithHuntActivity.this);
+			mSavingStartTimeDialog.setMessage("Preparing hunt...");
+			mSavingStartTimeDialog.setIndeterminate(false);
+			mSavingStartTimeDialog.setCancelable(true);
+			mSavingStartTimeDialog.show();
+		}
+		
+		/* Method calling the database to return the HuntParticipantId associated with the given participant and treasure hunt.*/
+		@Override
+		protected String doInBackground(String... args) {
+			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+			
+				int success;
+				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+				
+				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
+				parameters.add(new BasicNameValuePair("huntId", Integer.toString(mHuntId)));
+				parameters.add(new BasicNameValuePair("userId", Integer.toString(mUserId)));
+				
+				try{
+					Log.i("RegisterWithHunt", "starting");
+					JSONObject jsonResult = jsonParser.makeHttpRequest(GET_HUNT_PARTICIPANT_ID_URL, "POST", parameters);
+					Log.i("RegisterWitHunt", jsonResult.toString());
+					success = jsonResult.getInt(PHPHelper.SUCCESS);
+					
+					if(success == 1) {
+						sHuntParticipantIdResult = jsonResult.getJSONObject("result");
+						mHuntParticipantId = sHuntParticipantIdResult.getInt("HuntParticipantId");
+						mHuntParticipantIdReturned = true;
+						Log.i("RegisterWithHunt", "hunt participant id is: " + mHuntParticipantId);
+						
+						return jsonResult.getString(PHPHelper.MESSAGE);
+					}
+					else {
+						Log.w("RegisterWithHunt", jsonResult.getString(PHPHelper.MESSAGE));
+						mHuntParticipantIdReturned = false;
+						return jsonResult.getString(PHPHelper.MESSAGE);
 					}
 				
 			} catch (JSONException e) {
-			
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 			return null;
 		}
 
+		/* Method called after the database call has been made. If an ID has been returned then a check is made to see if the treasure hunt has already
+		 * been started by the participant.
+		 * If so, i.e. a start time has already been saved for this participant, the participant proceeds to the ScanQRCodeActivity.
+		 * Otherwise, i.e. the participant has not yet began playing this hunt, an attempt to save a new start time is made.
+		 * */
 		@Override
 		protected void onPostExecute(final String fileUrl) {
+			
 			mGetHuntParticipantIdTask = null;
 			
-			if(huntParticipantIdReturned)
-			{
-				editor.putInt(huntId + "userParticipantId", currentParticipantId);
-				editor.putBoolean(huntId + " userParticipantIdReturned", true);
-				editor.commit(); 
+			if(mHuntParticipantIdReturned) {
+				mEditor.putInt("huntParticipantId", mHuntParticipantId);
+				mEditor.putBoolean(mHuntId + " userParticipantIdReturned", true);
+				mEditor.commit(); 
 				
-				Log.d("leaderboard", huntAlreadyStarted+ " = has hunt already started by the time of the check on the button");
-				if(!huntAlreadyStarted)
-				{
+				Log.i("RegisterWithHunt", mHuntAlreadyStarted+ " = has hunt already started by the time of the check on the button");
+				
+				if(!mHuntAlreadyStarted) {
 					//http://stackoverflow.com/questions/3944344/how-to-display-the-time-elapsed-onto-ui-screen-of-the-android
 					attemptToSaveStartTime();
-					
-					mMap = mMapManager.startNewMap(currentParticipantId);
-					
-					Log.d("leaderboard", startTime+ " = start time");
-					scanQRCodeActivity = new Intent(RegisterWithHuntActivity.this, ScanQRCodeActivity.class);
-					startActivity(scanQRCodeActivity);
 				}	
-				else
-				{
-					Log.d("leaderboard", "should change Begin Hunt to Continue");							
-					editor.putLong(huntId + " startTime", (long) startTime);
-					editor.putBoolean(huntId + " isHuntAlreadyStarted", huntAlreadyStarted);
-					editor.commit();
-					Log.d("leaderboard", "START TIME HAS BEEN SAVED TO SHAREDPREF");
+				else {
+					mSavingStartTimeDialog.cancel();						
+					mEditor.putLong(mHuntId + " startTime", (long) mStartTime);
+					mEditor.putBoolean(mHuntId + " isHuntAlreadyStarted", mHuntAlreadyStarted);
+					mEditor.commit();
+					Log.i("RegisterWithHunt", "START TIME HAS BEEN SAVED TO SHARED PREF");
 					
-					//Set up map with existing details
-					mMap = mMapManager.getMapData(currentParticipantId);
+					//Set up associated map with existing details.
+					mMap = mMapManager.getMapData(mHuntParticipantId);
 					
-					//If if the user has deleted the app and started again
-					if(mMap == null)
-					{
-						mMap = mMapManager.startNewMap(currentParticipantId);
+					//If if the participant has deleted the application and reinstalled it then create a new map for this treasure hunt.
+					if(mMap == null) {
+						mMap = mMapManager.startNewMap(mHuntParticipantId);
 					}
 					mMapManager.startTrackingMap(mMap);
 					
-					scanQRCodeActivity = new Intent(RegisterWithHuntActivity.this, ScanQRCodeActivity.class);
-					startActivity(scanQRCodeActivity);
+					mScanQRCodeIntent = new Intent(RegisterWithHuntActivity.this, ScanQRCodeActivity.class);
+					startActivity(mScanQRCodeIntent);
 				}
 			}
-			if (fileUrl != null) 
-			{
+			if (fileUrl != null) {
 				Log.i("RegisterWithHunt", fileUrl);
 			} 
-			else 
-			{
-				Log.e("RegisterWithHunt", "Nothing returned from the database");
+			else  {
+				Log.w("RegisterWithHunt", "Nothing returned from the database");
 			}		
 		}
 
+		/* Method to cancel the current task.*/
 		@Override
 		protected void onCancelled() {
 			mGetHuntParticipantIdTask = null;
+			mSavingStartTimeDialog.cancel();
 		}
 	}
 	
-	//HUNT FINISHED CHECK
-	//mRunManager.stopLocationUpdates();
-
+	/* This internal class attempts to save the time at which the 'Play' button was pressed by a participant who 
+	 * has just begun playing a given treasure hunt. */
+	public class SaveStartTimeTask extends AsyncTask<String, String, String> {
+		
+		/* Method calling the database to save the start time associated with the given participant and treasure hunt when the 'Play' button is first clicked after
+		 * registration.*/
+		@Override
+		protected String doInBackground(String... arg0) {
+			int startTimeSuccess;		
+			
+			try {
+					Log.i("RegisterWithHunt", "SaveStartTimeTask has begun");
+					mStartTime = System.currentTimeMillis();
+							
+					List<NameValuePair> parametersForHuntId = new ArrayList<NameValuePair>();
+					parametersForHuntId.add(new BasicNameValuePair("userId", Long.toString(mUserId)));
+					parametersForHuntId.add(new BasicNameValuePair("huntId", Long.toString(mHuntId)));
+					parametersForHuntId.add(new BasicNameValuePair("startTime", Long.toString(mStartTime)));
+					
+					Log.i("RegisterWithHunt", "starting");
+					JSONObject saveStartTimeObject = jsonParser.makeHttpRequest(SAVE_START_TIME_URL, "POST", parametersForHuntId);
+					Log.i("RegisterWithHunt", saveStartTimeObject.toString());
+					
+					startTimeSuccess = saveStartTimeObject.getInt(PHPHelper.SUCCESS);
+					
+					if(startTimeSuccess == 1) {
+						Log.i("RegisterWithHunt", "start time for " + mHuntId + " is " + mStartTime );
+						mHuntAlreadyStarted = true;
+						startTimeSaved = true;
+						return saveStartTimeObject.getString(PHPHelper.MESSAGE);			
+					}
+					else {
+						Log.w("RegisterWithHunt", saveStartTimeObject.getString(PHPHelper.MESSAGE));
+						startTimeSaved = false;
+						return saveStartTimeObject.getString(PHPHelper.MESSAGE);
+					}
+				}catch (JSONException e) {
+					try {
+						throw new JSONException(e.toString());
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+				}
+			return null;	
+		}
+	
+		/* Method called after the database call has been made. If the start time was successfully saved then it is saved in the shared preferences.*/
+		@Override
+		protected void onPostExecute(final String fileUrl) {
+			
+			mSaveStartTimeTask = null;
+			mSavingStartTimeDialog.cancel();
+		
+			if(startTimeSaved) {
+				mEditor.putBoolean(mHuntId + " isHuntAlreadyStarted", mHuntAlreadyStarted);
+				mEditor.putLong(mHuntId + " startTime", mStartTime);
+				mEditor.commit(); 
+				
+				mMap = mMapManager.startNewMap(mHuntParticipantId);
+				
+				Log.i("RegisterWithHunt", mStartTime+ " = start time");
+				mScanQRCodeIntent = new Intent(RegisterWithHuntActivity.this, ScanQRCodeActivity.class);
+				startActivity(mScanQRCodeIntent);
+			}
+			else {
+				Log.w("RegisterWithHunt", "Start time was not saved for the user: " + mUserId);
+				showSaveTimeFailureMessage();
+			}
+		}
+		
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			
+			mSaveStartTimeTask = null;
+			mSavingStartTimeDialog.cancel();
+		}
+	}
 }
-
-
-
-

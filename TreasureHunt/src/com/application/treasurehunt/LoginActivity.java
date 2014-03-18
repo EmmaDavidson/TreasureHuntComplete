@@ -1,13 +1,22 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+
+
 package com.application.treasurehunt;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-import Utilities.InternetUtility;
-import Utilities.JSONParser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,109 +37,116 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-/**
- *FILE GENERATED AUTOMATICALLY WHEN CREATING NEW LOGIN ACTIVITY, although altered to suit my needs
- */
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
-//COLOUR CHANGE IN THE BACKGROUND ON THE VIEWS - http://stackoverflow.com/questions/2748830/how-to-change-background-color-in-android-app
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import Utilities.InternetUtility;
+import Utilities.JSONParser;
+import Utilities.PHPHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/*
+ * The purpose of this activity is to allow a participant to log into the mobile application.
+ * [See dissertation Section 2.4.1.2].
+ * */
+
 public class LoginActivity extends Activity {
 	//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-	
 	//http://stackoverflow.com/questions/5806220/how-to-connect-to-my-http-localhost-web-server-from-android-emulator-in-eclips
-	private static final String myLoginUrl =  "http://lowryhosting.com/emmad/login.php";
-	//private static final String myLoginUrl = "http://192.168.1.74:80/webservice/choosehunt.php";
-	private static final String getUserIdUrl =  "http://lowryhosting.com/emmad/returnCurrentUserId.php";
-	//private static final String getUserIdUrl =  "http://192.168.1.74:80/webservice/returnCurrentUserId.php";
-	
-	private static final String getResetPasswordDetails = "http://lowryhosting.com/emmad/checkValidEmailAddress.php";
-	
-	private static final String tagSuccess = "success";
-	private static final String tagMessage = "message";
-	
-	private GetUserIdTask mUserTask = null;
-	private ResetPasswordTask mPasswordTask = null;
-	
-	private UserLoginTask mAuthTask = null;
-	private ProgressDialog pDialog; 
-	private ProgressDialog resetPasswordDialog;
-	
-	private boolean existingEmailAddress;
+	//COLOUR CHANGE IN THE BACKGROUND ON THE VIEWS - http://stackoverflow.com/questions/2748830/how-to-change-background-color-in-android-app
+	 //FILE GENERATED AUTOMATICALLY WHEN CREATING NEW LOGIN ACTIVITY, although altered to suit my needs
+	 
+	/*
+	 * Global variables used within LoginActivity.
+	 */
+	private static final String LOGIN_URL =  "http://lowryhosting.com/emmad/login.php";
+	private static final String RETRIEVE_USER_ID_URL =  "http://lowryhosting.com/emmad/returnCurrentUserId.php";
+	private static final String RETRIEVE_PASSWORD_RESET_DETAILS_URL = 
+			"http://lowryhosting.com/emmad/checkValidEmailAddress.php";
 	
 	private String mEmail;
 	private String mPassword;
+	private EditText mResetEmailAddress;
+	private String mSubmittedEmail;
 	
 	private Button mForgotPasswordButton;
 	private Button mLicenceButton;
-	
-	private boolean loginSuccessful = false;
-
+	private Button mLoginButton;
+	private Button mRegisterButton;
 	private EditText mEmailView;
 	private EditText mPasswordView;
+	private ProgressDialog mLoginDialog; 
+	private ProgressDialog mResetPasswordDialog;
 	
-	private static JSONObject userIdResult;
-	private static JSONObject resetEmailAddressResult;
-	private static String resetEmailAddressQuestionResult;
-	
-	Button mLoginButton;
-	Button mRegisterButton;
-	
-	boolean currentUserIdReturned;
-	boolean gettingUserIdSuccessful;
-	
-	EditText resetEmailAddress;
-	String submittedEmail;
-	
-	int userId = 0;
-	String userName;
-	Intent homepageActivityIntent;
 	public JSONParser jsonParser;
+	private VerifyEmailTask mVerifyEmailTask = null;
+	private UserLoginTask mLoginTask = null;
+	private static JSONObject sUserIdResult;
+	private static JSONObject sResetEmailAddressResult;
 	
-	InternetUtility internetUtility;
+	private InternetUtility mInternetUtility;
+	private String mConnectionTimeout = "Connection timeout. Please try again.";
 	
-	String securityQuestion;
-	String securityAnswer;
-	int resetPasswordId;
+	private boolean mExistingEmailAddress;
+	private boolean mLoginSuccessful = false;
+	private boolean mCurrentUserIdReturned = false;
+	private boolean mGettingUserIdSuccessful;
+	
+	private Intent mHomepageActivityIntent;
+	
+	private int mUserId = 0;
+	private String mUserName;
+	private String mSecurityQuestion;
+	private String mSecurityAnswer;
+	private int mResetPasswordId;
 
+	/*
+	 * Method called when the Activity is created (as part of the Android Life Cycle) which sets up this Activity's variables.
+	 * It also decides what to do if an on screen button was pressed.
+	 * */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		
-		internetUtility = InternetUtility.getInstance(this);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionBar = getActionBar();
+			actionBar.setTitle("Treasure Hunt");
+			actionBar.setSubtitle("Login");
+		}
 
 		setContentView(R.layout.activity_login);
 		mEmailView = (EditText) findViewById(R.id.login_email_address);
 		mPasswordView = (EditText) findViewById(R.id.login_password);
 		mForgotPasswordButton = (Button) findViewById(R.id.forgotten_password_button);
 		mLicenceButton = (Button) findViewById(R.id.licence_button);
-		
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		{
-			ActionBar actionBar = getActionBar();
-			actionBar.setTitle("Treasure Hunt");
-			actionBar.setSubtitle("Login");
-		}
-		
-		jsonParser = new JSONParser();
-		
 		mLoginButton = (Button) findViewById(R.id.sign_in_button);
+		mRegisterButton = (Button) findViewById(R.id.register_on_login_button);
+		
+		mInternetUtility = InternetUtility.getInstance(this);
+		jsonParser = new JSONParser();
 				
 		mLoginButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if(internetUtility.isInternetConnected())
-						{
-							pDialog = new ProgressDialog(LoginActivity.this);
-					        pDialog.setMessage("Attempting login...");
-							pDialog.setIndeterminate(false);
-							pDialog.setCancelable(false);
-							pDialog.show();
+						if(mInternetUtility.isInternetConnected()) {
+							
+							mLoginDialog = new ProgressDialog(LoginActivity.this);
+					        mLoginDialog.setMessage("Attempting login...");
+							mLoginDialog.setIndeterminate(false);
+							mLoginDialog.setCancelable(false);
+							mLoginDialog.show();
 							
 							attemptLogin();
 						}
-						else
-						{
-							Toast.makeText(LoginActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+						else {
+							Toast.makeText(LoginActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
 						}
 					}
 				});
@@ -145,7 +161,7 @@ public class LoginActivity extends Activity {
 					}
 				});
 		
-		findViewById(R.id.register_on_login_button).setOnClickListener(
+		mRegisterButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
@@ -157,53 +173,109 @@ public class LoginActivity extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						LayoutInflater li = LayoutInflater.from(LoginActivity.this);
-						final View emailView = li.inflate(R.layout.email_address_dialog, null);
-						
-						//Alert pop up to enter email address 
-						Builder builder = new Builder(LoginActivity.this);
-						builder.setView(emailView);
-						builder.setCancelable(false);
-						builder.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								
-								resetEmailAddress = (EditText) emailView.findViewById(R.id.email_address_reset_text_field);
-								submittedEmail = resetEmailAddress.getText().toString();
-								//dialog.cancel();
-								if(internetUtility.isInternetConnected())
-								{
-									attemptResetPassword();
-								}
-								else
-								{
-									Toast.makeText(LoginActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
-								}
-								
-								
-							}
-						});
-						
-						builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
-							}
-						});
-					
-					
-						AlertDialog emailDialog = builder.create();
-						emailDialog.show();
+							handleForgottenPassword();
 					}
-				});
+				});	
+	}
+	
+	/* Method to call the asynchronous class 'UserLoginTask'. If call to the database takes too long then a timeout should occur.*/
+	private void attemptLogin() {	
 		
-		
+			mEmail = mEmailView.getText().toString();
+			mPassword = mPasswordView.getText().toString();
+			
+			if((isValidEmailAddress() && isValidPassword())) {		
+				mLoginTask = new UserLoginTask(); 
+				mLoginTask.execute((String) null);
+				
+				//http://stackoverflow.com/questions/7882739/android-setting-a-timeout-for-an-asynctask?rq=1
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if(mLoginTask != null) {
+							if(mLoginTask.getStatus() == AsyncTask.Status.RUNNING) {
+								mLoginTask.cancel(true);
+								mLoginDialog.cancel();
+								Toast.makeText(LoginActivity.this, mConnectionTimeout, 
+										Toast.LENGTH_LONG).show();
+							}
+						}
+					}
+				}	
+				, 100000);
+			}	
 	}
 
-	private void goToRegister()
-	{		
+	/* Method to call the asynchronous class 'VerifyEmailTask'. If call to the database takes too long then a timeout should occur.*/
+	public void attemptToVerifyEmail() {
+		
+		if (mVerifyEmailTask != null) {
+			return;
+		} 	
+		mVerifyEmailTask = new VerifyEmailTask();
+		mVerifyEmailTask.execute((String) null);
+	
+		Handler handlerForUserTask = new Handler();
+		handlerForUserTask.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if(mVerifyEmailTask!= null) {
+					if(mVerifyEmailTask.getStatus() == AsyncTask.Status.RUNNING) {
+						mVerifyEmailTask.cancel(true);
+						mResetPasswordDialog.cancel();
+						Toast.makeText(LoginActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
+					}
+				}
+			}
+		}
+		, 10000);	
+	}
+
+	/* Method to handle a situation where a participant has forgotten their password. Displays a dialog which allows a participant
+	 * to enter their email address (to check its validity before resetting its associated password).*/ 
+	public void handleForgottenPassword() {
+		
+		LayoutInflater li = LayoutInflater.from(LoginActivity.this);
+		final View emailView = li.inflate(R.layout.email_address_dialog, null);
+		
+		Builder builder = new Builder(LoginActivity.this);
+		builder.setView(emailView);
+		builder.setCancelable(false);
+		builder.setPositiveButton("Reset", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				mResetEmailAddress = (EditText) emailView.findViewById(R.id.email_address_reset_text_field);
+				mSubmittedEmail = mResetEmailAddress.getText().toString();
+				
+				if(mInternetUtility.isInternetConnected()) {
+					attemptToVerifyEmail();
+				}
+				else {
+					Toast.makeText(LoginActivity.this, "Internet is required", Toast.LENGTH_LONG).show();
+				}	
+			}
+		});
+		
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+	
+		AlertDialog emailDialog = builder.create();
+		emailDialog.show();
+	}
+	
+	/*
+	 * Method that directs a user to the RegisterActivity if they wish to register with the application instead.
+	 * */
+	private void goToRegister() {		
+		
 		Intent intent = new Intent(this, RegisterActivity.class);
 		startActivity(intent);	
 		
@@ -211,418 +283,263 @@ public class LoginActivity extends Activity {
 		mPasswordView.setText(null);
 	}
 	
-	
-	private void attemptLogin() {		
-
+	/*Method to check if the email address entered conforms with the validation rules for this variable.*/
+	private boolean isValidEmailAddress() {	
 		
-			mEmail = mEmailView.getText().toString();
-			mPassword = mPasswordView.getText().toString();
-			
-			if((isValidEmailAddress() && isValidPassword()))
-			{		
-				mAuthTask = new UserLoginTask(); 
-				mAuthTask.execute((String) null);
-				
-				//http://stackoverflow.com/questions/7882739/android-setting-a-timeout-for-an-asynctask?rq=1
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						if(mAuthTask != null)
-						{
-							if(mAuthTask.getStatus() == AsyncTask.Status.RUNNING)
-							{
-								mAuthTask.cancel(true);
-								pDialog.cancel();
-								Toast.makeText(LoginActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
-							}
-						}
-					}
-				}	
-				, 100000);
-				
-				//mEmailView.setText(null);
-				//mPasswordView.setText(null);
-			}	
-		
-	}
-	
-	
-	private boolean isValidEmailAddress()
-	{	
 		if (TextUtils.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_email_null));
 			return false;
 			
 		}
-		else if(mEmail.length() < 10)
-		{
-			mEmailView.setError(getString(R.string.error_email_too_short));	
-			return false;
-		}
 		//http://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address-on-android
-		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches())
-		{
+		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches()) {
 			mEmailView.setError(getString(R.string.error_email_incorrect_format));	
 			return false;
 		}
 		
 		return true;
-		
 	}
 	
-	private boolean isValidPassword()
-	{
+	/* Method to check if the password entered on screen conforms with the validation rules for this field.*/
+	private boolean isValidPassword() {
+		
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_password_null));
-			return false;
-			
-		}
-		else if(mPassword.length() < 6)
-		{
-			mPasswordView.setError(getString(R.string.error_password_too_short));	
-			return false;
-		}
-		
-		return true;
-		
+			return false;	
+		}	
+		return true;	
 	}
 	
-	//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
+	
+	/*
+	 * Method saves the currently typed email address and password when the Activity is paused.
+	 * */
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState)
-	{	
+	public void onSaveInstanceState(Bundle savedInstanceState) {	
+		
+		//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
 		savedInstanceState.putString("LOGIN_EMAIL_ADDRESS", mEmailView.getText().toString());
 		savedInstanceState.putString("LOGIN_PASSWORD", mPasswordView.getText().toString());
 		
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
+	/*
+	 * Method restoring the currently typed email address and password.
+	 * */
 	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState)
-	{
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		
 		super.onRestoreInstanceState(savedInstanceState);
 		
 		mEmailView.setText(savedInstanceState.getString("LOGIN_EMAIL_ADDRESS"));
 		mPasswordView.setText(savedInstanceState.getString("LOGIN_PASSWORD"));
 	}
 	
-public class UserLoginTask extends AsyncTask<String, String, String>{
-	
-	@Override
-	protected String doInBackground(String... args) {
-		//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
-		int success;
-		String email = mEmail;
-		String password = mPassword;
+	/* This internal class attempts to log the participant into the application with the details submitted on screen. */
+	public class UserLoginTask extends AsyncTask<String, String, String>{
 		
-		try {
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			
-			parameters.add(new BasicNameValuePair("email", email));
-			parameters.add(new BasicNameValuePair("password", password));
-			
-			Log.d("request", "starting");
-			
-			JSONObject retrievedJsonObject = jsonParser.makeHttpRequest(myLoginUrl, "POST", parameters);
-			Log.d("Login attempt", retrievedJsonObject.toString());
-			
-			success = retrievedJsonObject.getInt(tagSuccess);
-			if(success == 1)
-			{
-				Log.i("Login Successful!", retrievedJsonObject.toString());
-				//finish();
-				loginSuccessful = true;
-				
-				return retrievedJsonObject.getString(tagMessage);
-			}
-			else
-			{
-				Log.e("Login failed!", retrievedJsonObject.getString(tagMessage));
-				return retrievedJsonObject.getString(tagMessage);
-			}
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		return "";
-	}
-
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mAuthTask = null;
-		
-		if(loginSuccessful)
-		{
-			Log.i("Login", "Login was successful");
-			attemptToReturnUserId();
-		}
-		else
-		{	
-			Builder alertForFailedLogin = new Builder(LoginActivity.this);
-			alertForFailedLogin.setTitle("Login unsuccessful");
-			alertForFailedLogin.setMessage("Login was unsuccessful. Please try again.");
-			alertForFailedLogin.setCancelable(false);
-			alertForFailedLogin.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			});
-			
-			alertForFailedLogin.create();
-			alertForFailedLogin.show();
-			
-			mEmailView.setText("");
-			mPasswordView.setText(""); 
-			
-			Log.e("Login", "Login failure for email address: " + mEmailView.getText());
-		}
-				
-	}
-
-	@Override
-	protected void onCancelled() {
-		mAuthTask = null;
-	}
-}
-
-private void attemptToReturnUserId()
-{
-	if (mUserTask != null) {
-		return;
-	} 	
-	mUserTask = new GetUserIdTask();
-	mUserTask.execute((String) null);
-
-	Handler handlerForUserTask = new Handler();
-	handlerForUserTask.postDelayed(new Runnable()
-	{
+		/*Method calling the database to attempt to retrieve the data associated with the details entered on screen.*/
 		@Override
-		public void run()
-		{
-			if(mUserTask!= null)
-			{
-				if(mUserTask.getStatus() == AsyncTask.Status.RUNNING)
-				{
-					mUserTask.cancel(true);
-					pDialog.cancel();
-					Toast.makeText(LoginActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+		protected String doInBackground(String... args) {
+			
+			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
+			int success;
+			String email = mEmail;
+			String password = mPassword;
+			
+			try {
+				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+				
+				parameters.add(new BasicNameValuePair("email", email));
+				parameters.add(new BasicNameValuePair("password", password));
+				
+				Log.i("Login", "starting");
+				
+				JSONObject jsonResult = jsonParser.makeHttpRequest(LOGIN_URL, "POST", parameters);
+				Log.i("Login", jsonResult.toString());
+				
+				success = jsonResult.getInt(PHPHelper.SUCCESS);
+				if(success == 1) {
+					Log.i("Login", jsonResult.toString());
+					//finish();
+					mLoginSuccessful = true;
+					
+					sUserIdResult = jsonResult.getJSONObject("result");
+					mCurrentUserIdReturned = true;
+					mUserId = sUserIdResult.getInt("UserId");
+					mUserName = sUserIdResult.getString("Name");
+					mGettingUserIdSuccessful = true;
+					mHomepageActivityIntent = new Intent(LoginActivity.this, HomepageActivity.class);
+					
+					return jsonResult.getString(PHPHelper.MESSAGE);
+				}
+				else {
+					Log.w("Login", jsonResult.getString(PHPHelper.MESSAGE));
+					return jsonResult.getString(PHPHelper.MESSAGE);
+				}
+				
+			} catch (JSONException e) {
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
 				}
 			}
+	
+			return "";
 		}
-	}
-	, 10000);	
-}
-
-public void attemptResetPassword()
-{
-	if (mPasswordTask != null) {
-		return;
-	} 	
-	mPasswordTask = new ResetPasswordTask();
-	mPasswordTask.execute((String) null);
-
-	Handler handlerForUserTask = new Handler();
-	handlerForUserTask.postDelayed(new Runnable()
-	{
+	
+		/* Method called after the database call has been made. If the data entered on screen matches what is stored in the database
+		 * for a given email address, then the participant is logged in. Else, they are notified on screen of any errors.*/
 		@Override
-		public void run()
-		{
-			if(mPasswordTask!= null)
-			{
-				if(mPasswordTask.getStatus() == AsyncTask.Status.RUNNING)
-				{
-					mPasswordTask.cancel(true);
-					resetPasswordDialog.cancel();
-					Toast.makeText(LoginActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+		protected void onPostExecute(final String fileUrl) {
+			
+			mLoginTask = null;
+			mLoginDialog.cancel();
+			
+			if(mLoginSuccessful) {
+				Log.i("Login", "Login was successful");
+
+				SharedPreferences settings = getSharedPreferences("UserPreferencesFile", 0);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putInt("currentUserId", mUserId);
+				editor.putString("currentUserName", mUserName);
+				editor.commit();
+				
+				startActivity(mHomepageActivityIntent);
+			}
+			else {	
+				Builder alertForFailedLogin = new Builder(LoginActivity.this);
+				alertForFailedLogin.setTitle("Login unsuccessful");
+				alertForFailedLogin.setMessage("Login was unsuccessful. Please try again.");
+				alertForFailedLogin.setCancelable(false);
+				alertForFailedLogin.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertForFailedLogin.create();
+				alertForFailedLogin.show();
+				
+				mEmailView.setText("");
+				mPasswordView.setText(""); 
+				
+				Log.w("Login", "Login failure for email address: " + mEmailView.getText());
+			}	
+		}
+	
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			
+			mLoginTask = null;
+		}
+	}
+
+	/* This internal class attempts to retrieve the details associated with an email address entered on screen for the purpose
+	 * of resetting that participants password. */
+	public class VerifyEmailTask extends AsyncTask<String, String, String> {
+		
+		/* A dialog will appear on screen to show the participant a retrieval of data is being made.*/
+		@Override
+		protected void onPreExecute() {
+			
+			super.onPreExecute();
+			mResetPasswordDialog = new ProgressDialog(LoginActivity.this);
+			mResetPasswordDialog.setMessage("Attempting to reset password");
+			mResetPasswordDialog.setIndeterminate(false);
+			mResetPasswordDialog.setCancelable(false);
+			mResetPasswordDialog.show();
+		}
+	
+		/* Method calling the database to return the data associated with the email address supplied to reset the password.*/
+		@Override
+		protected String doInBackground(String... arg0) {
+			
+			int success;
+			List<NameValuePair> parametersForUserId = new ArrayList<NameValuePair>();
+			//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
+			parametersForUserId.add(new BasicNameValuePair("email", mSubmittedEmail));
+			
+			try{
+				Log.i("Login", "starting");
+				JSONObject jsonResult = jsonParser.makeHttpRequest(RETRIEVE_PASSWORD_RESET_DETAILS_URL, 
+						"POST", parametersForUserId);
+				Log.i("Login", jsonResult.toString());
+				success = jsonResult.getInt(PHPHelper.SUCCESS);
+				
+				if(success == 1) {
+					Log.i("Login", jsonResult.toString());
+					sResetEmailAddressResult = jsonResult.getJSONObject("result");
+					mSecurityAnswer = sResetEmailAddressResult.getString("Answer");
+					mSecurityQuestion = jsonResult.getString("securityquestion");
+					mResetPasswordId = sResetEmailAddressResult.getInt("UserId");
+					mExistingEmailAddress = true;
+					return jsonResult.getString(PHPHelper.MESSAGE);	
+				}
+				else {
+					Log.w("Login", jsonResult.getString(PHPHelper.MESSAGE));
+					mExistingEmailAddress = false;
+					return jsonResult.getString(PHPHelper.MESSAGE);
 				}
 			}
-		}
-	}
-	, 10000);	
-}
-
-
-public class GetUserIdTask extends AsyncTask<String, String, String> {
-
-	@Override
-	protected String doInBackground(String... arg0) {
-		
-		int success;
-		//GETTING THE USER ID
-		List<NameValuePair> parametersForUserId = new ArrayList<NameValuePair>();
-		//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-		parametersForUserId.add(new BasicNameValuePair("email", mEmail));
-		
-		try{
-			Log.d("request", "starting");
-			JSONObject jsonFindUserId = jsonParser.makeHttpRequest(getUserIdUrl, "POST", parametersForUserId);
-			Log.d("Get User Id Attempt", jsonFindUserId.toString());
-			success = jsonFindUserId.getInt(tagSuccess);
-			
-			if(success == 1)
-			{
-				userIdResult = jsonFindUserId.getJSONObject("result");
-				currentUserIdReturned = true;
-				userId = userIdResult.getInt("UserId");
-				userName = userIdResult.getString("Name");
-				gettingUserIdSuccessful = true;
-				homepageActivityIntent = new Intent(LoginActivity.this, HomepageActivity.class);
-				//homepageActivityIntent.putExtra("userName", userName);
-				
-				return jsonFindUserId.getString(tagMessage);
-				
-			}
-			else
-			{
-				Log.d("Getting User Id failed!", jsonFindUserId.getString(tagMessage));
-				return jsonFindUserId.getString(tagMessage);
-			}
-		}
-		catch (JSONException e) {
-			
-		}
-		
-		return null;
-	}
-	
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mUserTask = null;
-		pDialog.cancel();
-		
-		if(gettingUserIdSuccessful)
-		{
-			SharedPreferences settings = getSharedPreferences("UserPreferencesFile", 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putInt("currentUserId", userId);
-			editor.putString("currentUserName", userName);
-			editor.commit();
-			
-			startActivity(homepageActivityIntent);
-		}
-		else
-		{
-			Builder alertForNoData = new Builder(LoginActivity.this);
-			alertForNoData.setTitle("Login unsuccessful");
-			alertForNoData.setMessage("Login was unsuccessful. Please try again.");
-			alertForNoData.setCancelable(false);
-			alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
+			catch (JSONException e) {
+				try {
+					throw new JSONException(e.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
 				}
-			});
-			
-			alertForNoData.create();
-			alertForNoData.show();
-
-			Log.e("Login", "Login failure for email address: " + mEmailView.getText());
-		}
-	}
-
-	@Override
-	protected void onCancelled() {
-		mUserTask = null;
-	}
-}
-
-public class ResetPasswordTask extends AsyncTask<String, String, String> {
-	
-	@Override
-	protected void onPreExecute()
-	{
-		super.onPreExecute();
-		resetPasswordDialog = new ProgressDialog(LoginActivity.this);
-		resetPasswordDialog.setMessage("Attempting to reset password");
-		resetPasswordDialog.setIndeterminate(false);
-		resetPasswordDialog.setCancelable(false);
-		resetPasswordDialog.show();
-	}
-
-	@Override
-	protected String doInBackground(String... arg0) {
-		
-		int success;
-		//GETTING THE USER ID
-		List<NameValuePair> parametersForUserId = new ArrayList<NameValuePair>();
-		//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-		parametersForUserId.add(new BasicNameValuePair("email", submittedEmail));
-		
-		try{
-			Log.d("request", "starting");
-			JSONObject jsonFindUserId = jsonParser.makeHttpRequest(getResetPasswordDetails, "POST", parametersForUserId);
-			Log.d("Get email address for password reset attempt", jsonFindUserId.toString());
-			success = jsonFindUserId.getInt(tagSuccess);
-			
-			if(success == 1)
-			{
-				resetEmailAddressResult = jsonFindUserId.getJSONObject("result");
-				securityAnswer = resetEmailAddressResult.getString("Answer");
-				securityQuestion = jsonFindUserId.getString("securityquestion");
-				resetPasswordId = resetEmailAddressResult.getInt("UserId");
-				existingEmailAddress = true;
-				return jsonFindUserId.getString(tagMessage);	
 			}
-			else
-			{
-				Log.d("Failed attempt at reset password", jsonFindUserId.getString(tagMessage));
-				existingEmailAddress = false;
-				return jsonFindUserId.getString(tagMessage);
+			
+			return null;
+		}
+		
+		/* Method called after the database call has been made. If the email supplied is valid and exists within the database,
+		 * the participant is navigated to a view to allow them to reset their password. Else, they are notified of any 
+		 * errors on screen.*/
+		@Override
+		protected void onPostExecute(final String fileUrl) {
+			
+			mVerifyEmailTask = null;
+			mResetPasswordDialog.cancel();
+			
+			if(mExistingEmailAddress) {
+				Intent forgottenPasswordIntent = new Intent(LoginActivity.this, ForgottenPasswordActivity.class);
+				forgottenPasswordIntent.putExtra("EmailAddress", mResetEmailAddress.getText().toString());
+				forgottenPasswordIntent.putExtra("SecurityQuestion", mSecurityQuestion);
+				forgottenPasswordIntent.putExtra("SecurityAnswer", mSecurityAnswer);
+				forgottenPasswordIntent.putExtra("UserId", mResetPasswordId);
+				startActivity(forgottenPasswordIntent);
 			}
-		}
-		catch (JSONException e) {
-			Log.d("ResetPassword", e.toString());
-		}
-		
-		return null;
-	}
-	
-	@Override
-	protected void onPostExecute(final String fileUrl) {
-		mPasswordTask = null;
-		resetPasswordDialog.cancel();
-		
-		if(existingEmailAddress)
-		{
-			Intent forgottenPasswordIntent = new Intent(LoginActivity.this, ForgottenPasswordActivity.class);
-			forgottenPasswordIntent.putExtra("EmailAddress", resetEmailAddress.getText().toString());
-			forgottenPasswordIntent.putExtra("SecurityQuestion", securityQuestion);
-			forgottenPasswordIntent.putExtra("SecurityAnswer", securityAnswer);
-			forgottenPasswordIntent.putExtra("UserId", resetPasswordId);
-			startActivity(forgottenPasswordIntent);
-		}
-		else
-		{	
-			Builder incorrectEmailBuilder = new Builder(LoginActivity.this);									
-			incorrectEmailBuilder.setTitle("Invalid email");
-			incorrectEmailBuilder.setMessage("You entered an invalid email address");
-			incorrectEmailBuilder.setCancelable(false);
-			incorrectEmailBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+			else {	
+				Builder incorrectEmailBuilder = new Builder(LoginActivity.this);									
+				incorrectEmailBuilder.setTitle("Invalid email");
+				incorrectEmailBuilder.setMessage("You entered an invalid email address");
+				incorrectEmailBuilder.setCancelable(false);
+				incorrectEmailBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
 				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-				}
-			});
-			
-			incorrectEmailBuilder.create();
-			incorrectEmailBuilder.show();
-			
+				incorrectEmailBuilder.create();
+				incorrectEmailBuilder.show();
+				
+			}
+		}
+	
+		/* Method to cancel the current task.*/
+		@Override
+		protected void onCancelled() {
+			mVerifyEmailTask = null;
 		}
 	}
-
-	@Override
-	protected void onCancelled() {
-		mPasswordTask = null;
-	}
-}
 }
 
 

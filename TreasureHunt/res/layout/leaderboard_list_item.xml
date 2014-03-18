@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/leaderboard_name"
         android:layout_below="@+id/leaderboard_name"
-        android:text="Small Text"
+        android:text="@string/temp"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/imageView1"
-        android:text="Text"
+        android:text="@string/temp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView

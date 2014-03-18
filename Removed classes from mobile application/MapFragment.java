@@ -1,6 +1,10 @@
-package com.application.treasurehunt;
+package Mapping;
 
+import com.application.treasurehunt.GoogleMapActivity;
 import com.application.treasurehunt.R;
+import com.application.treasurehunt.R.id;
+import com.application.treasurehunt.R.layout;
+
 import sqlLiteDatabase.LastLocationLoader;
 import sqlLiteDatabase.MapData;
 import android.content.BroadcastReceiver;

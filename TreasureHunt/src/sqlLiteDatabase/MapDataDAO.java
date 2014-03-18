@@ -1,186 +1,122 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at 
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+
 package sqlLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.application.treasurehunt.LocationCursor;
-import Utilities.MySQLiteHelperForMaps;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/* This class handles the interaction between the application and SQLite (local) database for the Locations, Markers and Map
+ * tables.*/
 public class MapDataDAO {
 
-	private SQLiteDatabase database;
-	  private MySQLiteHelperForMaps dbHelper;
-	  private String[] allColumnsLocations = { MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelperForMaps.COLUMN_MAPS_LATITUDE, MySQLiteHelperForMaps.COLUMN_MAPS_LONGTITUDE, MySQLiteHelperForMaps.COLUMN_MAPS_ALTITUDE , MySQLiteHelperForMaps.COLUMN_MAPS_TIME_STAMP };
-	  private String[] allColumnsMaps = { MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelperForMaps.COLUMN_MAPS_START_TIME};
-	  private String[] allColumnsMarkers = { MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelperForMaps.COLUMN_MAPS_LATITUDE, MySQLiteHelperForMaps.COLUMN_MAPS_LONGTITUDE };
+	  /* Global variables for MapDataDAO. */
+	  private SQLiteDatabase mDatabase;
+	  private MySQLiteHelper mDbHelper;
+	  private String[] mAllColumnsLocations = { MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelper.COLUMN_MAPS_LATITUDE, MySQLiteHelper.COLUMN_MAPS_LONGTITUDE, MySQLiteHelper.COLUMN_MAPS_ALTITUDE , MySQLiteHelper.COLUMN_MAPS_TIME_STAMP };
+	  private String[] mAllColumnsMaps = { MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelper.COLUMN_MAPS_START_TIME};
+	  private String[] mAllColumnsMarkers = { MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelper.COLUMN_MAPS_LATITUDE, MySQLiteHelper.COLUMN_MAPS_LONGTITUDE };
 	  
+	  /* Constructor */
 	  public MapDataDAO(Context context) {
-	    dbHelper = new MySQLiteHelperForMaps(context);
+	    mDbHelper = new MySQLiteHelper(context);
 	  }
 
+	  /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
 	  public void open() throws SQLException {
-		  database = dbHelper.getWritableDatabase();
-		  //Unclean - drops the database each time and re-adds the table.
-		  //updateDatabaseLocally();
-	  }
-	  
-	  public void updateDatabaseLocally()
-	  {
-		  dbHelper.onUpgrade(database, database.getVersion(), database.getVersion());
+		  mDatabase = mDbHelper.getWritableDatabase();
 	  }
 
+	  /* Method handling what happens when the helper is closed. It closes access to the SQLite (local) database.*/
 	  public void close() {
-	    dbHelper.close();
+	    mDbHelper.close();
 	  }
 	  
-	  public int insertRun(MapData run)
-	  {
+	  /* Method that inserts a new row into the Map table with the MapData supplied. Based on Page 1370. */
+	  public void insertMap(MapData map) {
 		  ContentValues values = new ContentValues();
-		  values.put(MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, run.getParticipantId()); //THIS NEEDS CHANGED
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_START_TIME, run.getStartDate().toString());
-		  long insertId = database.insert(MySQLiteHelperForMaps.TABLE_MAPS, null, values);
-		  Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_MAPS,
-				  allColumnsMaps, null, null,
-			        null, null, null);	
-	
-			    cursor.moveToFirst();
-			    MapData newRun = cursorToMapEntry(cursor);
-			    cursor.close();
-			    return newRun.getParticipantId();
-
+		  values.put(MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, map.getParticipantId());
+		  values.put(MySQLiteHelper.COLUMN_MAPS_START_TIME, map.getStartDate().toString());
+		  long insertId = mDatabase.insert(MySQLiteHelper.TABLE_MAPS, null, values);
 	  }
 	  
-	  public long insertLocation(int participantId, Location location)
-	  {
+	 /* Method that inserts a row into the Location table for a given HuntParticipantId. */
+	 public void insertLocation(int huntParticipantId, Location location) {
 		  ContentValues values = new ContentValues(); 
-		  values.put(MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, participantId);
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_LATITUDE, location.getLatitude());
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_LONGTITUDE, location.getLongitude());
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_ALTITUDE, location.getAltitude());
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_TIME_STAMP, location.getTime());
-		  long insertId = database.insert(MySQLiteHelperForMaps.TABLE_LOCATIONS, null, values);
-		  Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_LOCATIONS,
-				  allColumnsLocations, null, null,
-			        null, null, null);	
-	
-			    cursor.moveToFirst();
-			    MapData newRun = cursorToMapEntry(cursor);
-			    cursor.close();
-			    return newRun.getParticipantId();
+		  values.put(MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, huntParticipantId);
+		  values.put(MySQLiteHelper.COLUMN_MAPS_LATITUDE, location.getLatitude());
+		  values.put(MySQLiteHelper.COLUMN_MAPS_LONGTITUDE, location.getLongitude());
+		  values.put(MySQLiteHelper.COLUMN_MAPS_ALTITUDE, location.getAltitude());
+		  values.put(MySQLiteHelper.COLUMN_MAPS_TIME_STAMP, location.getTime());
+		  long insertId = mDatabase.insert(MySQLiteHelper.TABLE_LOCATIONS, null, values);
 	  }
 	  
-	  public void insertMarker(int participantId, Location location)
-	  {
+	  /* Method that inserts a row into the Marker table for a given HuntParticipantId i.e. it stores the location of
+	   * where the given participant has successfully scanned a QR Code for a particular treasure hunt. */
+	  public void insertMarker(int participantId, Location location) {
 		  ContentValues values = new ContentValues(); 
-		  values.put(MySQLiteHelperForMaps.COLUMM_MAPS_PARTICIPANT_ID, participantId);
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_LATITUDE, location.getLatitude());
-		  values.put(MySQLiteHelperForMaps.COLUMN_MAPS_LONGTITUDE, location.getLongitude());
-		  long insertId = database.insert(MySQLiteHelperForMaps.TABLE_MARKERS, null, values);
-	  }
-	 
-	  private MapData cursorToMapEntry(Cursor cursor) {
-		  MapData runResult = new MapData();
-		  	runResult.setParticipantId(cursor.getInt(0));
-		  	//runResult.setStartDate(cursor.getDouble(1));
-		    
-		    return runResult;
-	  } 
-	  
-	  private Location cursorToLocationEntry(Cursor cursor) {
-		  Location locationResult = new Location("GPS");
-		  locationResult.setLatitude(cursor.getDouble(1));
-		  locationResult.setLongitude(cursor.getDouble(2));
-		  locationResult.setAltitude(cursor.getDouble(3));
-		  locationResult.setTime(cursor.getLong(4));	    
-		   
-		  return locationResult;
+		  values.put(MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, participantId);
+		  values.put(MySQLiteHelper.COLUMN_MAPS_LATITUDE, location.getLatitude());
+		  values.put(MySQLiteHelper.COLUMN_MAPS_LONGTITUDE, location.getLongitude());
+		  long insertId = mDatabase.insert(MySQLiteHelper.TABLE_MARKERS, null, values);
 	  }
 	  
-	  private Location cursorToMarkerEntry(Cursor cursor) {
-		  Location locationResult = new Location("GPS");
-		  locationResult.setLatitude(cursor.getDouble(1));
-		  locationResult.setLongitude(cursor.getDouble(2));	    
-		  return locationResult;
-	  }
-	  
-	  public List<MapData> queryRuns() {
-		    List<MapData> mapEntries = new ArrayList<MapData>();
-		    //http://stackoverflow.com/questions/12339121/multiple-orderby-in-sqlitedatabase-query-method
-		   Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_MAPS,
-				   allColumnsMaps, null, null, null, null, null);
-
-		    cursor.moveToFirst();
-		    while (!cursor.isAfterLast()) {
-		      MapData mapEntry = cursorToMapEntry(cursor);
-		      mapEntries.add(mapEntry);
-		     
-		      cursor.moveToNext();
-		    }
-		    
-		    cursor.close();
-		    return mapEntries;
-		  }
-	  
-	  public MapData queryRun(int participantId)
-	  {
-		  String arguments =  "HuntParticipantId = '"+participantId + "'";
-		  Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_MAPS, allColumnsMaps , arguments, null , null , null, null, "1");
+	  /* Method that returns all of the data from the SQLite (local) database for a given HuntParticipantId. Based on Page 1406 */
+	  public MapData queryMap(int huntParticipantId) {
+		  String arguments =  "HuntParticipantId = '"+huntParticipantId + "'";
+		  Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_MAPS, mAllColumnsMaps , arguments, null , null , null, null, "1");
 		  cursor.moveToFirst();
-		  if(!cursor.isAfterLast())
-		  {
+		  if(!cursor.isAfterLast()) {
 			  MapData run = cursorToMapEntry(cursor);
 			  return run;
 		  }
-		  return null;
-		  
+		  return null;  
 	  }
 	  
-	  public Location queryLastLocationForRun(int participantId)
-	  {
+	  /*Method retrieves the last location stored for the given map identified by the HuntParticipantId. Based on Page 1414.*/
+	  public Location queryLastLocationForMap(int participantId) {
 		  String arguments =  "HuntParticipantId = '"+participantId + "'";
-		  Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_LOCATIONS, allColumnsLocations , arguments, null , null , null, MySQLiteHelperForMaps.COLUMN_MAPS_TIME_STAMP + " DESC", "1");
+		  Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_LOCATIONS, mAllColumnsLocations , arguments, null , null , null, MySQLiteHelper.COLUMN_MAPS_TIME_STAMP + " DESC", "1");
 		  cursor.moveToFirst();
 		  if(!cursor.isAfterLast())
 		  {
 			  Location location = cursorToLocationEntry(cursor);
 			  return location;
 		  }
-		  return null;
-		  
+		  return null;  
 	  }
 	  
-	  public List<Location> queryLocationsForMap(int participantId)
-	  {
+	  /* Method returns from the SQLite (local) database data of all locations stored from where a successful QRCode scan has 
+	   * been made for a given HuntParticipantId. This is not done asynchronously as it is unlikely that a given treasure
+	   * hunt would have e.g. hundreds of QR Codes to scan as part of the hunt and thus displayed on the map
+	   * by the participant.  */
+	  public List<Location> queryMarkersForMap(int huntParticipantId) {
 		  List<Location> mapEntries = new ArrayList<Location>();
 		    //http://stackoverflow.com/questions/12339121/multiple-orderby-in-sqlitedatabase-query-method
-		   String arguments =  "HuntParticipantId = '"+participantId + "'";
-		   Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_LOCATIONS,
-				   allColumnsLocations, arguments, null, null, null, null);
-
-		   cursor.moveToFirst();
-		    while (!cursor.isAfterLast()) {
-		      Location mapEntry = cursorToLocationEntry(cursor);
-		      mapEntries.add(mapEntry);
-		     
-		      cursor.moveToNext();
-		    }
-		    
-		    cursor.close();
-		    return mapEntries;
-	  }
-	  
-	  public List<Location> queryMarkersForMap(int participantId)
-	  {
-		  List<Location> mapEntries = new ArrayList<Location>();
-		    //http://stackoverflow.com/questions/12339121/multiple-orderby-in-sqlitedatabase-query-method
-		   String arguments =  "HuntParticipantId = '"+participantId + "'";
-		   Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_MARKERS,
-				   allColumnsMarkers, arguments, null, null, null, null);
+		   String arguments =  "HuntParticipantId = '"+huntParticipantId + "'";
+		   Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_MARKERS,
+				   mAllColumnsMarkers, arguments, null, null, null, null);
 
 		   cursor.moveToFirst();
 		    while (!cursor.isAfterLast()) {
@@ -194,14 +130,73 @@ public class MapDataDAO {
 		    return mapEntries;
 	  }
 	  
-	  public LocationCursor queryLocationsForMapAsync(int participantId)
-	  {
-		  String arguments =  "HuntParticipantId = '"+participantId + "'";
-		   Cursor cursor = database.query(MySQLiteHelperForMaps.TABLE_LOCATIONS,
-				   allColumnsLocations, arguments, null, null, null, MySQLiteHelperForMaps.COLUMN_MAPS_TIME_STAMP + " asc");
-		   return new LocationCursor(cursor);
-		   
+	  /* Method returns from the SQLite (local) database data of all locations stored for a given HuntParticipantId.
+	   * The list is returned into a LocationCursor to ensure that the displaying of data is done off the main UI thread i.e.
+	   * in the scenario where there is lots of location data we do not want to slow down the main UI thread. Page 1463. */
+	  public LocationCursor queryLocationsForMapAsync(int huntParticipantId) {
+		  String arguments =  "HuntParticipantId = '"+huntParticipantId + "'";
+		   Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_LOCATIONS,
+				   mAllColumnsLocations, arguments, null, null, null, MySQLiteHelper.COLUMN_MAPS_TIME_STAMP + " asc");
+		   return new LocationCursor(cursor); 
 	  }
+	  
+	  /* A cursor that creates a MapData instance from a given Cursor i.e. retrieves the data found in a single row
+	   * returned by a query for the Map table.*/
+	  private MapData cursorToMapEntry(Cursor cursor) {
+		  MapData runResult = new MapData();
+		  runResult.setParticipantId(cursor.getInt(0));
+		    
+		   return runResult;
+	  } 
+	  
+	  /* A cursor that creates a Location instance from a given Cursor i.e. retrieves the data found in a single row
+	   * returned by a query for the Location table.*/
+	  private Location cursorToLocationEntry(Cursor cursor) {
+		  Location locationResult = new Location("GPS");
+		  locationResult.setLatitude(cursor.getDouble(1));
+		  locationResult.setLongitude(cursor.getDouble(2));
+		  locationResult.setAltitude(cursor.getDouble(3));
+		  locationResult.setTime(cursor.getLong(4));	    
+		   
+		  return locationResult;
+	  }
+	  
+	  /* A cursor that creates a Location instance from a given Cursor i.e. retrieves the data found in a single row
+	   * returned by a query for the Marker table.*/
+	  private Location cursorToMarkerEntry(Cursor cursor) {
+		  Location locationResult = new Location("GPS");
+		  locationResult.setLatitude(cursor.getDouble(1));
+		  locationResult.setLongitude(cursor.getDouble(2));	    
+		  return locationResult;
+	  }
+	  
+	  /* This internal class is for the purpose of wrapping 'a cursor intended to returns rows from the location table
+	   * and converts their various fields into properties on the Location object' as quoted from Page 1412.
+	   * 'CursorWrapper is designed to wrap an existing Cursor and forward along all of the method calls to it'. Page 1386.
+	   * Taken from Nerd Ranch Guide Page 1412.*/
+	  public class LocationCursor extends CursorWrapper {
+
+			/* Constructor */ 
+			public LocationCursor(Cursor cursor) {
+				super(cursor);
+			}
+			
+			/* Method 'creates and configures an instance of (Location) based on the values of the current row's 
+			 * columns' Page 1388.
+			 * Page 1412
+			 * COULD POTENTIALLY BE TAKEN OUT?*/
+			public Location getLocation() {
+				if(isBeforeFirst() || isAfterLast()) {
+					return null;
+				}
+				
+				Location loc = new Location("GPS");
+				loc.setLatitude(getDouble(getColumnIndex(MySQLiteHelper.COLUMN_MAPS_LATITUDE)));
+				loc.setLongitude(getDouble(getColumnIndex(MySQLiteHelper.COLUMN_MAPS_LONGTITUDE)));
+				loc.setAltitude(getDouble(getColumnIndex(MySQLiteHelper.COLUMN_MAPS_ALTITUDE)));
+				return loc;
+			} 
+		}
 }
 
 

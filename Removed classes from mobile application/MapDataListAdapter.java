@@ -1,4 +1,4 @@
-package com.application.treasurehunt;
+package Mapping;
 
 import java.util.List;
 import com.application.treasurehunt.R;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 	public class MapDataListAdapter extends ArrayAdapter<MapData>
 	{
 		private Context context;
-		private List<MapData> listOfLeaderboardResults;
 		
 		TextView mParticipantId;
 		

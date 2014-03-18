@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Enter email address"
+        android:text="@string/enter_email_address"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FF54C8E2" />
 
@@ -21,9 +21,10 @@
         android:layout_below="@+id/enter_email_address_label"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:inputType="textEmailAddress" >
+        android:inputType="textEmailAddress"> 
+        
+        <requestFocus/>
 
-        <requestFocus />
     </EditText>
 
 </RelativeLayout>

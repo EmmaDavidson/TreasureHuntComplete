@@ -1,5 +1,7 @@
 package com.application.treasurehunt;
 
+import Mapping.MapFragment;
+import Mapping.MapManager;
 import Utilities.SingleFragmentActivity;
 import android.os.Build;
 import android.app.ActionBar;
@@ -32,7 +34,6 @@ public class MapActivity extends SingleFragmentActivity {
 		mMapManager = MapManager.get(this);
 		
 		int participantId =  settings.getInt("userParticipantId", 0);
-		//int participantId = getIntent().getIntExtra("userParticipantIdForMap", -1);
 		if(participantId != -1)
 		{
 			return MapFragment.newInstance(participantId);

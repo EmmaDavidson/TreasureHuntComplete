@@ -1,4 +1,4 @@
-package com.application.treasurehunt;
+package Mapping;
 
 import Utilities.SingleFragmentActivity;
 import android.support.v4.app.Fragment;

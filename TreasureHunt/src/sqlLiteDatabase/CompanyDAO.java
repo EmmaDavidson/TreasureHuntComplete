@@ -1,48 +1,60 @@
 package sqlLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-import Utilities.MySQLiteHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/* This class handles the interaction between the application and SQLite (local) database for the Company table.*/
+
 public class CompanyDAO {
 
-	private SQLiteDatabase database;
-	private MySQLiteHelper dbHelper;
-	private String[] allColumns = { MySQLiteHelper.COLUMN_COMPANY_ID, MySQLiteHelper.COLUMN_COMPANY_NAME, MySQLiteHelper.COLUMN_COMPANY_PASSWORD };
+	  /* Global variables for CompanyDAO*/
+	  private SQLiteDatabase mDatabase;
+	  private MySQLiteHelper mDbHelper;
+	  private String[] mAllColumns = { MySQLiteHelper.COLUMN_COMPANY_ID, MySQLiteHelper.COLUMN_COMPANY_NAME, MySQLiteHelper.COLUMN_COMPANY_PASSWORD };
 	  
+	  /* Constructor*/
 	  public CompanyDAO(Context context) {
-	    dbHelper = new MySQLiteHelper(context);
+		  
+	    mDbHelper = new MySQLiteHelper(context);
 	  }
 
+	  /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
 	  public void open() throws SQLException {
-		  database = dbHelper.getWritableDatabase();
-		  //Unclean - drops the database each time and re-adds the table.
-		  updateDatabaseLocally();
-	  }
-	  
-	  public void updateDatabaseLocally()
-	  {
-		  dbHelper.onUpgrade(database, database.getVersion(), database.getVersion());
-	  }
+		  
+		  mDatabase = mDbHelper.getWritableDatabase();
+		  mDatabase = mDbHelper.getWritableDatabase();
 
-	  public void close() {
-	    dbHelper.close();
+		  //refreshCompanies();
 	  }
 	  
+	  /* Method handling what happens when the helper is closed. It closes access to the SQLite (local) database.*/
+	  public void close() {
+	      mDbHelper.close();
+	  }
+	  
+	  /* Method that removes all of the current data stored in the Company table.*/
+	  public void refreshCompanies() {
+		  
+		  mDbHelper.refreshTable(mDatabase, MySQLiteHelper.TABLE_COMPANIES);
+	  }
+	  
+	  /* Method that inserts a new row into the Company table with the data supplied. It returns the company newly added. */
 	  public Company addCompany(int companyId, String companyName, String companyPassword) {
+		  
 		    ContentValues values = new ContentValues();
 		    values.put(MySQLiteHelper.COLUMN_COMPANY_ID, companyId);
 		    values.put(MySQLiteHelper.COLUMN_COMPANY_NAME, companyName);
 		    values.put(MySQLiteHelper.COLUMN_COMPANY_PASSWORD, companyPassword);
 
-		    long insertId = database.insert(MySQLiteHelper.TABLE_COMPANIES, null, values);
-		    Cursor cursor = database.query(MySQLiteHelper.TABLE_COMPANIES,
-		        allColumns, null, null,
+		    long insertId = mDatabase.insert(MySQLiteHelper.TABLE_COMPANIES, null, values);
+		    Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_COMPANIES,
+		        mAllColumns, null, null,
 		        null, null, null);
 		    cursor.moveToFirst();
 		    Company newCompany = cursorToCompany(cursor);
@@ -50,11 +62,13 @@ public class CompanyDAO {
 		    return newCompany;
 		  }
 
+	  /* Method returning a list of all companies that are currently found in the SQLite (local) database. */
 	  public List<Company> getAllCompanies() {
+		  
 	    List<Company> listOfCompanies = new ArrayList<Company>();
 
-	    Cursor cursor = database.query(MySQLiteHelper.TABLE_COMPANIES,
-	        allColumns, null, null, null, null, null);
+	    Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_COMPANIES,
+	        mAllColumns, null, null, null, null, null);
 
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
@@ -67,10 +81,13 @@ public class CompanyDAO {
 	    return listOfCompanies;
 	  }
 
+	  /* A cursor that creates a Company instance from a given Cursor i.e. retrieves the data found in a single row
+	   * returned by a query for the Company table.*/
 	  //http://stackoverflow.com/questions/6781954/android-3-0-couldnt-read-row-column-from-cursor-window
 	  private Company cursorToCompany(Cursor cursor) {
+		  
 	    Company company = new Company();
-	    company.setCompanyId(cursor.getInt(0));
+	    company.setAdministratorId(cursor.getInt(0));
 	    company.setCompanyName(cursor.getString(1));
 	    company.setCompanyPassword(cursor.getString(2));
 	    return company;

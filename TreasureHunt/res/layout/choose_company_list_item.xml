@@ -17,7 +17,7 @@
         android:layout_alignBottom="@+id/company_icon"
         android:layout_marginLeft="15dp"
         android:layout_toRightOf="@+id/company_icon"
-        android:text="Large Text"
+        android:text="@string/temp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

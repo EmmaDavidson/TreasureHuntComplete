@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 
+/* The purpose of this class is to provide a subclass so those extending it will be able to 'indirectly execute (a) 
+ * query on another thread' - Page 1425. It will 'load and hold a Cursor' (Page 1428) i.e. it will load a given
+ * cursor on a thread other than the main UI thread. Entire class taken from here. */
 public abstract class SQLiteCursorLoader extends AsyncTaskLoader<Cursor> {
 
 	private Cursor mCursor;

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageView1"
-        android:text="HEADER"
-        android:textSize="21dp" />
+        android:text="@string/temp"
+        android:textSize="21sp" />
 
 </RelativeLayout>
