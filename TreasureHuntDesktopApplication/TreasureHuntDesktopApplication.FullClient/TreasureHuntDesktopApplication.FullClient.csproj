@@ -153,6 +153,7 @@
     <Compile Include="Messages\SelectedQuestionMessage.cs" />
     <Compile Include="Messages\UpdateViewMessage.cs" />
     <Compile Include="Messages\ViewUpdatedMessage.cs" />
+    <Compile Include="Project Utilities\BoolToVisibilityConverter.cs" />
     <Compile Include="Project Utilities\InternetConnectionChecker.cs" />
     <Compile Include="Project Utilities\PasswordBoxAssistant.cs" />
     <Compile Include="Project Utilities\StringValidationRule.cs" />

@@ -41,6 +41,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
              this,
              (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
              );
+
+            PopupDisplayed = false;
         }
 
 
@@ -52,6 +54,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 this.documentViewer = value;
                 RaisePropertyChanged("DocumentViewer");
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
             }
         }
 
@@ -101,6 +114,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         //-http://code.msdn.microsoft.com/office/CSVSTOViewWordInWPF-db347436
         private XpsDocument ConvertWordToXps(string wordFilename, string xpsFilename)
         {
+            PopupDisplayed = true;
+
             Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
             try
             {
@@ -109,7 +124,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 wordApp.WindowState = WdWindowState.wdWindowStateMinimize;
 
                 Document doc = wordApp.ActiveDocument;
-                doc.SaveAs(xpsFilename, WdSaveFormat.wdFormatXPS);                
+                doc.SaveAs(xpsFilename, WdSaveFormat.wdFormatXPS);
 
                 XpsDocument xpsDocument = new XpsDocument(xpsFilename, FileAccess.Read);
                 return xpsDocument;
@@ -121,9 +136,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             finally
             {
                 wordApp.Documents.Close();
-                ((_Application)wordApp).Quit(WdSaveOptions.wdDoNotSaveChanges);            
-            } 
-           
+                ((_Application)wordApp).Quit(WdSaveOptions.wdDoNotSaveChanges);
+                PopupDisplayed = false;
+            }
         }
 
         private void ExecuteBackQuestionCommand()

@@ -32,6 +32,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             RegisterCommand = new RelayCommand(() => ExecuteRegisterCommand());
             ForgotPasswordCommand = new RelayCommand(() => ExecuteForgotPasswordCommand());
 
+            PopupDisplayed = false;
         }
         #endregion
 
@@ -45,6 +46,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 this.password = value;
                 RaisePropertyChanged("Password");
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
             }
         }
 
@@ -118,27 +130,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Password = String.Empty;
         }
 
-        public void ExecuteLoginUserCommand()
+        public async void ExecuteLoginUserCommand()
         {
             if (InternetConnectionChecker.IsInternetConnected())
             {
-                user user = this.serviceClient.GetUser(this.emailAddress);
+                PopupDisplayed = true;
+                user user= await this.serviceClient.GetUserAsync(this.emailAddress);
 
                 if (user == null)
                 {
-
+                    PopupDisplayed = false;
                     MessageBoxResult messageBox = MessageBox.Show("User does not exist", "Invalid details");
                     EmailAddress = String.Empty;
                     Password = String.Empty;
-
                 }
                 else
                 {
-                    userrole userRole = this.serviceClient.GetUserRole(user);
+                    userrole userRole = await this.serviceClient.GetUserRoleAsync(user);
                     if (userRole.RoleId == 1)
                     {
                         if (String.Equals(user.Password, this.password, StringComparison.OrdinalIgnoreCase))
                         {
+                            PopupDisplayed = false;
                             EmailAddress = String.Empty;
                             Password = String.Empty;
                             Messenger.Default.Send<CurrentUserMessage>(new CurrentUserMessage() { CurrentUser = user });
@@ -147,17 +160,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         }
                         else
                         {
-
+                            PopupDisplayed = false;
                             MessageBoxResult messageBox = MessageBox.Show("Incorrect username or password", "Incorrect Details");
                             Password = String.Empty;
                         }
                     }
                     else
                     {
+                        PopupDisplayed = false;
                         MessageBoxResult messageBox = MessageBox.Show("You cannot access this application with your email address", "Invalid user for this application");
                         EmailAddress = String.Empty;
                         Password = String.Empty;
-
                     }
                 }
             }

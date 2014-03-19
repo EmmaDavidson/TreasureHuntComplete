@@ -335,6 +335,7 @@ containing a value of this type.
         public static final int hunts_group_list_item=0x7f030015;
         public static final int leaderboard_list_item=0x7f030016;
         public static final int login=0x7f030017;
+        public static final int trip_list=0x7f030018;
     }
     public static final class menu {
         public static final int add_question=0x7f0b0000;

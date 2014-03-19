@@ -644,8 +644,8 @@ public class RegisterWithHuntActivity extends Activity {
 						Log.i("RegisterWithHunt", mHuntId + " has already started");
 						
 						mHuntAlreadyStarted = true;
-						sStartTimeResult = jsonResult.getJSONObject("result");
-						Log.i("RegisterWithHunt", jsonResult.getJSONObject("result")+"");
+						sStartTimeResult = jsonResult.getJSONObject(PHPHelper.RESULTS);
+						Log.i("RegisterWithHunt", jsonResult.getJSONObject(PHPHelper.RESULTS)+"");
 						mStartTime = sStartTimeResult.getLong("StartTime");
 			
 						return jsonResult.getString(PHPHelper.MESSAGE);
@@ -811,7 +811,7 @@ public class RegisterWithHuntActivity extends Activity {
 					success = jsonResult.getInt(PHPHelper.SUCCESS);
 					
 					if(success == 1) {
-						sHuntParticipantIdResult = jsonResult.getJSONObject("result");
+						sHuntParticipantIdResult = jsonResult.getJSONObject(PHPHelper.RESULTS);
 						mHuntParticipantId = sHuntParticipantIdResult.getInt("HuntParticipantId");
 						mHuntParticipantIdReturned = true;
 						Log.i("RegisterWithHunt", "hunt participant id is: " + mHuntParticipantId);

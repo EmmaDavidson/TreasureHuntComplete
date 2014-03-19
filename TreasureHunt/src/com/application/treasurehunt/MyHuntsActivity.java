@@ -329,7 +329,8 @@ public class MyHuntsActivity extends Activity {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
+				Intent chooseTypeOfHuntActivity = new Intent(MyHuntsActivity.this, ChooseTypeOfMyHuntActivity.class);
+				startActivity(chooseTypeOfHuntActivity);
 			}
 		});
 		
@@ -497,7 +498,7 @@ public class MyHuntsActivity extends Activity {
 					success = jsonResult.getInt(PHPHelper.SUCCESS);
 					
 					if(success == 1) {
-						sHuntParticipantIdResult = jsonResult.getJSONObject("result");
+						sHuntParticipantIdResult = jsonResult.getJSONObject(PHPHelper.RESULTS);
 						mHuntParticipantId = sHuntParticipantIdResult.getInt("HuntParticipantId");
 						mHuntParticipantIdReturned = true;
 						Log.i("MyHunts", "hunt participant id is: " + mHuntParticipantId);

@@ -279,7 +279,7 @@ public class ChooseHuntActivity extends Activity {
 				success = jsonResult.getInt(PHPHelper.SUCCESS);
 				if(success == 1) {
 					Log.i("ChooseHunt", jsonResult.toString());
-					sTagResult = jsonResult.getJSONArray("results");
+					sTagResult = jsonResult.getJSONArray(PHPHelper.RESULTS);
 					
 					//-http://stackoverflow.com/questions/8411154/null-pointer-exception-while-inserting-json-array-into-sqlite-database
 					for(int i=0; i < sTagResult.length(); i++)

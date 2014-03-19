@@ -27,6 +27,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             CheckEmailAddressCommand = new RelayCommand(() => ExecuteCheckEmailAddressCommand(), () => IsValidDetails());
             BackCommand = new RelayCommand(() => ExecuteBackCommand());
+
+            PopupDisplayed = false;
        
         }
         #endregion
@@ -41,6 +43,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
              {
                  this.emailAddress = value;
                  RaisePropertyChanged("EmailAddress");
+             }
+         }
+
+         private bool popupDisplayed;
+         public bool PopupDisplayed
+         {
+             get { return this.popupDisplayed; }
+             set
+             {
+                 this.popupDisplayed = value;
+                 RaisePropertyChanged("PopupDisplayed");
              }
          }
 
@@ -71,22 +84,24 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
          {
              if (InternetConnectionChecker.IsInternetConnected())
              {
+                 PopupDisplayed = true;
                  //Check here if the email address exists
                  user emailUser = this.serviceClient.GetUser(EmailAddress);
              
                  //if it exists then move to the next view with the user
                  if (emailUser != null)
                  {
-
                      userrole emailUserRole = this.serviceClient.GetUserRole(emailUser);
 
                      if (emailUserRole.RoleId == 2)
                      {
+                         PopupDisplayed = false;
                          MessageBoxResult messageBox = MessageBox.Show("You cannot reset this email address on this application", "Invalid user");
                          EmailAddress = String.Empty;
                      }
                      else 
                      {
+                         PopupDisplayed = false;
                          Messenger.Default.Send<CurrentUserMessage>(new CurrentUserMessage() { CurrentUser = emailUser });
                          Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ResetPasswordViewModel" });
                          EmailAddress = String.Empty;
@@ -94,15 +109,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
              }
              else
              {
+                  PopupDisplayed = false;
                   MessageBoxResult messageBox = MessageBox.Show("This email address does not exist.", "Invalid email address");
                   EmailAddress = String.Empty;
              }
          }
-             else
-            {
-                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
-            } 
-         }
+        else
+        {
+            MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+        } 
+    }
 
         #endregion
 

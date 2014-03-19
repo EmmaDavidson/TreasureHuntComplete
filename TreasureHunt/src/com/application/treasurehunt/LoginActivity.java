@@ -365,7 +365,7 @@ public class LoginActivity extends Activity {
 					//finish();
 					mLoginSuccessful = true;
 					
-					sUserIdResult = jsonResult.getJSONObject("result");
+					sUserIdResult = jsonResult.getJSONObject(PHPHelper.RESULTS);
 					mCurrentUserIdReturned = true;
 					mUserId = sUserIdResult.getInt("UserId");
 					mUserName = sUserIdResult.getString("Name");

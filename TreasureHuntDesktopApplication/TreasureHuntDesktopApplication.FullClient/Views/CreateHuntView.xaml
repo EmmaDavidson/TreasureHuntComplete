@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:validation="clr-namespace:TreasureHuntDesktopApplication.FullClient.Project_Utilities"
+             xmlns:utilities="clr-namespace:TreasureHuntDesktopApplication.FullClient.Project_Utilities"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              Height="400"
              Width="750">
-
+    <UserControl.Resources>
+        <!-- http://wpftutorial.net/ValueConverters.html -->
+        <utilities:BoolToVisibilityConverter x:Key="converter"/>
+    </UserControl.Resources>
     <Grid Background="White">
         <Grid Background="#FFBDA78A" HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730" Opacity="100">
             <Grid.Effect>
@@ -50,6 +53,20 @@
             <!--<Label FontFamily="Arial"  FontSize="9" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="171,393,0,0" VerticalAlignment="Top" Height="23" Width="278"/>-->
             <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="End Date:" HorizontalAlignment="Left" Margin="105,293,0,0" VerticalAlignment="Top" Height="51"/>
 
+            <StackPanel Background="White" Margin="168,97,135,95" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" >
+                <!--http://wpftutorial.net/ValueConverters.html-->
+                <TextBlock FontFamily="Stereofidelic" Text="Creating..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
+                <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="125,10,124,420" RenderTransformOrigin="3.935,0.005" Height="99">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="-1"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform X="-694.824"/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </StackPanel>
         </Grid>
 
 

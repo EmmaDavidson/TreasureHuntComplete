@@ -38,11 +38,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
            
         }
 
-        private void ReceiveCurrentUserMessage(user currentUser)
+        private async void ReceiveCurrentUserMessage(user currentUser)
         {
             CurrentUser = currentUser;
-            SecurityAnswer = this.serviceClient.getUserSecurityAnswer(currentUser);
-            CurrentSecurityQuestion = this.serviceClient.getUserSecurityQuestion(CurrentUser);
+            SecurityAnswer = await this.serviceClient.getUserSecurityAnswerAsync(currentUser);
+            CurrentSecurityQuestion = await this.serviceClient.getUserSecurityQuestionAsync(CurrentUser);
         }
         #endregion
 
@@ -79,6 +79,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 this.securityAnswer = value;
                 RaisePropertyChanged("SecurityAnswer");
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
             }
         }
 
@@ -144,13 +155,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
         }
 
-        private void ExecuteCheckAnswerAndResetCommand()
+        private async void ExecuteCheckAnswerAndResetCommand()
         {
             if (InternetConnectionChecker.IsInternetConnected())
             {
-                //update the database
-                this.serviceClient.updateUserPassword(currentUser, NewPassword);
+                PopupDisplayed = true;
 
+                await this.serviceClient.updateUserPasswordAsync(currentUser, NewPassword);
+
+                PopupDisplayed = false;
                 MessageBoxResult messageBox = MessageBox.Show("Your password has been updated.", "Updated password");
                 Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
             }

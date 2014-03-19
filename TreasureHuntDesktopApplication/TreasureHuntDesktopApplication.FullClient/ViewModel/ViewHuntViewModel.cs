@@ -43,16 +43,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             BackCommand = new RelayCommand(() => ExecuteBackCommand());
             LeaderboardCommand = new RelayCommand(() => ExecuteLeaderboardCommand());
             LogoutCommand = new RelayCommand(() => ExecuteLogoutCommand());
-            
-             Messenger.Default.Register<SelectedHuntMessage>
-             (
 
-             this,
-             (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
+            Messenger.Default.Register<SelectedHuntMessage>
+            (
 
-             );
+            this,
+            (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
 
-             RefreshQuestions();
+            );
+
+            RefreshQuestions();
         }
 
         #endregion
@@ -96,12 +96,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public bool IsValidListOfQuestions()
         {
-            if(Questions.Count() != 0)
+            if (Questions.Count() != 0)
             {
                 return true;
             }
             return false;
-        
+
         }
 
         public bool IsSingleQuestionSelected()
@@ -152,21 +152,23 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         public IEnumerable<question> Questions
         {
             get { return this.questions; }
-            set {              
+            set
+            {
                 this.questions = value;
                 RaisePropertyChanged("Questions");
-            }       
+            }
         }
 
         private hunt currentTreasureHunt;
         public hunt CurrentTreasureHunt
         {
             get { return this.currentTreasureHunt; }
-            set {                
+            set
+            {
                 this.currentTreasureHunt = value;
                 RaisePropertyChanged("CurrentTreasureHunt");
-                
-            }        
+
+            }
         }
 
         public string newQuestion;
@@ -219,7 +221,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     String messageBoxText = "This question already exists.";
                     String caption = "Question Already Exists";
                     MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
-                    NewQuestion = String.Empty;  
+                    NewQuestion = String.Empty;
                 }
             }
             else
@@ -274,7 +276,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
                             Picture pic1 = img.CreatePicture();
                             q.InsertPicture(pic1, 0);
-                            pic1.Width = 200; 
+                            pic1.Width = 200;
                             pic1.Height = 200;
 
                             documentOfQRCodes.InsertParagraph();
@@ -282,7 +284,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         }
                     }
                 }
-  
+
                 documentOfQRCodes.Save();
             }
 
@@ -290,7 +292,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Messenger.Default.Send<PrintMessage>(new PrintMessage() { FileLocation = newDocumentFileLocation });
             Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = this.currentTreasureHunt });
 
-         }
+        }
 
         private void ExecuteBackCommand()
         {
@@ -336,9 +338,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 }
             }
 
-            return false;        
+            return false;
         }
-        
+
         #endregion
 
         #region ETC
@@ -403,7 +405,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 return "Question is an invalid length!";
             }
-          
+
             return null;
         }
         #endregion

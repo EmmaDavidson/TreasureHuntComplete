@@ -46,6 +46,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
            (action) => ReceiveCurrentUserMessage(action.CurrentUser)
 
            );
+
+           PopupDisplayed = false;
         }
 
         #endregion
@@ -92,6 +94,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
+            }
+        }
+
         private hunt currentTreasureHunt;
         public hunt CurrentTreasureHunt
         {
@@ -107,10 +120,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         #region Refreshing Data
 
         //make internal
-        public void RefreshTreasureHunts()
+        public async void RefreshTreasureHunts()
         {
-            TreasureHunts = this.serviceClient.GetTreasureHuntsForParticularUser(this.currentUser);
+            PopupDisplayed = true;
+            TreasureHunts = await this.serviceClient.GetTreasureHuntsForParticularUserAsync(this.currentUser);
             CurrentTreasureHunt = null;
+            PopupDisplayed = false;
         }
         #endregion
 

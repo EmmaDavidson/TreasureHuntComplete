@@ -36,6 +36,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
              (action) => ReceiveRegenerateListMessage(action.RegenerateList)
 
              );
+
+            PopupDisplayed = false;
         }
         #endregion
 
@@ -46,7 +48,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 if (InternetConnectionChecker.IsInternetConnected())
                 {
-                    SecurityQuestions = this.serviceClient.getListOfSecurityQuestions().AsEnumerable();
+                    SecurityQuestions = this.serviceClient.getListOfSecurityQuestionsAsync().Result.AsEnumerable();
                 }
             }  
         }
@@ -75,6 +77,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
+            }
+        }
 
         private String emailAddress;
         public String EmailAddress
@@ -97,17 +109,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 RaisePropertyChanged("CurrentSecurityQuestion");
             }
         }
-
-        /*private String retypedPassword;
-        public String RetypedPassword
-        {
-            get { return this.retypedPassword; }
-            set
-            {
-                this.retypedPassword = value;
-                RaisePropertyChanged("RetypedPassword");
-            }
-        }*/
 
         private String companyName;
         public String CompanyName
@@ -258,10 +259,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #region Commands
 
-        public void ExecuteRegisterUserCommand()
+        public async void ExecuteRegisterUserCommand()
         {
             if (InternetConnectionChecker.IsInternetConnected())
             {
+                PopupDisplayed = true;
                 user newUser = new user();
                 newUser.Email = this.emailAddress;
                 newUser.Password = this.password;
@@ -269,29 +271,30 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
                 if (!DoesUserOrCompanyAlreadyExist(newUser.Email, this.companyName))
                 {
-                    long userId = this.serviceClient.SaveUser(newUser);
+                    long userId = await this.serviceClient.SaveUserAsync(newUser);
 
                     companydetail newCompany = new companydetail();
                     newCompany.UserId = userId;
                     newCompany.CompanyName = this.companyName;
                     newCompany.CompanyPassword = this.companyPassword;
 
-                    this.serviceClient.saveCompany(newCompany);
+                    await this.serviceClient.saveCompanyAsync(newCompany);
 
                     userrole newUserRole = new userrole();
                     newUserRole.UserId = userId;
                     newUserRole.RoleId = 1;
 
-                    this.serviceClient.SaveUserRole(newUserRole);
+                    await this.serviceClient.SaveUserRoleAsync(newUserRole);
 
                     //Saving the security question for this user
                     usersecurityquestion newSecurityQuestion = new usersecurityquestion();
                     newSecurityQuestion.UserId = userId;
                     newSecurityQuestion.SecurityQuestionId = CurrentSecurityQuestion.SecurityQuestionId;
                     newSecurityQuestion.Answer = SecurityAnswer;
-                    this.serviceClient.SaveUserSecurityQuestion(newSecurityQuestion);
+                    await this.serviceClient.SaveUserSecurityQuestionAsync(newSecurityQuestion);
 
-                    //this.serviceClient.getListOfSecurityQuestions();
+                    PopupDisplayed = false;
+         
                     MessageBoxResult messageBox = MessageBox.Show("You have successfully registered!", "Success");
 
                     Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
@@ -306,6 +309,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             else
             {
+                PopupDisplayed = false;
                 MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
             }
         }     
@@ -324,8 +328,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private bool DoesUserOrCompanyAlreadyExist(string emailAddress, string company)
         {
-            List<user> listOfUsers = serviceClient.GetExistingUsers().ToList();
-            List<companydetail> listOfCompanies = serviceClient.getExistingCompanies().ToList();
+            List<user> listOfUsers = serviceClient.GetExistingUsersAsync().Result.ToList();
+            List<companydetail> listOfCompanies = serviceClient.getExistingCompaniesAsync().Result.ToList();
 
             bool userExists = false;
             bool companyExists = false;
@@ -338,11 +342,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     {
                         if (String.Equals(currentUsers.Current.Email, emailAddress, StringComparison.OrdinalIgnoreCase))
                         {
+                            PopupDisplayed = false;
                             MessageBoxResult messageBox = MessageBox.Show("This email address already exists!", "Invalid details");
                             EmailAddress = String.Empty;
                             userExists = true;
-                        }
-                        
+                        }     
                     }
                 }
             }
@@ -355,6 +359,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     {
                         if (String.Equals(currentCompanies.Current.CompanyName, company, StringComparison.OrdinalIgnoreCase))
                         {
+                            PopupDisplayed = false;
                             //-http://www.c-sharpcorner.com/UploadFile/mahesh/messagebox-in-wpf/
                             MessageBoxResult messageBox = MessageBox.Show("This company already exists!", "Invalid details");
                             CompanyName = String.Empty;
@@ -391,7 +396,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             "Password",
             "CompanyName",
             "CompanyPassword",
-            "SecurityAnswer"
+            "SecurityAnswer",
+            "CurrentSecurityQuestion"
+            
         };
 
         string IDataErrorInfo.this[string propertyName]
@@ -423,11 +430,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         result = ValidatePassword();
                         break;
                     }
-                /*case "RetypedPassword":
+                case "CurrentSecurityQuestion":
                     {
-                        result = ValidateMatchingPasswords();
+                        result = ValidateCurrentSecurityQuestion();
                         break;
-                    }*/
+                    }
                 case "CompanyName":
                     {
                         result = ValidateCompanyName();
@@ -580,6 +587,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
 
             return null;   
+        }
+
+        private String ValidateCurrentSecurityQuestion()
+        {
+            if (CurrentSecurityQuestion == null)
+            {
+                return "Please choose a question.";
+            }
+            return null;
         }
         #endregion
     }

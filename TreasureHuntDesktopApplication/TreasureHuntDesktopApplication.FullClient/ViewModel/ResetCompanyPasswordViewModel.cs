@@ -103,6 +103,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -114,11 +125,14 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             // DO I NEED TO SEND BACK THE USER ID HERE?
         }
 
-        private void ExecuteResetCompanyPasswordCommand()
+        private async void ExecuteResetCompanyPasswordCommand()
         {
+            
             if (InternetConnectionChecker.IsInternetConnected())
             {
-                this.serviceClient.updateCompanyPassword(currentUser, newPassword);
+                PopupDisplayed = true;
+                await this.serviceClient.updateCompanyPasswordAsync(currentUser, newPassword);
+                PopupDisplayed = false;
                 MessageBoxResult messageBox = MessageBox.Show("Company password has been updated.", "Updated password");
                 Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
             }

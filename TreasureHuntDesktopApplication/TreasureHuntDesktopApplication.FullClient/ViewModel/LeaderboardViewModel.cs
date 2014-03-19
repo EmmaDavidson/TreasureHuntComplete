@@ -40,7 +40,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
              );
 
-            RefreshLeaderboard();    
+            RefreshLeaderboard();
+
+            PopupDisplayed = false;
         }
 
         #region Received Message Methods
@@ -64,6 +66,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 this.leaderboardResults = value;
                 RaisePropertyChanged("LeaderboardResults");
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
             }
         }
 
@@ -98,26 +111,31 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
         }
 
-        public void RefreshLeaderboard()
+        public async void RefreshLeaderboard()
         {
+            PopupDisplayed = true;
+
                 if (this.currentTreasureHunt != null)
                 {
+                    
                     var results = new ObservableCollection<Participant>();
 
-                    List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipants(CurrentTreasureHunt).ToList();
+                    List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipantsAsync(CurrentTreasureHunt).Result.ToList();
 
                     using (var participants = huntParticipants.GetEnumerator())
                     {
                         while (participants.MoveNext())
                         {
-                            user currentUser = this.serviceClient.GetParticipantName(participants.Current.UserId);
+                            user currentUser = await this.serviceClient.GetParticipantNameAsync(participants.Current.UserId);
                             Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
                             results.Add(newParticipant);
                         }
                         //Learnt this from previous similar scenario in agile module
+                        
                         LeaderboardResults = results;
                     }
                 }
+                PopupDisplayed = false;
             
         }
         #endregion

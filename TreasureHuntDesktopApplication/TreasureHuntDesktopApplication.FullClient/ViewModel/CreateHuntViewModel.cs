@@ -39,6 +39,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             );
 
+            PopupDisplayed = false;
         }
         #endregion
 
@@ -82,6 +83,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 endDate = value;
                 RaisePropertyChanged("EndDate");
 
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
             }
         }
 
@@ -157,10 +169,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #region Commands
         //Change this to private and use reflection for testing
-        public void ExecuteSaveHuntNameCommand()
+        public async void ExecuteSaveHuntNameCommand()
         {
             if (InternetConnectionChecker.IsInternetConnected())
             {
+                PopupDisplayed = true; 
                 if (!DoesHuntAlreadyExist())
                 {
                     hunt newHunt = new hunt();
@@ -168,17 +181,19 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     newHunt.HuntDescription = this.Description;
                     newHunt.EndDate = EndDate;
 
-                    long huntId = this.serviceClient.SaveNewHunt(newHunt);
+                    long huntId = await this.serviceClient.SaveNewHuntAsync(newHunt);
 
                     userhunt newUserHunt = new userhunt();
                     newUserHunt.HuntId = huntId;
                     newUserHunt.UserId = this.currentUser.UserId;
 
-                    this.serviceClient.SaveUserHunt(newUserHunt);
+                    await this.serviceClient.SaveUserHuntAsync(newUserHunt);
 
                     //Grabs the correct hunt's ID and passes it into the view hunt view.
                     //Ensures that the hunt has been saved to the database before it goes and grab's it
-                    hunt huntToView = serviceClient.GetHuntBasedOnName(newHunt.HuntName, currentUser.UserId);
+                    hunt huntToView = await serviceClient.GetHuntBasedOnNameAsync(newHunt.HuntName, currentUser.UserId);
+
+                    PopupDisplayed = false;
 
                     Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
                     Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
@@ -190,6 +205,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 }
                 else
                 {
+                    PopupDisplayed = false;
                     String messageBoxText = "This hunt already exists in the database.";
                     String caption = "Hunt Already Exists";
                     MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
@@ -204,9 +220,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private bool DoesHuntAlreadyExist()
         {
-            //GetHuntQuestions
-
-            List<hunt> listOfUserHunts = serviceClient.GetTreasureHuntsForParticularUser(currentUser).ToList();
+            List<hunt> listOfUserHunts = serviceClient.GetTreasureHuntsForParticularUserAsync(currentUser).Result.ToList();
 
             using (var currentHunts = listOfUserHunts.GetEnumerator())
             {
