@@ -171,6 +171,12 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="role" nillable="true" type="tns:role" />
+  <xs:complexType name="ArrayOfquestion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="question" nillable="true" type="tns:question" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfquestion" nillable="true" type="tns:ArrayOfquestion" />
   <xs:complexType name="ArrayOfhunt">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="hunt" nillable="true" type="tns:hunt" />
