@@ -43,14 +43,24 @@ namespace TreasureHuntDesktopApplication.DataService
             }
         }
 
-        public List<long> GetHuntQuestions(hunt hunt)
+        public IEnumerable<question> GetHuntQuestions(hunt hunt)
         { 
             using (var context = new TreasureHuntEntities())
             {
                 if (hunt == null) return null;
                 var returnedquestionIds = context.huntquestions.Where(c => c.HuntId == hunt.HuntId).Select(s => s.QuestionId).ToList();
                 returnedquestionIds.ForEach(e => context.ObjectStateManager.ChangeObjectState(e, System.Data.EntityState.Detached));
-                return returnedquestionIds;
+
+                List<question> returnedListOfQuestions = new List<question>();
+
+                foreach (var questionId in returnedquestionIds)
+                {
+                    var question = context.questions.Where(c => c.QuestionId == questionId).Single();
+                    context.ObjectStateManager.ChangeObjectState(question, System.Data.EntityState.Detached);
+                    returnedListOfQuestions.Add(question);
+                }
+
+                return returnedListOfQuestions;
             }
         }
 

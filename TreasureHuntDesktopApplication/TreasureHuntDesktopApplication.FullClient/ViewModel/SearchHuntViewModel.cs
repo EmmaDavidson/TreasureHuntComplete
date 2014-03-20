@@ -134,6 +134,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         //Make internal
         public bool IsValidHunt()
         {
+            
             if (currentTreasureHunt != null)
             {
                 return true;
@@ -144,19 +145,24 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         #endregion
 
         #region Commands
-        private void ExecuteSearchHuntCommand()
-        {
+        private void ExecuteSearchHuntCommand() {
+
+            PopupDisplayed = true;
             //(-http://etaktix.blogspot.co.uk/2013/01/check-if-internet-connection-is.html)
             if (InternetConnectionChecker.IsInternetConnected())
             {
                 //Takes the user to the selected hunt page.
                 Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = this.currentTreasureHunt });
+                //PopupDisplayed = false;
                 Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+                
             }
             else
             {
                 MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
             }
+
+            PopupDisplayed = false;
         }
 
         private void ExecuteCreateHuntCommand()

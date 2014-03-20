@@ -1140,10 +1140,10 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
         System.Threading.Tasks.Task<long> SaveNewHuntAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt newHunt);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetHuntQuestions", ReplyAction="http://tempuri.org/ITreasureHuntService/GetHuntQuestionsResponse")]
-        long[] GetHuntQuestions(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt);
+        TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question[] GetHuntQuestions(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetHuntQuestions", ReplyAction="http://tempuri.org/ITreasureHuntService/GetHuntQuestionsResponse")]
-        System.Threading.Tasks.Task<long[]> GetHuntQuestionsAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt);
+        System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question[]> GetHuntQuestionsAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetTreasureHunts", ReplyAction="http://tempuri.org/ITreasureHuntService/GetTreasureHuntsResponse")]
         TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt[] GetTreasureHunts();
@@ -1325,11 +1325,11 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
             return base.Channel.SaveNewHuntAsync(newHunt);
         }
         
-        public long[] GetHuntQuestions(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt) {
+        public TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question[] GetHuntQuestions(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt) {
             return base.Channel.GetHuntQuestions(hunt);
         }
         
-        public System.Threading.Tasks.Task<long[]> GetHuntQuestionsAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt) {
+        public System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question[]> GetHuntQuestionsAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt hunt) {
             return base.Channel.GetHuntQuestionsAsync(hunt);
         }
         

@@ -26,7 +26,6 @@
     <MetadataFile FileName="TreasureHuntService1.xsd" MetadataType="Schema" ID="4b3557b2-4554-4c30-8867-0767f815ce2a" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?xsd=xsd4" />
     <MetadataFile FileName="TreasureHuntService2.xsd" MetadataType="Schema" ID="c41406be-7d1a-42a5-88e9-9f2b5bbc8c40" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?xsd=xsd3" />
     <MetadataFile FileName="TreasureHuntService3.xsd" MetadataType="Schema" ID="0006f4ca-8f2e-47cc-b2f6-0590c97d7a93" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?xsd=xsd1" />
-    <MetadataFile FileName="TreasureHuntService4.xsd" MetadataType="Schema" ID="085c09fc-4e98-4b53-9c8a-73570342235c" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?xsd=xsd5" />
     <MetadataFile FileName="TreasureHuntService.wsdl" MetadataType="Wsdl" ID="b01d24f8-2b9f-439e-93b9-27f74a49c500" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?wsdl" />
     <MetadataFile FileName="TreasureHuntService5.xsd" MetadataType="Schema" ID="028c01aa-989e-4f4f-b78e-ce6f308c036c" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?xsd=xsd0" />
     <MetadataFile FileName="TreasureHuntService.disco" MetadataType="Disco" ID="405fb220-7be2-44e0-91e1-cd43397feb03" SourceId="1" SourceUrl="http://localhost:51416/TreasureHuntService.svc?disco" />

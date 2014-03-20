@@ -22,7 +22,7 @@ namespace TreasureHuntDesktopApplication.DataService
         long SaveNewHunt(hunt newHunt);
 
         [OperationContract]
-        List<long> GetHuntQuestions(hunt hunt);
+        IEnumerable<question> GetHuntQuestions(hunt hunt);
 
         [OperationContract]
         IEnumerable<hunt> GetTreasureHunts();

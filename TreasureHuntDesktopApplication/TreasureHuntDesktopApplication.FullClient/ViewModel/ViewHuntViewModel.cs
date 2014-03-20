@@ -51,8 +51,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
 
             );
-
-            RefreshQuestions();
         }
 
         #endregion
@@ -123,19 +121,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 if (this.currentTreasureHunt != null)
                 {
-                    List<long> questionIds = this.serviceClient.GetHuntQuestions(this.currentTreasureHunt).ToList();
-                    List<question> listOfQuestionsFromHunt = new List<question>();
-
-                    using (var questionIdNumbers = questionIds.GetEnumerator())
-                    {
-                        while (questionIdNumbers.MoveNext())
-                        {
-                            question currentQuestionInList = this.serviceClient.GetQuestion(questionIdNumbers.Current);
-                            listOfQuestionsFromHunt.Add(currentQuestionInList);
-                        }
-
-                        Questions = listOfQuestionsFromHunt.AsEnumerable();
-                    }
+                     Questions = this.serviceClient.GetHuntQuestionsAsync(this.currentTreasureHunt).Result.AsEnumerable();
                 }
             }
             else
@@ -156,6 +142,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 this.questions = value;
                 RaisePropertyChanged("Questions");
+            }
+        }
+
+        private bool popupDisplayed;
+        public bool PopupDisplayed
+        {
+            get { return this.popupDisplayed; }
+            set
+            {
+                this.popupDisplayed = value;
+                RaisePropertyChanged("PopupDisplayed");
+            }
+        }
+
+        private String popupMessage;
+        public String PopupMessage
+        {
+            get { return this.popupMessage; }
+            set
+            {
+                this.popupMessage = value;
+                RaisePropertyChanged("PopupMessage");
             }
         }
 
@@ -198,8 +206,10 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #region Commands
 
-        private void ExecuteSaveQuestionCommand()
+        private async void ExecuteSaveQuestionCommand()
         {
+            PopupMessage = "Saving...";
+            PopupDisplayed = true;
             if (InternetConnectionChecker.IsInternetConnected())
             {
                 if (!DoesQuestionAlreadyExist(NewQuestion))
@@ -209,7 +219,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     question brandNewQuestion = new question();
                     brandNewQuestion.Question1 = this.newQuestion;
                     brandNewQuestion.URL = locationOfQrCodeImage;
-                    long questionId = this.serviceClient.SaveQuestion(brandNewQuestion);
+                    long questionId = await this.serviceClient.SaveQuestionAsync(brandNewQuestion);
 
                     SaveHuntQuestion(questionId);
                     EncodeQRCode(locationOfQrCodeImage);
@@ -218,6 +228,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 }
                 else
                 {
+                    PopupDisplayed = false;
                     String messageBoxText = "This question already exists.";
                     String caption = "Question Already Exists";
                     MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
@@ -244,13 +255,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             QRCodeEncoder encoder = new QRCodeEncoder();
             Bitmap generatedQrCodeImage = encoder.Encode(CurrentTreasureHunt.HuntId + " " + this.NewQuestion);
             generatedQrCodeImage.Save(locationOfQrCodeImage, ImageFormat.Jpeg);
-
+            PopupDisplayed = false;
             RefreshQuestions();
         }
 
         //make internal
         public void ExecutePrintQRCodesCommand()
         {
+            PopupMessage = "Preparing...";
+            PopupDisplayed = true;
             NewQuestion = null;
             //-http://cathalscorner.blogspot.co.uk/2009/04/docx-version-1002-released.html
             String newDocumentFileLocation = myFileDirectory + "Documents\\" + this.currentTreasureHunt.HuntName + " QR Codes Sheet.docx";
@@ -286,6 +299,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 }
 
                 documentOfQRCodes.Save();
+                PopupDisplayed = false;
             }
 
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "PrintViewModel" });
@@ -321,17 +335,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
 
         private bool DoesQuestionAlreadyExist(string newQuestion)
-        {   //REFACTOR THIS - ONLY DO ONE SERVICE CALL AND HAVE IT RETURN THE WHOLE QUESTION INSTEAD OF THE ID
-            //GetHuntQuestions
-            List<long> listOfQuestions = serviceClient.GetHuntQuestions(this.currentTreasureHunt).ToList();
-
-            using (var currentHuntQuestionIds = listOfQuestions.GetEnumerator())
+        {   
+            using (var currentHuntQuestion = Questions.GetEnumerator())
             {
-                while (currentHuntQuestionIds.MoveNext())
+                while (currentHuntQuestion.MoveNext())
                 {
-                    question question = serviceClient.GetQuestion(currentHuntQuestionIds.Current);
-
-                    if (String.Equals(question.Question1, newQuestion, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(currentHuntQuestion.Current.Question1, newQuestion, StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
                     }

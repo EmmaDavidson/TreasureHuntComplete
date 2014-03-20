@@ -332,9 +332,6 @@
     <None Include="Service References\TreasureHuntService\TreasureHuntService3.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\TreasureHuntService\TreasureHuntService4.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Service References\TreasureHuntService\TreasureHuntService5.xsd">
       <SubType>Designer</SubType>
     </None>

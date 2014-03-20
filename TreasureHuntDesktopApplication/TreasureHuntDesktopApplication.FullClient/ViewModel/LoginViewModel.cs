@@ -134,6 +134,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (InternetConnectionChecker.IsInternetConnected())
             {
+                
                 PopupDisplayed = true;
                 user user= await this.serviceClient.GetUserAsync(this.emailAddress);
 

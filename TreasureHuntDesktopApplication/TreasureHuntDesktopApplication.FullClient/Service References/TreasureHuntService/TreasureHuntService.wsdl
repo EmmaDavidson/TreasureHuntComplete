@@ -7,7 +7,6 @@
       <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" />
       <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data.Objects.DataClasses" />
       <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
-      <xsd:import schemaLocation="http://localhost:51416/TreasureHuntService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="ITreasureHuntService_SaveQuestion_InputMessage">
