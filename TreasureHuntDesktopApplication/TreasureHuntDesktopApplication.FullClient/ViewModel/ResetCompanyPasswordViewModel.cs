@@ -12,42 +12,32 @@ using TreasureHuntDesktopApplication.FullClient.Messages;
 using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the ResetCompanyPasswordView and is responsible for the interaction
+    /// between the View and the Model to reset a particular administrator's company password. 
+    /// See Dissertation Section 2.4.1.8.2 </Summary>
+    
     public class ResetCompanyPasswordViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Setup
 
-        ITreasureHuntService serviceClient;
+        #region Fields
+
+        #region General global variables
+        private ITreasureHuntService serviceClient;
         public RelayCommand ResetCompanyPasswordCommand { get; private set; }
         public RelayCommand BackCommand { get; private set; }
 
-        public ResetCompanyPasswordViewModel(ITreasureHuntService _serviceClient)
-        {
-            serviceClient = _serviceClient;
-            ResetCompanyPasswordCommand = new RelayCommand(() => ExecuteResetCompanyPasswordCommand(), () => IsValidDetails());
-            BackCommand = new RelayCommand(() => ExecuteBackCommand());
-
-            Messenger.Default.Register<CurrentUserMessage>
-           (
-
-           this,
-           (action) => ReceiveCurrentUserMessage(action.CurrentUser)
-
-           );
-        }
+        private InternetConnectionChecker connectionChecker;
         #endregion
 
-        #region Received Messages
-
-        private void ReceiveCurrentUserMessage(user currentUser)
-        {
-            CurrentUser = currentUser;
-        }
-
-        #endregion
-
-        #region Variables
+        #region Binding variables
 
         private user currentUser;
         public user CurrentUser
@@ -72,18 +62,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 RaisePropertyChanged("NewPassword");
             }
         }
-        #endregion 
+        #endregion
 
-        #region Validation
-
-        public bool IsValidDetails()
-        {
-            foreach (string property in ValidatedProperties)
-                if (GetValidationMessage(property) != null)
-                    return false;
-
-            return true;
-        }
+        #region Validation variables
 
         public int PasswordMinLength
         {
@@ -116,8 +97,50 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #endregion
 
-        #region Commands
+        #endregion
 
+        #region Constructor
+        public ResetCompanyPasswordViewModel(ITreasureHuntService serviceClient)
+        {
+            this.serviceClient = serviceClient;
+            ResetCompanyPasswordCommand = new RelayCommand(() => ExecuteResetCompanyPasswordCommand(), () => IsValidDetails());
+            BackCommand = new RelayCommand(() => ExecuteBackCommand());
+
+            connectionChecker = InternetConnectionChecker.GetInstance();
+
+            Messenger.Default.Register<CurrentUserMessage>
+           (
+
+           this,
+           (action) => ReceiveCurrentUserMessage(action.CurrentUser)
+
+           );
+        }
+        #endregion
+
+        #region Received Messages
+
+        /// <summary>
+        ///  Method used to receive an incoming CurrentUserMessage to store the data related to the current  
+        ///  user accessing the application. 
+        /// </summary>
+        /// <param name="currentUser"></param>
+        private void ReceiveCurrentUserMessage(user currentUser)
+        {
+            CurrentUser = currentUser;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Methods
+       
+        #region General Methods
+
+        /// <summary>
+        /// Method that will navigate the administrator back to the Homepage view.
+        /// </summary>
         private void ExecuteBackCommand()
         {
             NewPassword = String.Empty;
@@ -125,10 +148,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             // DO I NEED TO SEND BACK THE USER ID HERE?
         }
 
+        /// <summary>
+        /// Method that attempts to reset the password of the company associated with the current administrator. 
+        /// </summary>
         private async void ExecuteResetCompanyPasswordCommand()
         {
-            
-            if (InternetConnectionChecker.IsInternetConnected())
+            if (connectionChecker.IsInternetConnected())
             {
                 PopupDisplayed = true;
                 await this.serviceClient.updateCompanyPasswordAsync(currentUser, newPassword);
@@ -138,13 +163,29 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             else
             {
-                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+                MessageBoxResult messageBox = MessageBox.Show(connectionChecker.ShowConnectionErrorMessage());
             }
         }
 
         #endregion
 
-        #region IDataErrorInfo
+        #region Validation 
+        /// <summary>
+        /// Method to determine whether or not all of the relevant properties are correct with 
+        /// regards to their validation.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidDetails()
+        {
+            foreach (string property in ValidatedProperties)
+                if (GetValidationMessage(property) != null)
+                    return false;
+
+            return true;
+        }
+        #endregion
+
+        #region IDataErrorInfo validation methods
         //-http://codeblitz.wordpress.com/2009/05/08/wpf-validation-made-easy-with-idataerrorinfo/
         //-http://www.youtube.com/watch?v=OOHDie8BdGI 
         string IDataErrorInfo.Error
@@ -155,7 +196,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        //What properties I am validating.
+        //Properties to be validated
         static readonly string[] ValidatedProperties = 
         { 
             "NewPassword"
@@ -169,6 +210,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        /// <summary>
+        ///  Method that returns the validation message (if any) for a given property.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         private string GetValidationMessage(string propertyName)
         {
             String result = null;
@@ -177,14 +223,18 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 case "NewPassword":
                     {
-                        result = ValidateNewPassword();
-                        break;
-                    }
+                            result = ValidateNewPassword();
+                            break;
+                        }
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Method that controls the validation of a given password
+        /// </summary>
+        /// <returns></returns>
         private String ValidateNewPassword()
         {
             if (Validation.IsNullOrEmpty(NewPassword))
@@ -205,5 +255,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
 
         #endregion
+
+        #endregion
+    
     }
 }

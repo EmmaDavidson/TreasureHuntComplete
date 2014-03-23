@@ -1157,12 +1157,6 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetQuestion", ReplyAction="http://tempuri.org/ITreasureHuntService/GetQuestionResponse")]
         System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question> GetQuestionAsync(long questionId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/UpdateQuestion", ReplyAction="http://tempuri.org/ITreasureHuntService/UpdateQuestionResponse")]
-        void UpdateQuestion(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question updatedQuestion);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/UpdateQuestion", ReplyAction="http://tempuri.org/ITreasureHuntService/UpdateQuestionResponse")]
-        System.Threading.Tasks.Task UpdateQuestionAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question updatedQuestion);
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetHuntBasedOnName", ReplyAction="http://tempuri.org/ITreasureHuntService/GetHuntBasedOnNameResponse")]
         TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt GetHuntBasedOnName(string name, long userId);
         
@@ -1219,11 +1213,11 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetHuntParticipants", ReplyAction="http://tempuri.org/ITreasureHuntService/GetHuntParticipantsResponse")]
         System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.huntparticipant[]> GetHuntParticipantsAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt currentTreasureHunt);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetParticipantName", ReplyAction="http://tempuri.org/ITreasureHuntService/GetParticipantNameResponse")]
-        TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user GetParticipantName(long participant);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetParticipant", ReplyAction="http://tempuri.org/ITreasureHuntService/GetParticipantResponse")]
+        TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user GetParticipant(long participant);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetParticipantName", ReplyAction="http://tempuri.org/ITreasureHuntService/GetParticipantNameResponse")]
-        System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user> GetParticipantNameAsync(long participant);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/GetParticipant", ReplyAction="http://tempuri.org/ITreasureHuntService/GetParticipantResponse")]
+        System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user> GetParticipantAsync(long participant);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ITreasureHuntService/SaveUserSecurityQuestion", ReplyAction="http://tempuri.org/ITreasureHuntService/SaveUserSecurityQuestionResponse")]
         void SaveUserSecurityQuestion(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.usersecurityquestion userSecurityQuestion);
@@ -1349,14 +1343,6 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
             return base.Channel.GetQuestionAsync(questionId);
         }
         
-        public void UpdateQuestion(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question updatedQuestion) {
-            base.Channel.UpdateQuestion(updatedQuestion);
-        }
-        
-        public System.Threading.Tasks.Task UpdateQuestionAsync(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.question updatedQuestion) {
-            return base.Channel.UpdateQuestionAsync(updatedQuestion);
-        }
-        
         public TreasureHuntDesktopApplication.FullClient.TreasureHuntService.hunt GetHuntBasedOnName(string name, long userId) {
             return base.Channel.GetHuntBasedOnName(name, userId);
         }
@@ -1429,12 +1415,12 @@ namespace TreasureHuntDesktopApplication.FullClient.TreasureHuntService {
             return base.Channel.GetHuntParticipantsAsync(currentTreasureHunt);
         }
         
-        public TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user GetParticipantName(long participant) {
-            return base.Channel.GetParticipantName(participant);
+        public TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user GetParticipant(long participant) {
+            return base.Channel.GetParticipant(participant);
         }
         
-        public System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user> GetParticipantNameAsync(long participant) {
-            return base.Channel.GetParticipantNameAsync(participant);
+        public System.Threading.Tasks.Task<TreasureHuntDesktopApplication.FullClient.TreasureHuntService.user> GetParticipantAsync(long participant) {
+            return base.Channel.GetParticipantAsync(participant);
         }
         
         public void SaveUserSecurityQuestion(TreasureHuntDesktopApplication.FullClient.TreasureHuntService.usersecurityquestion userSecurityQuestion) {

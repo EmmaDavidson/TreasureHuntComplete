@@ -6,9 +6,16 @@ using System.ServiceModel;
 using System.Text;
 using TreasureHuntDesktopApplication.Data;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
+ /// <Summary>The purpose of this interface is to permit TreasureHuntService access to its methods i.e. it is a 
+ /// contract with the service. Also implemented for ease of testing TreasureHuntService. </Summary>
+
 namespace TreasureHuntDesktopApplication.DataService
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "ITreasureHuntService" in both code and config file together.
     [ServiceContract]
     public interface ITreasureHuntService
     {
@@ -29,9 +36,6 @@ namespace TreasureHuntDesktopApplication.DataService
 
         [OperationContract]
         question GetQuestion(long questionId);
-
-        [OperationContract]
-        void UpdateQuestion(question updatedQuestion);
 
         [OperationContract]
         hunt GetHuntBasedOnName(String name, long userId);
@@ -61,7 +65,7 @@ namespace TreasureHuntDesktopApplication.DataService
         List<huntparticipant> GetHuntParticipants(hunt currentTreasureHunt);
 
         [OperationContract]
-        user GetParticipantName(long participant);
+        user GetParticipant(long participant);
 
         [OperationContract]
         void SaveUserSecurityQuestion(usersecurityquestion userSecurityQuestion);

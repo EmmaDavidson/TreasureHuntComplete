@@ -70,7 +70,6 @@ public class ForgottenPasswordActivity extends Activity {
 	private TextView mSecurityQuestionText;
 	private EditText mSecurityAnswerText;
 	private EditText mNewPasswordText;
-	private Button mSubmitAnswerButton;
 	private Button mSaveNewPasswordButton;
 	
 	private InternetUtility mInternetUtility;
@@ -100,34 +99,25 @@ public class ForgottenPasswordActivity extends Activity {
 		mSecurityQuestionText = (TextView) findViewById(R.id.security_question);
 		mSecurityAnswerText = (EditText) findViewById(R.id.security_answer);
 		mNewPasswordText = (EditText) findViewById(R.id.new_password);
-		mSubmitAnswerButton = (Button) findViewById(R.id.submit_security_answer_button);
 		mSaveNewPasswordButton = (Button) findViewById(R.id.save_new_password_button);
-		
-		mSubmitAnswerButton.setEnabled(true);
-		mSaveNewPasswordButton.setEnabled(false);
-		
-		mSecurityQuestionText.setText(mSecurityQuestion);
-		
-		mInternetUtility = InternetUtility.getInstance(this);
 		
 		mSecurityQuestion = intent.getStringExtra("SecurityQuestion");
 		mSecurityAnswer = intent.getStringExtra("SecurityAnswer");
 		mUserId = intent.getIntExtra("UserId", 0);
 		
-		mSubmitAnswerButton.setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						submitAnswer();
-					}
-				});
+		//mSaveNewPasswordButton.setEnabled(false);
+		
+		mSecurityQuestionText.setText(mSecurityQuestion);
+		
+		mInternetUtility = InternetUtility.getInstance(this);
 		
 		mSaveNewPasswordButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if (isValidPassword()) {
+						if (isValidPassword() && isValidAnswer()) {
 				
+							mSaveNewPasswordButton.setEnabled(true);
 							if(mInternetUtility.isInternetConnected()) {
 								attemptSaveNewPassword();
 							}
@@ -168,37 +158,17 @@ public class ForgottenPasswordActivity extends Activity {
 	
 	/* Method that handles submission of a participant's security question in comparison to their answer stored in the database.
 	 * If successful, they are allowed to enter a new password. Else, they are notified of their error on screen.*/
-	public void submitAnswer() {
+	public boolean isValidAnswer() {
 		if (TextUtils.isEmpty(mSecurityAnswerText.getText().toString())) {
 			
-			mSecurityAnswerText.setError("You must enter an answer");
+			mSecurityAnswerText.setError("You must enter an answer.");
+			return false;
 		}
-		else {				
-			
-			if(mSecurityAnswerText.getText().toString().equals(mSecurityAnswer)) {
-				
-				mSubmitAnswerButton.setEnabled(false);
-				mSaveNewPasswordButton.setEnabled(true);
+		else if(!mSecurityAnswerText.getText().toString().equals(mSecurityAnswer)) {				
+			mSecurityAnswerText.setError("This answer does not match our records.");
+			return false;
 			}
-			else {
-				
-				Builder alertForIncorrectAnswer = new Builder(ForgottenPasswordActivity.this);
-				alertForIncorrectAnswer.setTitle("Incorrect answer");
-				alertForIncorrectAnswer.setMessage("Your answer did not match our records!");
-				alertForIncorrectAnswer.setCancelable(false);
-				alertForIncorrectAnswer.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();					
-					}
-				});
-				
-				alertForIncorrectAnswer.create();
-				alertForIncorrectAnswer.show();
-				mSecurityAnswerText.setText("");
-			}
-		}
+		return true;
 	}
 	
 	/* Method to check if the new password (to be saved) conforms with the validation rules for participant passwords.*/
@@ -211,7 +181,7 @@ public class ForgottenPasswordActivity extends Activity {
 		}
 		else if(mNewPasswordText.getText().toString().length() < 6	
 				|| mNewPasswordText.getText().toString().length() >= 10) {
-			mNewPasswordText.setError(getString(R.string.error_password_too_short));	
+			mNewPasswordText.setError(getString(R.string.error_password_invalid_length));	
 			return false;
 		}
 		

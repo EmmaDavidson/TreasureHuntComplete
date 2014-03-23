@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.application.treasurehunt;
 
 import android.app.ActionBar;
@@ -65,7 +64,6 @@ public class LoginActivity extends Activity {
 	 * Global variables used within LoginActivity.
 	 */
 	private static final String LOGIN_URL =  "http://lowryhosting.com/emmad/login.php";
-	private static final String RETRIEVE_USER_ID_URL =  "http://lowryhosting.com/emmad/returnCurrentUserId.php";
 	private static final String RETRIEVE_PASSWORD_RESET_DETAILS_URL = 
 			"http://lowryhosting.com/emmad/checkValidEmailAddress.php";
 	
@@ -412,7 +410,7 @@ public class LoginActivity extends Activity {
 			else {	
 				Builder alertForFailedLogin = new Builder(LoginActivity.this);
 				alertForFailedLogin.setTitle("Login unsuccessful");
-				alertForFailedLogin.setMessage("Login was unsuccessful. Please try again.");
+				alertForFailedLogin.setMessage(fileUrl);
 				alertForFailedLogin.setCancelable(false);
 				alertForFailedLogin.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					
@@ -518,7 +516,7 @@ public class LoginActivity extends Activity {
 			else {	
 				Builder incorrectEmailBuilder = new Builder(LoginActivity.this);									
 				incorrectEmailBuilder.setTitle("Invalid email");
-				incorrectEmailBuilder.setMessage("You entered an invalid email address");
+				incorrectEmailBuilder.setMessage(fileUrl);
 				incorrectEmailBuilder.setCancelable(false);
 				incorrectEmailBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 					

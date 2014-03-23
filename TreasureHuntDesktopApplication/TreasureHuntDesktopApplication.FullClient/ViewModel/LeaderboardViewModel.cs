@@ -14,53 +14,35 @@ using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 using TreasureHuntDesktopApplication.FullClient.Utilities;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the LeaderboardView and is responsible for the interaction
+    /// between the View and the Model for displaying a leader board for a particular treasure hunt.
+    /// See Dissertation Section 2.4.1.7 </Summary>
+
     public class LeaderboardViewModel : ViewModelBase
     {
         #region Setup
-        ITreasureHuntService serviceClient;
+
+        #region Fields
+        #region General global variables
+        private ITreasureHuntService serviceClient;
         public RelayCommand BackCommand { get; private set; }
         public RelayCommand RefreshCommand { get; private set; }
-        public RelayCommand LogoutCommand { get; private set; }
-        DispatcherTimer refreshTimer = new DispatcherTimer();
-
-        public LeaderboardViewModel(ITreasureHuntService _serviceClient)
-        {
-            serviceClient = _serviceClient;
-            BackCommand = new RelayCommand(() => ExecuteBackCommand());
-            RefreshCommand = new RelayCommand(() => RefreshLeaderboard());
-            LogoutCommand = new RelayCommand(() => ExecuteLogoutCommand());
-
-            Messenger.Default.Register<LeaderboardMessage>
-             (
-
-                 this,
-                 (action) => ReceiveLeaderboardMessage(action.CurrentHunt)
-
-             );
-
-            RefreshLeaderboard();
-
-            PopupDisplayed = false;
-        }
-
-        #region Received Message Methods
-        private void ReceiveLeaderboardMessage(hunt currentHunt)
-        {
-            this.currentTreasureHunt = currentHunt;
-            RefreshLeaderboard();
-        }
-        #endregion
         #endregion
 
-        #region Variables
+        #region Binding variables
         private ObservableCollection<Participant> leaderboardResults;
         public ObservableCollection<Participant> LeaderboardResults
         {
-            get 
+            get
             {
-                return this.leaderboardResults; 
+                return this.leaderboardResults;
             }
             set
             {
@@ -92,51 +74,81 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
         #endregion
+ 
+        #endregion 
 
-        #region Commands and methods
-        private void leaderboardUpdater(object sender, EventArgs e)
+        #region Constructor
+        public LeaderboardViewModel(ITreasureHuntService serviceClient)
         {
+            this.serviceClient = serviceClient;
+            BackCommand = new RelayCommand(() => ExecuteBackCommand());
+            RefreshCommand = new RelayCommand(() => RefreshLeaderboard());
+
+            PopupDisplayed = false;
+
+            Messenger.Default.Register<LeaderboardMessage>
+             (
+
+                 this,
+                 (action) => ReceiveLeaderboardMessage(action.CurrentHunt)
+
+             );
+
             RefreshLeaderboard();
         }
+        #endregion
 
+        #region Received Messages
+        /// <summary> Method used to receive an incoming LeaderboardMessage to store the data related to the current  
+        /// hunt being accessed. </summary>
+        private void ReceiveLeaderboardMessage(hunt currentHunt)
+        {
+            this.currentTreasureHunt = currentHunt;
+            RefreshLeaderboard();
+        }
+        #endregion
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Method that will navigate the administrator back to the ViewHuntView.
+        /// </summary>
         private void ExecuteBackCommand()
         {
-            //refreshTimer.Stop();
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
             Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = this.currentTreasureHunt });
         }
 
-        private void ExecuteLogoutCommand()
-        {
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
-        }
-
+        /// <summary>
+        /// Method that will refresh the results of the leader board with the latest information from the database.
+        /// </summary>
         public async void RefreshLeaderboard()
         {
             PopupDisplayed = true;
 
                 if (this.currentTreasureHunt != null)
-                {
-                    
+                { 
                     var results = new ObservableCollection<Participant>();
 
+                    //Grab a list of all of the participants in this treasure hunt.
                     List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipantsAsync(CurrentTreasureHunt).Result.ToList();
 
+                    //For each participant represented by an id in this list
                     using (var participants = huntParticipants.GetEnumerator())
                     {
                         while (participants.MoveNext())
                         {
-                            user currentUser = await this.serviceClient.GetParticipantNameAsync(participants.Current.UserId);
+                            //Get that participants details and add them to the list to be displayed
+                            user currentUser = await this.serviceClient.GetParticipantAsync(participants.Current.UserId);
                             Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
                             results.Add(newParticipant);
                         }
-                        //Learnt this from previous similar scenario in agile module
                         
                         LeaderboardResults = results;
                     }
                 }
-                PopupDisplayed = false;
-            
+                PopupDisplayed = false;          
         }
         #endregion
     }

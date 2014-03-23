@@ -16,35 +16,30 @@ using TreasureHuntDesktopApplication.FullClient.Messages;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 using Word = Microsoft.Office.Interop.Word;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the PrintView and is responsible for creating and displaying
+    /// a document of QR Codes to be printed for a particular treasure hunt. 
+    /// See Disseration Section 2.4.1.6 </Summary>
+
     public class PrintViewModel : ViewModelBase
     {
-        ITreasureHuntService serviceClient;
+
+        #region Setup
+
+        #region Fields
+
+        #region General global variables
+        private ITreasureHuntService serviceClient;
         public RelayCommand BackCommand { get; set; }
+        #endregion 
 
-        public PrintViewModel(ITreasureHuntService _serviceClient)
-        {
-            serviceClient = _serviceClient;
-            BackCommand = new RelayCommand(() => ExecuteBackQuestionCommand());
-
-            Messenger.Default.Register<PrintMessage>
-             (
-
-             this,
-             (action) => ReceivePrintMessage(action.FileLocation)
-             );
-
-            Messenger.Default.Register<SelectedHuntMessage>
-             (
-
-             this,
-             (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
-             );
-
-            PopupDisplayed = false;
-        }
-
+        #region Binding variables
 
         private FixedDocumentSequence documentViewer;
         public FixedDocumentSequence DocumentViewer
@@ -91,13 +86,56 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             }
         }
+        #endregion 
+
+        #endregion
+
+        #region Constructor
+        public PrintViewModel(ITreasureHuntService serviceClient)
+        {
+            this.serviceClient = serviceClient;
+            BackCommand = new RelayCommand(() => ExecuteBackQuestionCommand());
+
+            Messenger.Default.Register<PrintMessage>
+             (
+
+             this,
+             (action) => ReceivePrintMessage(action.FileLocation)
+             );
+
+            Messenger.Default.Register<SelectedHuntMessage>
+             (
+
+             this,
+             (action) => ReceiveSelectedHuntMessage(action.CurrentHunt)
+             );
+
+            PopupDisplayed = false;
+        }
+        #endregion 
+
+        #region Received Messages
+
+        /// <summary>
+        /// Method used to receive an incoming SelectedHuntMessage to store the data related to the current  
+        /// hunt being accessed in the application 
+        /// </summary>
+        /// <param name="currentHunt"></param>
+        private void ReceiveSelectedHuntMessage(hunt currentHunt)
+        {
+            this.currentTreasureHunt = currentHunt;
+        }
 
         //-http://code.msdn.microsoft.com/office/CSVSTOViewWordInWPF-db347436
+        /// <summary>
+        /// Method used to receive an incoming PrintMessage to grab the data indicating a file location and to use this in
+        /// the creation of a document of QR Codes associated with a given treasure hunt.</summary>
+        /// <param name="fileLocation"></param>
         private void ReceivePrintMessage(String fileLocation)
         {
             string convertedXpsDoc = string.Concat("C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\tempDoc1.xps");
 
-            xpsDocument = ConvertWordToXps(fileLocation, convertedXpsDoc);
+            xpsDocument = ConvertWordToXpsFormat(fileLocation, convertedXpsDoc);
             if (xpsDocument == null)
             {
                 return;
@@ -105,14 +143,20 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
             DocumentViewer = xpsDocument.GetFixedDocumentSequence();
         }
+        #endregion 
+        #endregion
 
-        private void ReceiveSelectedHuntMessage(hunt currentHunt)
-        {
-            this.currentTreasureHunt = currentHunt;
-        }
-
+        #region Methods
+     
         //-http://code.msdn.microsoft.com/office/CSVSTOViewWordInWPF-db347436
-        private XpsDocument ConvertWordToXps(string wordFilename, string xpsFilename)
+        /// <summary>
+        /// Method that will convert the word document associated with the currently selected hunt into a format that
+        /// can be displayed and interacted with on screen. 
+        /// </summary>
+        /// <param name="wordFilename"></param>
+        /// <param name="xpsFilename"></param>
+        /// <returns></returns>
+        private XpsDocument ConvertWordToXpsFormat(string wordFilename, string xpsFilename)
         {
             PopupDisplayed = true;
 
@@ -141,6 +185,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method that will navigate the administrator back to the ViewHuntView and close the current document. 
+        /// </summary>
         private void ExecuteBackQuestionCommand()
         {
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
@@ -152,5 +199,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             File.Delete("C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\tempDoc1.xps");
 
         }
+        #endregion
     }
 }

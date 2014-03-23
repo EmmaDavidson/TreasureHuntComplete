@@ -13,45 +13,32 @@ using TreasureHuntDesktopApplication.FullClient.Messages;
 using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the CreateHuntView and is responsible for the interaction
+    /// between the View and the Model for the creation of treasure hunts within this application. 
+    /// See Dissertation Section 2.4.1.3 </Summary>
+
     public class CreateHuntViewModel : ViewModelBase, IDataErrorInfo
     {
         #region Setup
-        ITreasureHuntService serviceClient;
-        public RelayCommand SaveHuntNameCommand { get; private set; }
+
+        #region Fields
+
+        #region General global variables 
+        private ITreasureHuntService serviceClient;
+        public RelayCommand SaveHuntCommand { get; private set; }
         public RelayCommand BackCommand { get; private set; }
-        public RelayCommand LogoutCommand { get; private set; }
 
-        public CreateHuntViewModel(ITreasureHuntService _serviceClient)
-        {
-            serviceClient = _serviceClient;
-            SaveHuntNameCommand = new RelayCommand(() => ExecuteSaveHuntNameCommand(), () => IsValidDetails());
-            BackCommand = new RelayCommand(() => ExecuteBackCommand());
-            LogoutCommand = new RelayCommand(() => ExecuteLogoutCommand());
-
-
-            Messenger.Default.Register<CurrentUserMessage>
-            (
-
-            this,
-            (action) => ReceiveCurrentUserMessage(action.CurrentUser)
-
-            );
-
-            PopupDisplayed = false;
-        }
+        private InternetConnectionChecker connectionChecker;
         #endregion
 
-        #region Receiving Messages
-
-        private void ReceiveCurrentUserMessage(user currentUser)
-        {
-            CurrentUser = currentUser;
-        }
-        #endregion
-
-        #region Variable getters and setters
+        #region Binding variables
 
         private String description;
         public String Description
@@ -78,7 +65,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return endDate;
             }
 
-            set 
+            set
             {
                 endDate = value;
                 RaisePropertyChanged("EndDate");
@@ -122,7 +109,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
         #endregion
 
-        #region Validation
+        #region Validation variables
 
         public int DescriptionMaxLength
         {
@@ -142,7 +129,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public int HuntNameMaxLength
         {
-            get 
+            get
             {
                 return 100;
             }
@@ -150,58 +137,67 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         public int HuntNameMinLength
         {
-            get 
+            get
             {
                 return 5;
             }
         }
 
-        //-http://www.youtube.com/watch?v=OOHDie8BdGI
-        public bool IsValidDetails()
+        #endregion
+       
+        #region Constructor
+        public CreateHuntViewModel(ITreasureHuntService serviceClient)
         {
-            foreach(string property in ValidatedProperties)
-                if(GetValidationMessage(property) != null)
-                return false;
-      
-            return true;
+            this.serviceClient = serviceClient;
+            SaveHuntCommand = new RelayCommand(() => ExecuteSaveCommand(), () => IsValidDetails());
+            BackCommand = new RelayCommand(() => ExecuteBackCommand());
+
+            connectionChecker = InternetConnectionChecker.GetInstance();
+
+            Messenger.Default.Register<CurrentUserMessage>
+            (
+
+            this,
+            (action) => ReceiveCurrentUserMessage(action.CurrentUser)
+
+            );
+
+            PopupDisplayed = false;
         }
         #endregion
 
-        #region Commands
-        //Change this to private and use reflection for testing
-        public async void ExecuteSaveHuntNameCommand()
+        #region Received Messages
+        
+        /// <summary>
+        /// Method used to receive an incoming CurrentUserMessage to store the data related to the current  
+        /// user accessing the application 
+        /// </summary>
+        /// <param name="currentUser"></param>
+        private void ReceiveCurrentUserMessage(user currentUser)
         {
-            if (InternetConnectionChecker.IsInternetConnected())
+            CurrentUser = currentUser;
+        }
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Methods
+
+        #region General Methods
+        /// <Summary> Method that attempts to check if a new hunt can be saved. </Summary>
+        public void ExecuteSaveCommand()
+        {
+            if (connectionChecker.IsInternetConnected())
             {
                 PopupDisplayed = true; 
+
+                //If the hunt does not already exist.
                 if (!DoesHuntAlreadyExist())
                 {
-                    hunt newHunt = new hunt();
-                    newHunt.HuntName = this.huntName;
-                    newHunt.HuntDescription = this.Description;
-                    newHunt.EndDate = EndDate;
-
-                    long huntId = await this.serviceClient.SaveNewHuntAsync(newHunt);
-
-                    userhunt newUserHunt = new userhunt();
-                    newUserHunt.HuntId = huntId;
-                    newUserHunt.UserId = this.currentUser.UserId;
-
-                    await this.serviceClient.SaveUserHuntAsync(newUserHunt);
-
-                    //Grabs the correct hunt's ID and passes it into the view hunt view.
-                    //Ensures that the hunt has been saved to the database before it goes and grab's it
-                    hunt huntToView = await serviceClient.GetHuntBasedOnNameAsync(newHunt.HuntName, currentUser.UserId);
-
-                    PopupDisplayed = false;
-
-                    Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
-                    Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
-                    Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
-
-                    HuntName = null;
-                    Description = null;
-                    EndDate = DateTime.Today;
+                    //Save the treasure hunt to the database.
+                    SaveNewHunt();
                 }
                 else
                 {
@@ -214,10 +210,42 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             else
             {
-                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+                MessageBoxResult messageBox = MessageBox.Show(connectionChecker.ShowConnectionErrorMessage());
             }
         }
 
+        /// <Summary> Method that saves a new hunt to the database. </Summary>
+        private async void SaveNewHunt()
+        { 
+            hunt newHunt = new hunt();
+                    newHunt.HuntName = this.huntName;
+                    newHunt.HuntDescription = this.Description;
+                    newHunt.EndDate = EndDate;
+
+                    //Create it and save it to the database.
+                    long huntId = await this.serviceClient.SaveNewHuntAsync(newHunt);
+
+                    userhunt newUserHunt = new userhunt();
+                    newUserHunt.HuntId = huntId;
+                    newUserHunt.UserId = this.currentUser.UserId;
+
+                    await this.serviceClient.SaveUserHuntAsync(newUserHunt);
+
+                    //Grab the correct hunt's ID and pass it into the view hunt view.
+                    hunt huntToView = await serviceClient.GetHuntBasedOnNameAsync(newHunt.HuntName, currentUser.UserId);
+
+                    PopupDisplayed = false;
+
+                    Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+                    Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
+                    Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
+
+                    HuntName = null;
+                    Description = null;
+                    EndDate = DateTime.Today;
+        }
+
+        /// <Summary> Method to check whether or not the treasure hunt to be saved already exists in the database.  </Summary>
         private bool DoesHuntAlreadyExist()
         {
             List<hunt> listOfUserHunts = serviceClient.GetTreasureHuntsForParticularUserAsync(currentUser).Result.ToList();
@@ -237,6 +265,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             return false;
         }
 
+        /// <Summary> Method to direct the administrator back to the homepage. </Summary>
         private void ExecuteBackCommand()
         {
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
@@ -246,17 +275,23 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             endDate = DateTime.Now;
         }
 
-        private void ExecuteLogoutCommand()
-        {
-            HuntName = null;
-            Description = String.Empty;
-            EndDate = DateTime.Now;
-            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
-        }
-
         #endregion
 
-        #region IDataErrorInfo
+        #region Validation
+        //-http://www.youtube.com/watch?v=OOHDie8BdGI
+        /// <Summary> Method to determine whether or not all of the relevant properties are correct with 
+        /// regards to their validation. </Summary>
+        public bool IsValidDetails()
+        {
+            foreach (string property in ValidatedProperties)
+                if (GetValidationMessage(property) != null)
+                    return false;
+
+            return true;
+        }
+        #endregion
+
+        #region IDataErrorInfo validation methods
         //-http://codeblitz.wordpress.com/2009/05/08/wpf-validation-made-easy-with-idataerrorinfo/
         //-http://www.youtube.com/watch?v=OOHDie8BdGI 
         string IDataErrorInfo.Error
@@ -267,11 +302,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        //What properties I am validating.
+        //Properties to be validated
         static readonly string[] ValidatedProperties = 
         { 
             "HuntName",
-            "Description"
+            "Description",
+            "EndDate"
         };
 
         string IDataErrorInfo.this[string propertyName]
@@ -282,6 +318,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        /// <summary>
+        ///  Method that returns the validation message (if any) for a given property.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         private string GetValidationMessage(string propertyName)
         {
             String result = null;
@@ -290,20 +331,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 case "HuntName":
                     {
-                        result = ValidateHuntName();
-                        break;
-                    }
+                            result = ValidateHuntName();
+                            break;
+                        }
                 case "Description":
                     {
-                        result = ValidateDescription();
-                        break;
-                    }
-
+                            result = ValidateDescription();
+                            break;
+                        }
+                case "EndDate":
+                    {
+                            result = ValidateEndDate();
+                            break;
+                        }
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Method that controls the validation of a given hunt name
+        /// </summary>
+        /// <returns></returns>
         private String ValidateHuntName()
         {
             if (Validation.IsNullOrEmpty(HuntName))
@@ -321,6 +370,10 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             return null;
         }
 
+        /// <summary>
+        /// Method that controls the validation of a given hunt description
+        /// </summary>
+        /// <returns></returns>
         private String ValidateDescription()
         {
             if (Validation.IsNullOrEmpty(Description))
@@ -334,6 +387,17 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             return null;
         }
 
+        private String ValidateEndDate()
+        {
+            if (EndDate.Value < DateTime.Today)
+            {
+                return "End date must not be before today's date";
+            }
+                
+            return null;
+        }
+
+        #endregion
         #endregion
     }
 }

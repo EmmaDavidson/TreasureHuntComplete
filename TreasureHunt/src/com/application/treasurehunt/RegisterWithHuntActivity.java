@@ -66,7 +66,6 @@ public class RegisterWithHuntActivity extends Activity {
 	/*
 	 * Global variables used within RegisterWithHuntActivity.
 	 */
-	private static final String GET_HUNT_ID_URL =  "http://lowryhosting.com/emmad/returnCurrentHuntId.php";
 	private static final String REGISTER_WITH_HUNT_URL =  "http://lowryhosting.com/emmad/huntParticipantSave.php";
 	private static final String CHECK_REGISTRATION_URL = "http://lowryhosting.com/emmad/checkUserHuntRegistration.php";
 	private static final String SAVE_START_TIME_URL = "http://lowryhosting.com/emmad/saveHuntStartTime.php";
@@ -863,6 +862,7 @@ public class RegisterWithHuntActivity extends Activity {
 					mEditor.commit();
 					Log.i("RegisterWithHunt", "START TIME HAS BEEN SAVED TO SHARED PREF");
 					
+					//NOT CURRENTLY BEING USED - TAKEN OUT?
 					//Set up associated map with existing details.
 					mMap = mMapManager.getMapData(mHuntParticipantId);
 					
@@ -870,7 +870,7 @@ public class RegisterWithHuntActivity extends Activity {
 					if(mMap == null) {
 						mMap = mMapManager.startNewMap(mHuntParticipantId);
 					}
-					mMapManager.startTrackingMap(mMap);
+					mMapManager.startTrackingMap(mMap); 
 					
 					mScanQRCodeIntent = new Intent(RegisterWithHuntActivity.this, ScanQRCodeActivity.class);
 					startActivity(mScanQRCodeIntent);

@@ -258,7 +258,7 @@ namespace TreasureHuntDesktopApplication.Test
             serviceClient.Setup(s => s.SaveUserHunt(It.IsAny<userhunt>())).Verifiable();
             serviceClient.Setup(s => s.GetHuntBasedOnName(fakeHunt.HuntName)).Returns(fakeHunt);
    
-            viewModel.ExecuteSaveHuntNameCommand();
+            viewModel.ExecuteSaveCommand();
 
             serviceClient.Verify(s => s.SaveNewHunt(It.IsAny<hunt>()), Times.Exactly(1));
             serviceClient.Verify(s => s.GetTreasureHunts(), Times.Exactly(1));
@@ -300,7 +300,7 @@ namespace TreasureHuntDesktopApplication.Test
             serviceClient.Setup(s => s.SaveUserHunt(It.IsAny<userhunt>())).Verifiable();
             serviceClient.Setup(s => s.GetHuntBasedOnName(fakeHunt.HuntName)).Returns(fakeHunt);
 
-            viewModel.ExecuteSaveHuntNameCommand();
+            viewModel.ExecuteSaveCommand();
         
             serviceClient.Verify(s => s.GetTreasureHunts(), Times.Exactly(1));
             serviceClient.Verify(s => s.SaveNewHunt(It.IsAny<hunt>()), Times.Exactly(0));

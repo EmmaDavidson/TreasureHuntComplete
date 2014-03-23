@@ -12,41 +12,32 @@ using TreasureHuntDesktopApplication.FullClient.Messages;
 using TreasureHuntDesktopApplication.FullClient.Project_Utilities;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the ResetPasswordView and is responsible for the interaction
+    /// between the View and the Model to reset a particular administrator's login password.
+    /// See Disseration Section 2.4.1.8.1 </Summary>
+   
     public class ResetPasswordViewModel : ViewModelBase, IDataErrorInfo
     {
-         #region Setup
-         ITreasureHuntService serviceClient;
-         public RelayCommand ResetPasswordCommand { get; private set; }
-         public RelayCommand BackCommand { get; private set; }
+        #region Setup
 
-        public ResetPasswordViewModel(ITreasureHuntService _serviceClient)
-        {
-            serviceClient = _serviceClient;
+        #region Fields
 
-            ResetPasswordCommand = new RelayCommand(() => ExecuteCheckAnswerAndResetCommand(), () => IsValidDetails());
-            BackCommand = new RelayCommand(() => ExecuteBackCommand());
+        #region General global variables
+        private ITreasureHuntService serviceClient;
+        public RelayCommand ResetPasswordCommand { get; private set; }
+        public RelayCommand BackCommand { get; private set; }
 
-           Messenger.Default.Register<CurrentUserMessage>
-           (
-
-           this,
-           (action) => ReceiveCurrentUserMessage(action.CurrentUser)
-
-           );
-           
-        }
-
-        private async void ReceiveCurrentUserMessage(user currentUser)
-        {
-            CurrentUser = currentUser;
-            SecurityAnswer = await this.serviceClient.getUserSecurityAnswerAsync(currentUser);
-            CurrentSecurityQuestion = await this.serviceClient.getUserSecurityQuestionAsync(CurrentUser);
-        }
-        #endregion
-
-        #region Variables
+        private InternetConnectionChecker connectionChecker;
+        #endregion 
+        
+        #region Binding variables
 
         private user currentUser;
         public user CurrentUser
@@ -116,7 +107,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
         #endregion
 
-        #region Validation
+        #region Validation variables
 
         public int PasswordMinLength
         {
@@ -136,17 +127,54 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        public bool IsValidDetails()
-        {
-            foreach (string property in ValidatedProperties)
-                if (GetValidationMessage(property) != null)
-                    return false;
+        #endregion 
 
-            return true;
+        #endregion
+
+        #region Constructor
+        public ResetPasswordViewModel(ITreasureHuntService serviceClient)
+         {
+            this.serviceClient = serviceClient;
+
+            ResetPasswordCommand = new RelayCommand(() => ExecutePasswordResetCommand(), () => IsValidDetails());
+            BackCommand = new RelayCommand(() => ExecuteBackCommand());
+
+            connectionChecker = InternetConnectionChecker.GetInstance();
+
+            Messenger.Default.Register<CurrentUserMessage>
+            (
+
+            this,
+            (action) => ReceiveCurrentUserMessage(action.CurrentUser)
+
+            );
+         }
+        #endregion
+
+        #region Received Messages
+        /// <summary>
+        /// Method used to receive an incoming CurrentUserMessage to store the data related to the current  
+        /// user accessing the application. It also returns from the database the security question and answer associated
+        /// with this given administrator.
+        /// </summary>
+        /// <param name="currentUser"></param>
+        private async void ReceiveCurrentUserMessage(user currentUser)
+        {
+            CurrentUser = currentUser;
+            SecurityAnswer = await this.serviceClient.getUserSecurityAnswerAsync(currentUser);
+            CurrentSecurityQuestion = await this.serviceClient.getUserSecurityQuestionAsync(CurrentUser);
         }
         #endregion 
 
-        #region Commands
+        #endregion
+
+        #region Methods
+
+        #region General methods
+
+        /// <summary>
+        /// Method that navigates the administrator back to the Login screen.
+        /// </summary>
         private void ExecuteBackCommand()
         {
             UserSubmittedAnswer = String.Empty;
@@ -155,9 +183,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
         }
 
-        private async void ExecuteCheckAnswerAndResetCommand()
+        /// <summary>
+        /// Method that attempts to reset the administrator's password with the new password submitted on screen.
+        /// </summary>
+        private async void ExecutePasswordResetCommand()
         {
-            if (InternetConnectionChecker.IsInternetConnected())
+            if (connectionChecker.IsInternetConnected())
             {
                 PopupDisplayed = true;
 
@@ -169,12 +200,28 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             else
             {
-                MessageBoxResult messageBox = MessageBox.Show(InternetConnectionChecker.ShowConnectionErrorMessage());
+                MessageBoxResult messageBox = MessageBox.Show(connectionChecker.ShowConnectionErrorMessage());
             }
         }
         #endregion
 
-        #region IDataErrorInfo
+        #region Validation
+        /// <summary>
+        ///  Method to determine whether or not all of the relevant properties are correct with 
+        /// regards to their validation.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidDetails()
+        {
+            foreach (string property in ValidatedProperties)
+                if (GetValidationMessage(property) != null)
+                    return false;
+
+            return true;
+        }
+        #endregion
+
+        #region IDataErrorInfo validation methods
         //-http://codeblitz.wordpress.com/2009/05/08/wpf-validation-made-easy-with-idataerrorinfo/
         //-http://www.youtube.com/watch?v=OOHDie8BdGI 
         string IDataErrorInfo.Error
@@ -185,7 +232,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
-        //What properties I am validating.
+        //Properties to be validated
         static readonly string[] ValidatedProperties = 
         { 
             "UserSubmittedAnswer",
@@ -200,6 +247,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
         }
 
+        /// <summary>
+        ///  Method that returns the validation message (if any) for a given property.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         private string GetValidationMessage(string propertyName)
         {
             String result = null;
@@ -208,26 +260,32 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 case "UserSubmittedAnswer":
                     {
-                        result = ValidateSubmittedAnswer();
-                        break;
-                    }
+                            result = ValidateSubmittedAnswer();
+                            break;
+                         }
                 case "NewPassword":
                     {
-                        result = ValidateNewPassword();
-                        break;
-                    }
+                            result = ValidateNewPassword();
+                            break;
+                        }
 
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Method that controls the validation of a given answer
+        /// </summary>
+        /// <returns></returns>
         private String ValidateSubmittedAnswer()
         {
             if (Validation.IsNullOrEmpty(UserSubmittedAnswer))
             {
                 return "Hunt name cannot be empty!";
             }
+            //Check to see whether or not the answer submitted on screen matches the answer saved in the database 
+            //for the given administrator. 
             if (!UserSubmittedAnswer.Equals(SecurityAnswer.Answer))
             {
                 return "This is not the correct answer to your security question.";
@@ -236,6 +294,10 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             return null;
         }
 
+        /// <summary>
+        /// Method that controls the validation of a given password
+        /// </summary>
+        /// <returns></returns>
         private String ValidateNewPassword()
         {
             if (Validation.IsNullOrEmpty(NewPassword))
@@ -256,7 +318,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         }
 
         #endregion
+        #endregion
     }
-
 
 }

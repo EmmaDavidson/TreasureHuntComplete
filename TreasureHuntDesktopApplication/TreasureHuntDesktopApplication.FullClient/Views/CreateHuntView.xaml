@@ -17,14 +17,13 @@
             <Grid.Effect>
                 <DropShadowEffect/>
             </Grid.Effect>
-            <Button FontFamily="Stereofidelic" Background="#FF54C8E2" FontSize="30" Command="{Binding SaveHuntNameCommand}" Content="Save" HorizontalAlignment="Left" Margin="532,140,0,0" VerticalAlignment="Top" Width="162" Height="44" RenderTransformOrigin="1.853,0.308">
+            <Button FontFamily="Stereofidelic" Background="#FF54C8E2" FontSize="30" Command="{Binding SaveHuntCommand}" Content="Save" HorizontalAlignment="Left" Margin="532,140,0,0" VerticalAlignment="Top" Width="162" Height="44" RenderTransformOrigin="1.853,0.308">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
 
             </Button>
-            <Button Command="{Binding LogoutCommand}" FontFamily="Stereofidelic" FontSize="20" Background="#FF54C8E2" Content="Logout" HorizontalAlignment="Left" Margin="645,10,0,0" VerticalAlignment="Top" Width="75"/>
 
             <Button Background="#FF54C8E2" FontFamily="Stereofidelic" FontSize="30" Command="{Binding BackCommand}" Content="Back" HorizontalAlignment="Left" Margin="532,189,0,0" VerticalAlignment="Top" Width="162" Height="46" RenderTransformOrigin="1.853,0.308">
                 <Button.BitmapEffect>
@@ -47,7 +46,7 @@
             <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Name="DescriptionBox" HorizontalAlignment="Left" Height="144" Margin="214,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" RenderTransformOrigin="0.491,0.125"/>
             <!--http://stackoverflow.com/questions/20659070/wpf-datepicker-returns-previously-selected-date-using-mvvm-->
             <!--http://stackoverflow.com/questions/3885912/wpf-datepicker-default-to-todays-date-->
-            <DatePicker DisplayDateStart="{Binding Today, Mode=OneWay}" IsTodayHighlighted="True" Name="HuntEndDate" SelectedDate="{Binding EndDate, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="214,307,0,0" VerticalAlignment="Top">
+            <DatePicker Name="EndDatePicker" ToolTip="{Binding ElementName=EndDatePicker, Path=(Validation.Errors).CurrentItem.ErrorContent}" DisplayDateStart="{Binding Today, Mode=OneWay}" IsTodayHighlighted="True" SelectedDate="{Binding EndDate, Mode=TwoWay}"  HorizontalAlignment="Left" Margin="214,307,0,0" VerticalAlignment="Top">
        
             </DatePicker>
             <!--<Label FontFamily="Arial"  FontSize="9" FontStyle="Italic" Foreground="Red" Content="{Binding ElementName=DescriptionBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="171,393,0,0" VerticalAlignment="Top" Height="23" Width="278"/>-->

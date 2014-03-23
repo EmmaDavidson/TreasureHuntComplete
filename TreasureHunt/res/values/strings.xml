@@ -71,7 +71,6 @@
     <string name="error_email_null">Please enter an email address</string>
     <string name="error_password_null">Please enter your password</string>
     <string name="error_email_too_short">Should be more than 10 characters</string>
-    <string name="error_password_too_short">Should be more than 6 characters</string>
     <string name="error_name_null">Please enter your name</string>
     <string name="error_name_too_short">Should be more than 4 characters</string>
     <string name="error_email_incorrect_format">Should be valid email format</string>

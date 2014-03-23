@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
+
 //-http://blog.functionalfun.net/2008/06/wpf-passwordbox-and-data-binding.html
 namespace TreasureHuntDesktopApplication.FullClient.Project_Utilities
 {
-  public static class PasswordBoxAssistant
+  /// <Summary> The purpose of this class is to assist data binding on password fields i.e. on fields 
+  /// where the data is masked by circles.  </Summary>
+  
+    public static class PasswordBoxAssistant
   {
       public static readonly DependencyProperty BoundPassword =
           DependencyProperty.RegisterAttached("BoundPassword", typeof(string), typeof(PasswordBoxAssistant), new PropertyMetadata(string.Empty, OnBoundPasswordChanged));

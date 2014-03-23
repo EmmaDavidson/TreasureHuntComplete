@@ -81,18 +81,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="UpdateQuestion">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="updatedQuestion" nillable="true" type="q8:question" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="UpdateQuestionResponse">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
   <xs:element name="GetHuntBasedOnName">
     <xs:complexType>
       <xs:sequence>
@@ -104,7 +92,7 @@
   <xs:element name="GetHuntBasedOnNameResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetHuntBasedOnNameResult" nillable="true" type="q9:hunt" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetHuntBasedOnNameResult" nillable="true" type="q8:hunt" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -116,14 +104,14 @@
   <xs:element name="GetExistingUsersResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetExistingUsersResult" nillable="true" type="q10:ArrayOfuser" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetExistingUsersResult" nillable="true" type="q9:ArrayOfuser" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SaveUser">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="newUser" nillable="true" type="q11:user" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="newUser" nillable="true" type="q10:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -137,7 +125,7 @@
   <xs:element name="SaveUserRole">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="newUserRole" nillable="true" type="q12:userrole" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="newUserRole" nillable="true" type="q11:userrole" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -156,28 +144,28 @@
   <xs:element name="GetUserResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetUserResult" nillable="true" type="q13:user" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetUserResult" nillable="true" type="q12:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetUserRole">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q14:user" />
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q13:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetUserRoleResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetUserRoleResult" nillable="true" type="q15:userrole" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetUserRoleResult" nillable="true" type="q14:userrole" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SaveUserHunt">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="userHunt" nillable="true" type="q16:userhunt" />
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="userHunt" nillable="true" type="q15:userhunt" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -189,49 +177,49 @@
   <xs:element name="GetTreasureHuntsForParticularUser">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q17:user" />
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q16:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetTreasureHuntsForParticularUserResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetTreasureHuntsForParticularUserResult" nillable="true" type="q18:ArrayOfhunt" />
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetTreasureHuntsForParticularUserResult" nillable="true" type="q17:ArrayOfhunt" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetHuntParticipants">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentTreasureHunt" nillable="true" type="q19:hunt" />
+        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentTreasureHunt" nillable="true" type="q18:hunt" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetHuntParticipantsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetHuntParticipantsResult" nillable="true" type="q20:ArrayOfhuntparticipant" />
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetHuntParticipantsResult" nillable="true" type="q19:ArrayOfhuntparticipant" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetParticipantName">
+  <xs:element name="GetParticipant">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="participant" type="xs:long" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetParticipantNameResponse">
+  <xs:element name="GetParticipantResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetParticipantNameResult" nillable="true" type="q21:user" />
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="GetParticipantResult" nillable="true" type="q20:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SaveUserSecurityQuestion">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="userSecurityQuestion" nillable="true" type="q22:usersecurityquestion" />
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="userSecurityQuestion" nillable="true" type="q21:usersecurityquestion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -248,42 +236,42 @@
   <xs:element name="getListOfSecurityQuestionsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getListOfSecurityQuestionsResult" nillable="true" type="q23:ArrayOfsecurityquestion" />
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getListOfSecurityQuestionsResult" nillable="true" type="q22:ArrayOfsecurityquestion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getUserSecurityQuestion">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q24:user" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="user" nillable="true" type="q23:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getUserSecurityQuestionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getUserSecurityQuestionResult" nillable="true" type="q25:securityquestion" />
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getUserSecurityQuestionResult" nillable="true" type="q24:securityquestion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getUserSecurityAnswer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q26:user" />
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q25:user" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="getUserSecurityAnswerResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getUserSecurityAnswerResult" nillable="true" type="q27:usersecurityquestion" />
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getUserSecurityAnswerResult" nillable="true" type="q26:usersecurityquestion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="updateUserPassword">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q28:user" />
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q27:user" />
         <xs:element minOccurs="0" name="newPassword" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -296,7 +284,7 @@
   <xs:element name="updateCompanyPassword">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q29:user" />
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="currentUser" nillable="true" type="q28:user" />
         <xs:element minOccurs="0" name="newPassword" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -314,14 +302,14 @@
   <xs:element name="getExistingCompaniesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getExistingCompaniesResult" nillable="true" type="q30:ArrayOfcompanydetail" />
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="getExistingCompaniesResult" nillable="true" type="q29:ArrayOfcompanydetail" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="saveCompany">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="companyDetails" nillable="true" type="q31:companydetail" />
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/TreasureHuntDesktopApplication.Data" minOccurs="0" name="companyDetails" nillable="true" type="q30:companydetail" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

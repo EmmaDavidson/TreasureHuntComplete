@@ -132,6 +132,7 @@ public class MapManager {
 	}
 	
 	/* Method inserting a recorded location into the SQLite (local) database for the given HuntParticipantId. 
+	 * Not currently being used but could be utilised for later expansion.
 	 * Based upon Page 1381.*/
 	public void insertLocation(Location loc) {	//I added this in
 		mHuntParticipantId = mSettings.getInt("userParticipantIdForMap", -1);

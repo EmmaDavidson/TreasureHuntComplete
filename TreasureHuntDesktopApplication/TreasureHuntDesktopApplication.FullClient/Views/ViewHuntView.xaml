@@ -68,7 +68,6 @@
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
-            <Button Command="{Binding LogoutCommand}" FontFamily="Stereofidelic" FontSize="20" Background="#FF54C8E2" Content="Logout" Grid.Column="2" HorizontalAlignment="Left" Margin="457,5,0,0" VerticalAlignment="Top" Width="75"/>
            
         </Grid>
 

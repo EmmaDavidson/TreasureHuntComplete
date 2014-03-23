@@ -5,29 +5,41 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using TreasureHuntDesktopApplication.FullClient.Messages;
-using TreasureHuntDesktopApplication.FullClient.Model;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
+
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
 
 namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 {
+    /// <Summary> This is the ViewModel associated with the MainWindow and is responsible for determining the navigation
+    /// between the different Views available in the application.</Summary>
+ 
     public class MainViewModel : ViewModelBase
     {
         //-http://www.codeproject.com/Articles/72724/Beginning-a-WPF-MVVM-application-Navigating-betwee
+        #region Setup
+        #region Fields
+        #region General global variables
 
         private ViewModelBase currentViewModel;
         private static readonly TreasureHuntServiceClient serviceClient = new TreasureHuntServiceClient();
 
-        readonly static CreateHuntViewModel createHuntViewModel = new CreateHuntViewModel(serviceClient);
-        readonly static ViewHuntViewModel viewHuntViewModel = new ViewHuntViewModel(serviceClient);
-        readonly static SearchHuntViewModel searchHuntViewModel = new SearchHuntViewModel(serviceClient);
-        readonly static PrintViewModel printViewModel = new PrintViewModel(serviceClient);
-        readonly static LoginViewModel loginViewModel = new LoginViewModel(serviceClient);
-        readonly static RegisterViewModel registerViewModel = new RegisterViewModel(serviceClient);
-        readonly static LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel(serviceClient);
-        readonly static RetrieveEmailViewModel retrieveEmailViewModel = new RetrieveEmailViewModel(serviceClient);
-        readonly static ResetPasswordViewModel resetPasswordViewModel = new ResetPasswordViewModel(serviceClient);
-        readonly static ResetCompanyPasswordViewModel resetCompanyPasswordViewModel = new ResetCompanyPasswordViewModel(serviceClient);
+        private readonly static CreateHuntViewModel createHuntViewModel = new CreateHuntViewModel(serviceClient);
+        private readonly static ViewHuntViewModel viewHuntViewModel = new ViewHuntViewModel(serviceClient);
+        private readonly static SearchHuntViewModel searchHuntViewModel = new SearchHuntViewModel(serviceClient);
+        private readonly static PrintViewModel printViewModel = new PrintViewModel(serviceClient);
+        private readonly static LoginViewModel loginViewModel = new LoginViewModel(serviceClient);
+        private readonly static RegisterViewModel registerViewModel = new RegisterViewModel(serviceClient);
+        private readonly static LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel(serviceClient);
+        private readonly static RetrieveEmailViewModel retrieveEmailViewModel = new RetrieveEmailViewModel(serviceClient);
+        private readonly static ResetPasswordViewModel resetPasswordViewModel = new ResetPasswordViewModel(serviceClient);
+        private readonly static ResetCompanyPasswordViewModel resetCompanyPasswordViewModel = new ResetCompanyPasswordViewModel(serviceClient);
+        #endregion 
 
+        #region Binding variables
         public ViewModelBase CurrentViewModel
         {
             get
@@ -42,7 +54,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 RaisePropertyChanged("CurrentViewModel");
             }
         }
+        #endregion 
 
+        #endregion
+
+        #region Constructor
         public MainViewModel()
         {
             CurrentViewModel = MainViewModel.loginViewModel;
@@ -55,49 +71,72 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 
                 );
         }
+        #endregion 
 
+        #region Received Messages
+
+        /// <summary>
+        /// Method that received an UpdateViewMessage that will determine what view the screen should currently show.  
+        /// </summary>
+        /// <param name="requestedUpdateViewModel"></param>
         private void ReceiveViewMessage(String requestedUpdateViewModel)
         {
-            if (requestedUpdateViewModel == "ViewHuntViewModel")
+            switch (requestedUpdateViewModel)
             {
-                CurrentViewModel = MainViewModel.viewHuntViewModel;
+                case "ViewHuntViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.viewHuntViewModel;
+                        break;
+                    }
+                case "SearchHuntViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.searchHuntViewModel;
+                        break;
+                    }
+                case "PrintViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.printViewModel;
+                        break;
+                    }
+                case "CreateHuntViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.createHuntViewModel;
+                        break;
+                    }
+                case "LoginViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.loginViewModel;
+                        break;
+                    }
+                case "RegisterViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.registerViewModel;
+                        break;
+                    }
+                case "LeaderboardViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.leaderboardViewModel;
+                        break;
+                    }
+                case "RetrieveEmailViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.retrieveEmailViewModel;
+                        break;
+                    }
+                case "ResetPasswordViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.resetPasswordViewModel;
+                        break;
+                    }
+                case "ResetCompanyPasswordViewModel":
+                    {
+                        CurrentViewModel = MainViewModel.resetCompanyPasswordViewModel;
+                        break;
+                    }
             }
-            else if (requestedUpdateViewModel == "SearchHuntViewModel")
-            {
-                CurrentViewModel = MainViewModel.searchHuntViewModel;
-            }
-            else if (requestedUpdateViewModel == "PrintViewModel")
-            {
-                CurrentViewModel = MainViewModel.printViewModel;
-            }
-            else if (requestedUpdateViewModel == "CreateHuntViewModel")
-            {
-                CurrentViewModel = MainViewModel.createHuntViewModel;
-            }
-            else if (requestedUpdateViewModel == "LoginViewModel")
-            {
-                CurrentViewModel = MainViewModel.loginViewModel;
-            }
-            else if (requestedUpdateViewModel == "RegisterViewModel")
-            {
-                CurrentViewModel = MainViewModel.registerViewModel;
-            }
-            else if (requestedUpdateViewModel == "LeaderboardViewModel")
-            {
-                CurrentViewModel = MainViewModel.leaderboardViewModel;
-            }
-            else if (requestedUpdateViewModel == "RetrieveEmailViewModel")
-            {
-                CurrentViewModel = MainViewModel.retrieveEmailViewModel;
-            }
-            else if (requestedUpdateViewModel == "ResetPasswordViewModel")
-            {
-                CurrentViewModel = MainViewModel.resetPasswordViewModel;
-            }
-            else if (requestedUpdateViewModel == "ResetCompanyPasswordViewModel")
-            {
-                CurrentViewModel = MainViewModel.resetCompanyPasswordViewModel;
-            }
+
+        #endregion
+        #endregion
 
         }
     }

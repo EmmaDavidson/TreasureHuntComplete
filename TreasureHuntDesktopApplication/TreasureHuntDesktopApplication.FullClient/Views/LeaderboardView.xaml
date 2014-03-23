@@ -42,7 +42,6 @@
                 <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
             </Button.BitmapEffect>
         </Button>
-            <Button Command="{Binding LogoutCommand}" FontFamily="Stereofidelic" FontSize="20" Background="#FF54C8E2" Content="Logout" HorizontalAlignment="Left" Margin="645,10,0,0" VerticalAlignment="Top" Width="75"/>
             <Label FontFamily="Tw Cen MT Condensed" FontSize="30" Content="{Binding CurrentTreasureHunt.HuntName}" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="251,29,0,0" Height="55" Width="279"/>
 
         </Grid>

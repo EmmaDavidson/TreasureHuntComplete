@@ -5,9 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
+//----------------------------------------------------------
+//<copyright>
+//</copyright>
+//----------------------------------------------------------
+
 namespace TreasureHuntDesktopApplication.FullClient.Messages
 {
-    class LeaderboardMessage
+    /// <Summary>  The purpose of this class is to be a framework for sending messages and data about the current hunt in relation to 
+    /// viewing a leader board for that particular hunt.</Summary> 
+
+    public class LeaderboardMessage
     {
         public hunt CurrentHunt { get; set; }
     }

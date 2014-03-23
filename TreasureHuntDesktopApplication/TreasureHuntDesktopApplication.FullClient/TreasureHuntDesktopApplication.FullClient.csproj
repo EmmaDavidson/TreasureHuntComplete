@@ -156,14 +156,13 @@
     <Compile Include="Project Utilities\BoolToVisibilityConverter.cs" />
     <Compile Include="Project Utilities\InternetConnectionChecker.cs" />
     <Compile Include="Project Utilities\PasswordBoxAssistant.cs" />
-    <Compile Include="Project Utilities\StringValidationRule.cs" />
     <Compile Include="Project Utilities\Validation.cs" />
     <Compile Include="Service References\TreasureHuntService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\Participant.cs" />
+    <Compile Include="Model\Participant.cs" />
     <Compile Include="ViewModel\CreateHuntViewModel.cs" />
     <Compile Include="ViewModel\LeaderboardViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
@@ -265,9 +264,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\DataItem.cs" />
-    <Compile Include="Model\DataService.cs" />
-    <Compile Include="Model\IDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
