@@ -18,7 +18,7 @@
         <utilities:BoolToVisibilityConverter x:Key="converter"/>
     </UserControl.Resources>
     <Grid Background="White">
-        <Grid Background="#FFBDA78A" HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730">
+        <Grid Background="#99CC00" HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730">
             <Grid.Effect>
                 <DropShadowEffect/>
             </Grid.Effect>
@@ -28,23 +28,23 @@
                 <ColumnDefinition Width="555*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="New Question:" HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Height="44" Width="143" Grid.ColumnSpan="2"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="New Question:" HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Height="44" Width="143" Grid.ColumnSpan="2"/>
             <!--http://www.eidias.com/Blog/2012/7/2/simple-validation-in-wpf-mvvm-using-idataerrorinfo-->
             <TextBox FontFamily="Tw Cen MT Condensed" FontSize="25" ToolTip="{Binding ElementName=NewQuestionTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="NewQuestionTextBox" Text="{Binding NewQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" Height="54" Margin="0,87,202,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Grid.ColumnSpan="2" Grid.Column="1">
             </TextBox>
-            <Button Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30"  Content="Add Question" HorizontalAlignment="Left" Margin="351,97,0,0" VerticalAlignment="Top" Width="179" Command="{Binding SaveQuestionCommand}" Grid.Column="2" Height="34">
+            <Button Background="#33B5E5"  FontFamily="Stereofidelic" FontSize="30"  Content="Add Question" HorizontalAlignment="Left" Margin="351,97,0,0" VerticalAlignment="Top" Width="179" Command="{Binding SaveQuestionCommand}" Grid.Column="2" Height="34">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
-            <Button Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding PrintQRCodesCommand}" Content="Print QR Codes" Grid.Column="2" HorizontalAlignment="Left" Margin="351,213,0,0" VerticalAlignment="Top" Width="181" Height="35">
+            <Button Background="#33B5E5"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding PrintQRCodesCommand}" Content="Print QR Codes" Grid.Column="2" HorizontalAlignment="Left" Margin="351,213,0,0" VerticalAlignment="Top" Width="181" Height="35">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
-            <ListView Background="#FF54C8E2" ItemsSource="{Binding Questions}" SelectedItem="{Binding CurrentQuestion}"  SelectionMode="Single" HorizontalAlignment="Left" Height="224" Margin="10,146,0,0" VerticalAlignment="Top" Width="518" Grid.ColumnSpan="3">
+            <ListView Background="#33B5E5" ItemsSource="{Binding Questions}" SelectedItem="{Binding CurrentQuestion}"  SelectionMode="Single" HorizontalAlignment="Left" Height="224" Margin="10,146,0,0" VerticalAlignment="Top" Width="518" Grid.ColumnSpan="3">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Width="530" Header="Question" DisplayMemberBinding="{Binding Path=Question1}" />
@@ -54,15 +54,15 @@
             </ListView>
 
             <!--<Label FontFamily="Arial" FontSize="9" FontStyle="Italic" Foreground="#FF54C8E2" Content="{Binding ElementName=NewQuestionTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" HorizontalAlignment="Left" Margin="19,146,0,0" VerticalAlignment="Top" Height="16" Width="378" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" Grid.Column="1"/>-->
-            <Button Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding BackCommand}" Content="Back" Grid.Column="2" HorizontalAlignment="Left" Margin="351,294,0,0" VerticalAlignment="Top" Width="181" Height="38">
+            <Button Background="#33B5E5"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding BackCommand}" Content="Back" Grid.Column="2" HorizontalAlignment="Left" Margin="351,294,0,0" VerticalAlignment="Top" Width="181" Height="38">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
-            <Label Foreground="#FF54C8E2" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Current Treasure Hunt:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="518"/>
-            <Label FontFamily="Tw Cen MT Condensed" FontSize="30" Content="{Binding CurrentTreasureHunt.HuntName}" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="251,27,0,0" Grid.Column="2" Height="55" Width="279"/>
-            <Button Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding LeaderboardCommand}" Content="Leaderboard" HorizontalAlignment="Left" Margin="351,253,0,0" VerticalAlignment="Top" Width="181" Height="36" Grid.Column="2">
+            <Label Foreground="#33B5E5" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Current Treasure Hunt:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="518"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="{Binding CurrentTreasureHunt.HuntName}" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="251,27,0,0" Grid.Column="2" Height="55" Width="279"/>
+            <Button Background="#33B5E5"  FontFamily="Stereofidelic" FontSize="30"  Command="{Binding LeaderboardCommand}" Content="Leaderboard" HorizontalAlignment="Left" Margin="351,253,0,0" VerticalAlignment="Top" Width="181" Height="36" Grid.Column="2">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>

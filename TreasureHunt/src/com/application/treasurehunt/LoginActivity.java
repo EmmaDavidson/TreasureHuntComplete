@@ -31,6 +31,8 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +47,7 @@ import org.json.JSONObject;
 import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import Utilities.PHPHelper;
+import Utilities.ValidationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +76,6 @@ public class LoginActivity extends Activity {
 	private String mSubmittedEmail;
 	
 	private Button mForgotPasswordButton;
-	private Button mLicenceButton;
 	private Button mLoginButton;
 	private Button mRegisterButton;
 	private EditText mEmailView;
@@ -88,6 +90,7 @@ public class LoginActivity extends Activity {
 	private static JSONObject sResetEmailAddressResult;
 	
 	private InternetUtility mInternetUtility;
+	private ValidationHelper mValidationHelper;
 	private String mConnectionTimeout = "Connection timeout. Please try again.";
 	
 	private boolean mExistingEmailAddress;
@@ -122,11 +125,12 @@ public class LoginActivity extends Activity {
 		mEmailView = (EditText) findViewById(R.id.login_email_address);
 		mPasswordView = (EditText) findViewById(R.id.login_password);
 		mForgotPasswordButton = (Button) findViewById(R.id.forgotten_password_button);
-		mLicenceButton = (Button) findViewById(R.id.licence_button);
 		mLoginButton = (Button) findViewById(R.id.sign_in_button);
 		mRegisterButton = (Button) findViewById(R.id.register_on_login_button);
 		
 		mInternetUtility = InternetUtility.getInstance(this);
+		mValidationHelper = ValidationHelper.getInstance(this);
+		
 		jsonParser = new JSONParser();
 				
 		mLoginButton.setOnClickListener(
@@ -149,16 +153,6 @@ public class LoginActivity extends Activity {
 					}
 				});
 		
-		//http://stackoverflow.com/questions/2734270/how-do-i-make-links-in-a-textview-clickable
-		mLicenceButton.setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						Intent licenceIntent = new Intent(LoginActivity.this, LicenceActivity.class);
-						startActivity(licenceIntent);
-					}
-				});
-		
 		mRegisterButton.setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -174,6 +168,32 @@ public class LoginActivity extends Activity {
 							handleForgottenPassword();
 					}
 				});	
+	}
+	
+	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.login, menu);
+		menu.add(Menu.NONE, 1, Menu.NONE, "Licences");
+		return true;
+	} 
+		
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
+		switch(item.getItemId()) {
+		case 1:
+			//http://stackoverflow.com/questions/2734270/how-do-i-make-links-in-a-textview-clickable
+			Intent licenceIntent = new Intent(LoginActivity.this, LicenceActivity.class);
+			startActivity(licenceIntent);
+			
+			return true;
+		}
+		
+		return super.onOptionsItemSelected(item);
 	}
 	
 	/* Method to call the asynchronous class 'UserLoginTask'. If call to the database takes too long then a timeout should occur.*/
@@ -284,13 +304,13 @@ public class LoginActivity extends Activity {
 	/*Method to check if the email address entered conforms with the validation rules for this variable.*/
 	private boolean isValidEmailAddress() {	
 		
-		if (TextUtils.isEmpty(mEmail)) {
+		if (mValidationHelper.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_email_null));
 			return false;
 			
 		}
 		//http://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address-on-android
-		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches()) {
+		else if(!mValidationHelper.isValidEmailFormat(mEmail.toString())) {
 			mEmailView.setError(getString(R.string.error_email_incorrect_format));	
 			return false;
 		}
@@ -301,13 +321,12 @@ public class LoginActivity extends Activity {
 	/* Method to check if the password entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidPassword() {
 		
-		if (TextUtils.isEmpty(mPassword)) {
+		if (mValidationHelper.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_password_null));
 			return false;	
 		}	
 		return true;	
 	}
-	
 	
 	/*
 	 * Method saves the currently typed email address and password when the Activity is paused.
@@ -336,10 +355,13 @@ public class LoginActivity extends Activity {
 	
 	/* This internal class attempts to log the participant into the application with the details submitted on screen. */
 	public class UserLoginTask extends AsyncTask<String, String, String>{
-		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
 		/*Method calling the database to attempt to retrieve the data associated with the details entered on screen.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			int success;
@@ -456,7 +478,7 @@ public class LoginActivity extends Activity {
 	
 		/* Method calling the database to return the data associated with the email address supplied to reset the password.*/
 		@Override
-		protected String doInBackground(String... arg0) {
+		public String doInBackground(String... arg0) {
 			
 			int success;
 			List<NameValuePair> parametersForUserId = new ArrayList<NameValuePair>();

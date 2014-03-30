@@ -70,7 +70,7 @@ public class ChooseHuntActivity extends Activity {
 	private ProgressDialog mReturnHuntsDialog;
 	
 	public JSONParser jsonParser = new JSONParser();
-	private static JSONArray sTagResult;
+	public static JSONArray sTagResult;
 	private ReturnHuntsTask mReturnHuntsTask = null;
 	 
 	private HuntDAO mHuntDataSource;
@@ -87,7 +87,10 @@ public class ChooseHuntActivity extends Activity {
 	//http://stackoverflow.com/questions/12220239/repeat-task-in-android
 	//http://stackoverflow.com/questions/6242268/repeat-a-task-with-a-time-delay/6242292#6242292
 	
-	/* This Runnable  will periodically update the list of treasure hunts available from the database for the given company.*/
+	/* This Runnable  will periodically update the list of treasure hunts available from 
+	 * the database for the given company.*/
+	
+	//QUESTION TO SELF - AGAIN, SHOULD I JUST IT REPETITIVELY RUN WHEN THE SCREEN HAS BEEN TILTED?
 	private final Runnable mUpdateHuntsList = new Runnable() {
 		
 		@Override
@@ -101,7 +104,7 @@ public class ChooseHuntActivity extends Activity {
 				Toast.makeText(ChooseHuntActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
 			}
 			
-			mHandlerForUpdatingHuntList.postDelayed(mUpdateHuntsList, 10000);
+			mHandlerForUpdatingHuntList.postDelayed(mUpdateHuntsList, 60000);
 		}
 	};
 	
@@ -129,7 +132,6 @@ public class ChooseHuntActivity extends Activity {
 		
 		mHuntDataSource = new HuntDAO(this);
 		mHuntDataSource.open();
-		mHuntDataSource.refreshCompanyHunts();
 		
 		mSettings = getSharedPreferences("UserPreferencesFile", 0);
 		mEditor = mSettings.edit();
@@ -141,31 +143,41 @@ public class ChooseHuntActivity extends Activity {
 		mHandlerForUpdatingHuntList.post(mUpdateHuntsList);
 	}
 
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
+		
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item)	{
 		
 		switch(item.getItemId()) {
-		case 1:
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(ChooseHuntActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(ChooseHuntActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(ChooseHuntActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -218,28 +230,6 @@ public class ChooseHuntActivity extends Activity {
 			}
 	}
 	
-	/* Method to display a dialog if no treasure hunt data is returned from the database call.
-	 * Associated with ReturnHuntsTask onPostExecute() method.*/
-	private void showFailedTreasureHuntDataReturnMessage() {
-		
-		Builder alertForNoData = new Builder(ChooseHuntActivity.this);
-		alertForNoData.setTitle("Treasure Hunts");
-		alertForNoData.setMessage("There are currently no hunts to show for this company. Please check back later.");
-		alertForNoData.setCancelable(false);
-		alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
-		
-		alertForNoData.create();
-		alertForNoData.show();
-		
-		Log.w("ChooseHunt", "No treasure hunts returned from the database for the company identified by id " 
-				+ mCurrentAdministratorId);
-	}
 
 	/* This internal class attempts to return from the database a list of treasure hunts that are 
 	 * available for a participant to choose from for a given company. */
@@ -259,7 +249,7 @@ public class ChooseHuntActivity extends Activity {
 		
 		/* Method calling the database to return all treasure hunts present for a given company.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			//http://www.php.net/manual/en/pdostatement.fetchall.php
 			//http://stackoverflow.com/questions/14491430/using-pdo-to-echo-display-all-rows-from-a-table
@@ -285,9 +275,9 @@ public class ChooseHuntActivity extends Activity {
 					for(int i=0; i < sTagResult.length(); i++)
 					{
 						mHuntDataSource.addHunt(sTagResult.getJSONArray(i).getJSONObject(0).getInt("HuntId"),
-								sTagResult.getJSONArray(i).getJSONObject(0).getString("HuntName"),
-								sTagResult.getJSONArray(i).getJSONObject(0).getString("HuntDescription"),
-								sTagResult.getJSONArray(i).getJSONObject(0).getString("EndDate"));
+						sTagResult.getJSONArray(i).getJSONObject(0).getString("HuntName"),
+						sTagResult.getJSONArray(i).getJSONObject(0).getString("HuntDescription"),
+						sTagResult.getJSONArray(i).getJSONObject(0).getString("EndDate"));
 					}
 					
 					return jsonResult.getString(PHPHelper.MESSAGE);
@@ -308,7 +298,7 @@ public class ChooseHuntActivity extends Activity {
 	
 			return null;
 		}
-	
+		
 		/* Method called after the database call has been made. If a list of treasure hunts has been returned
 		 * then this list is displayed on screen, else the participant is notified with of an error on screen.*/
 		@Override
@@ -354,6 +344,30 @@ public class ChooseHuntActivity extends Activity {
 		protected void onCancelled() {
 			
 			mReturnHuntsTask = null;
+		}
+		
+		/* Method to display a dialog if no treasure hunt data is returned from the database call.
+		 * Associated with ReturnHuntsTask onPostExecute() method.*/
+		private void showFailedTreasureHuntDataReturnMessage() {
+			
+			Builder alertForNoData = new Builder(ChooseHuntActivity.this);
+			alertForNoData.setTitle("Treasure Hunts");
+			alertForNoData.setMessage("There are currently no hunts to show for this company. Please check back later.");
+			alertForNoData.setCancelable(false);
+			alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent chooseCompanyIntent = new Intent(ChooseHuntActivity.this, ChooseCompanyActivity.class);
+					startActivity(chooseCompanyIntent);
+				}
+			});
+			
+			alertForNoData.create();
+			alertForNoData.show();
+			
+			Log.w("ChooseHunt", "No treasure hunts returned from the database for the company identified by id " 
+					+ mCurrentAdministratorId);
 		}
 	}
 }

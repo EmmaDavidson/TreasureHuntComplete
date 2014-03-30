@@ -102,6 +102,8 @@ public class ScanQRCodeActivity extends Activity {
 	private int mCurrentHuntId;
 	private int mCurrentParticipantId;
 	
+	private boolean mLocationServicesChecked = false;
+	
 	private String mConnectionTimeout = "Connection timeout. Please try again.";
 	
 	/*
@@ -121,11 +123,6 @@ public class ScanQRCodeActivity extends Activity {
 			actionBar.setSubtitle("Scan a QR code");
 		}
 		
-		if(savedInstanceState != null) {
-			mCurrentParticipantId = savedInstanceState.getInt(mCurrentHuntId + "HUNT_PARTICIPANT_ID");
-			mLastLocation = savedInstanceState.getParcelable("lastLocation");
-		}
-		
 		mScanButton = (Button)findViewById(R.id.scan_qr_code_button);
 		mQuestionReturned = (TextView)findViewById(R.id.scan_content_received);
 		
@@ -143,8 +140,10 @@ public class ScanQRCodeActivity extends Activity {
 		mCurrentParticipantId = mSettings.getInt("huntParticipantId", 0);
 		
 		Log.i("ScanQRCode", "The hunt retrieved from the editor is: " + mCurrentHuntId);
-		
-		checkLocationServices();
+			
+		if(savedInstanceState == null){
+			checkLocationServices();	
+		}
 		
 		ScanQRCodeActivity.this.registerReceiver(mLocationReceiver, new IntentFilter(MapManager.ACTION_LOCATION));
 		
@@ -159,31 +158,41 @@ public class ScanQRCodeActivity extends Activity {
 				});
 	}
 	
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
 		switch(item.getItemId()) {
-		case 1:
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(ScanQRCodeActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(ScanQRCodeActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(ScanQRCodeActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -192,9 +201,9 @@ public class ScanQRCodeActivity extends Activity {
 	 * */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		
-		savedInstanceState.putInt(mCurrentHuntId + "HUNT_PARTICIPANT_ID", mCurrentParticipantId);
+	
 		savedInstanceState.putParcelable("lastLocation", mLastLocation);
+		savedInstanceState.putBoolean("mLocationServicesChecked", mLocationServicesChecked);
 		super.onSaveInstanceState(savedInstanceState);
 	}	
 	
@@ -205,8 +214,8 @@ public class ScanQRCodeActivity extends Activity {
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		
 		super.onRestoreInstanceState(savedInstanceState);
-		mCurrentParticipantId = savedInstanceState.getInt(mCurrentHuntId + "HUNT_PARTICIPANT_ID");
 		mLastLocation = savedInstanceState.getParcelable("lastLocation");
+		mLocationServicesChecked = savedInstanceState.getBoolean("mLocationServicesChecked");
 	}
 	
 	/* Method to deal with the result of a scan. If the scan was valid for the given treasure hunt (i.e. the participant
@@ -280,6 +289,8 @@ public class ScanQRCodeActivity extends Activity {
 			mAlertForNoLocationServices.create();
 			mAlertForNoLocationServices.show();
 		}
+		
+		mLocationServicesChecked = true;
 	}
 	
 	/* Method to show a dialog if the current scan has failed e.g. if the participant has scanned a QR Code that

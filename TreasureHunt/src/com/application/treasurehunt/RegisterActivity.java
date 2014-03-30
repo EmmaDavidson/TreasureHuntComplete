@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import Utilities.PHPHelper;
+import Utilities.ValidationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class RegisterActivity extends Activity {
 	private ProgressDialog mRegisterDialog;
 	
 	private InternetUtility mInternetUtility;
+	private ValidationHelper mValidationHelper;
 	
 	public JSONParser jsonParser = new JSONParser();
 	private UserRegisterTask mRegisterTask = null;
@@ -63,6 +65,15 @@ public class RegisterActivity extends Activity {
 	private Spinner mSecurityQuestionSpinner;
 	
 	private String mConnectionTimeout = "Connection timeout. Please try again.";
+	
+	private int mMinEmailLength = 10;
+	private int mMaxEmailLength = 30;
+	private int mMinAnswerLength = 3;
+	private int mMaxAnswerLength = 30;
+	private int mMinPasswordLength = 6;
+	private int mMaxPasswordLength = 10;
+	private int mMinNameLength = 3;
+	private int mMaxNameLength = 30;
 	
 	/*
 	 * Method called when the Activity is created (as part of the android life cycle) which sets up this Activity's variables.
@@ -85,6 +96,7 @@ public class RegisterActivity extends Activity {
 		mAnswerView = (EditText) findViewById(R.id.security_question_answer);
 		
 		mInternetUtility = InternetUtility.getInstance(this);
+		mValidationHelper = ValidationHelper.getInstance(this);
 		
 		//http://developer.android.com/guide/topics/ui/controls/spinner.html
 		mSecurityQuestionSpinner = (Spinner) findViewById(R.id.security_question_spinner);
@@ -174,16 +186,16 @@ public class RegisterActivity extends Activity {
 	/* Method to check if the email address entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidEmailAddress() {	
 		
-		if (TextUtils.isEmpty(mEmail)) {
+		if (mValidationHelper.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_email_null));
 			return false;
 			
 		}
-		else if(mEmail.length() < 10 || mEmail.length() > 30) {
+		else if(!mValidationHelper.isValidLength(mEmail, mMinEmailLength, mMaxEmailLength)) {
 			mEmailView.setError(getString(R.string.error_email_invalid_length));	
 			return false;
 		}
-		else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.toString()).matches()) {
+		else if(!mValidationHelper.isValidEmailFormat(mEmail.toString())) {
 			mEmailView.setError(getString(R.string.error_email_incorrect_format));	
 			return false;
 		}
@@ -194,11 +206,11 @@ public class RegisterActivity extends Activity {
 	/* Method to check if the security question answer entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidAnswer() {
 		
-		if (TextUtils.isEmpty(mAnswer)) {
+		if (mValidationHelper.isEmpty(mAnswer)) {
 			mAnswerView.setError(getString(R.string.error_answer_null));
 			return false;
 		}
-		else if(mAnswer.length() < 3 || mAnswer.length() > 30) {
+		else if(!mValidationHelper.isValidLength(mAnswer, mMinAnswerLength, mMaxAnswerLength)) {
 			mAnswerView.setError(getString(R.string.error_answer_invalid_length));	
 			return false;
 		}
@@ -208,12 +220,12 @@ public class RegisterActivity extends Activity {
 	/* Method to check if the password entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidPassword() {
 		
-		if (TextUtils.isEmpty(mPassword)) {
+		if (mValidationHelper.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_password_null));
 			return false;
 			
 		}
-		else if(mPassword.length() < 6 || mPassword.length() > 10) {
+		else if(!mValidationHelper.isValidLength(mPassword, mMinPasswordLength, mMaxPasswordLength)) {
 			mPasswordView.setError(getString(R.string.error_password_invalid_length));	
 			return false;
 		}
@@ -224,12 +236,12 @@ public class RegisterActivity extends Activity {
 	/* Method to check if the name entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidName() {
 		
-		if (TextUtils.isEmpty(mName)) {
+		if (mValidationHelper.isEmpty(mName)) {
 			mNameView.setError(getString(R.string.error_name_null));
 			return false;
 			
 		}
-		else if(mName.length() < 3 || mName.length() > 30) {
+		else if(!mValidationHelper.isValidLength(mName, mMinNameLength, mMaxNameLength)) {
 			mNameView.setError(getString(R.string.error_name_invalid_length));	
 			return false;
 		}

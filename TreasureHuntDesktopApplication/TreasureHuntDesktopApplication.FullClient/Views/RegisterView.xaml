@@ -12,14 +12,14 @@
         <utilities:BoolToVisibilityConverter x:Key="converter"/>
     </UserControl.Resources>
     <Grid Background="White">
-        <Grid HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730" Background="#FFBDA78A">
+        <Grid HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730" Background="#99CC00">
             <Grid.Effect>
                 <DropShadowEffect/>
             </Grid.Effect>
-            <Label Foreground="#FF54C8E2" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Register" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Name:" HorizontalAlignment="Left" Margin="187,39,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.125,0.474"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Email Address:" HorizontalAlignment="Left" Margin="112,78,0,0" VerticalAlignment="Top"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Password:" HorizontalAlignment="Left" Margin="152,126,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="#33B5E5" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Register" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Name:" HorizontalAlignment="Left" Margin="187,39,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.125,0.474"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Email Address:" HorizontalAlignment="Left" Margin="112,78,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Password:" HorizontalAlignment="Left" Margin="152,126,0,0" VerticalAlignment="Top"/>
             <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=NameTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="NameTextBox" HorizontalAlignment="Left" Height="38" Margin="259,44,0,0" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Width="304"/>
             <PasswordBox FontSize="20" ToolTip="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="PasswordTextBox" utilities:PasswordBoxAssistant.BindPassword="true" utilities:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="259,130,0,0" VerticalAlignment="Top" Width="304" Height="38" RenderTransformOrigin="0.5,0.5">
                 <PasswordBox.RenderTransform>
@@ -33,30 +33,30 @@
             </PasswordBox>
 
             <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=EmailAddressTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="EmailAddressTextBox" HorizontalAlignment="Left" Height="35" Margin="259,87,0,0" TextWrapping="Wrap" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Width="304"/>
-            <Button FontSize="30"  FontFamily="Stereofidelic" Background="#FF54C8E2" Command="{Binding RegisterUserCommand}" Content="Register" HorizontalAlignment="Left" Margin="577,162,0,0" VerticalAlignment="Top" Width="143" Height="44">
+            <Button FontSize="30"  FontFamily="Stereofidelic" Background="#33B5E5" Command="{Binding RegisterUserCommand}" Content="Register" HorizontalAlignment="Left" Margin="577,162,0,0" VerticalAlignment="Top" Width="143" Height="44">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
-            <Button FontSize="30"  FontFamily="Stereofidelic" Background="#FF54C8E2" Command="{Binding BackCommand}" Content="Back" HorizontalAlignment="Left" Margin="577,212,0,0" VerticalAlignment="Top" Width="143" Height="43">
+            <Button FontSize="30"  FontFamily="Stereofidelic" Background="#33B5E5" Command="{Binding BackCommand}" Content="Back" HorizontalAlignment="Left" Margin="577,212,0,0" VerticalAlignment="Top" Width="143" Height="43">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
                 </Button.BitmapEffect>
             </Button>
             <TextBox FontFamily="Tw Cen MT Condensed" FontSize="20" ToolTip="{Binding ElementName=CompanyNameTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="CompanyNameTextBox" Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Height="35" Margin="259,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="304"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30"  Content="Company Name:" HorizontalAlignment="Left" Margin="100,192,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30"  Content="Company Name:" HorizontalAlignment="Left" Margin="100,192,0,0" VerticalAlignment="Top"/>
             <PasswordBox FontSize="20" ToolTip="{Binding ElementName=CompanyPasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="CompanyPasswordTextBox" utilities:PasswordBoxAssistant.BindPassword="true" utilities:PasswordBoxAssistant.BoundPassword="{Binding CompanyPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Height="34" Margin="259,232,0,0" VerticalAlignment="Top" Width="304"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30"  Content="Company Password:" HorizontalAlignment="Left" Margin="64,223,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30"  Content="Company Password:" HorizontalAlignment="Left" Margin="64,223,0,0" VerticalAlignment="Top"/>
             <ComboBox Name="SecurityQuestionComboBox" ToolTip="{Binding ElementName=SecurityQuestionComboBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" DisplayMemberPath="SecurityQuestion1" SelectedItem="{Binding CurrentSecurityQuestion, Mode=TwoWay}" FontFamily="Tw Cen MT Condensed" FontSize="20" ItemsSource="{Binding SecurityQuestions}" Background="White" BorderBrush="#FF0F4E72" HorizontalAlignment="Left" Margin="259,283,0,0" VerticalAlignment="Top" Width="304" Height="35"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Security Question:" HorizontalAlignment="Left" Margin="82,279,0,0" VerticalAlignment="Top"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Security Answer:" HorizontalAlignment="Left" Margin="94,322,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Security Question:" HorizontalAlignment="Left" Margin="82,279,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Security Answer:" HorizontalAlignment="Left" Margin="94,322,0,0" VerticalAlignment="Top"/>
             <PasswordBox FontSize="20" ToolTip="{Binding ElementName=SecurityAnswerTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="SecurityAnswerTextBox" utilities:PasswordBoxAssistant.BindPassword="true" utilities:PasswordBoxAssistant.BoundPassword="{Binding SecurityAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"   HorizontalAlignment="Left" Height="37" Margin="259,323,0,0" VerticalAlignment="Top" Width="304"/>
             <!-- http://social.msdn.microsoft.com/Forums/vstudio/en-US/41742469-ba87-454d-9a02-630f42299811/popup-wpf-control-how-does-it-work?forum=wpf -->
             <StackPanel Background="White" Margin="168,97,135,95" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" >
                 <!--http://wpftutorial.net/ValueConverters.html-->
-                <TextBlock FontFamily="Stereofidelic" Text="Registering..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
+                <TextBlock Foreground="DarkSlateGray" FontFamily="Stereofidelic" Text="Registering..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
                 <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="125,10,124,420" RenderTransformOrigin="3.935,0.005" Height="99">
                     <Image.RenderTransform>
                         <TransformGroup>

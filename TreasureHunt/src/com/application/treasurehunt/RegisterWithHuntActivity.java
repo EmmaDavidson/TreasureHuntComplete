@@ -108,22 +108,19 @@ public class RegisterWithHuntActivity extends Activity {
 	private String mCurrentHunt;
 	private String mCurrentHuntDescription;
 	private String mEndDate;
+	private long mStartTime;
+	private int mHuntId;
 	
 	private boolean mHuntParticipantIdReturned = false;
 	private boolean mCurrentHuntIdReturned = false;
 	private boolean mRegistrationSuccessful = false;
-	private boolean mHuntDescriptionreturned = false;
 	private boolean mUserAlreadyRegistered = false;
 	private boolean mHuntAlreadyStarted = false;
 	private boolean mHuntAlreadyFinished = false;
-	private boolean startTimeSaved = false;
-	
-	private long mStartTime;
+	private boolean mStartTimeSaved = false;
 	
 	private SharedPreferences.Editor mEditor;
 	private SharedPreferences mSettings;
-	
-	private int mHuntId;
 	
 	private Builder mAlertForHuntOver;
 
@@ -162,7 +159,7 @@ public class RegisterWithHuntActivity extends Activity {
 		mEditor = mSettings.edit();
 		
 		retrieveHuntDetails();	
-		checkIfHuntFinished();
+		checkIfHuntFinished(savedInstanceState);
 			
 		mRegisterButton.setOnClickListener(
 				new View.OnClickListener() {
@@ -199,46 +196,74 @@ public class RegisterWithHuntActivity extends Activity {
 				});
 	}
 	
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
+		
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
 		switch(item.getItemId()) {
-		case 1:
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(RegisterWithHuntActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(RegisterWithHuntActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(RegisterWithHuntActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
 	/*
-	 * Method saves the details about the current treasure hunt when the activity is paused to prevent a database recall.
+	 * Method saves the currently typed email address and password when the Activity is paused.
 	 * */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {	
 		
-		savedInstanceState.putString("HUNT_REGISTRATION_CURRENT_HUNT_DESCRIPTION", mhuntDescriptionView.getText().toString());
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_USER_REGISTERED", mUserAlreadyRegistered);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ID_RETURNED", mCurrentHuntIdReturned);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_DESCRIPTION_RETURNED", mHuntDescriptionreturned);
-		savedInstanceState.putBoolean("HUNT_REGISTRATION_HAS_HUNT_ALREADY_STARTED", mHuntAlreadyStarted);
-		
 		//http://developer.android.com/training/basics/activity-lifecycle/recreating.html
+		savedInstanceState.putBoolean("mHuntAlreadyStarted", mHuntAlreadyStarted);
+		savedInstanceState.putBoolean("mUserAlreadyRegistered", mUserAlreadyRegistered);
+		savedInstanceState.putLong("mStartTime", mStartTime);
+		savedInstanceState.putBoolean("mBeginHuntButton", mBeginHuntButton.isEnabled());
+		savedInstanceState.putBoolean("mRegisterButton", mRegisterButton.isEnabled());
+		
 		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	/*
+	 * Method restoring the currently typed email address and password.
+	 * */
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		mHuntAlreadyStarted = savedInstanceState.getBoolean("mHuntAlreadyStarted");
+		mUserAlreadyRegistered = savedInstanceState.getBoolean("mUserAlreadyRegistered");
+		mStartTime = savedInstanceState.getLong("mStartTime");
+		
+		mBeginHuntButton.setEnabled(savedInstanceState.getBoolean("mBeginHuntButton"));
+		mRegisterButton.setEnabled(savedInstanceState.getBoolean("mRegisterButton"));
 	}	
 	
 	/* Method to call the asynchronous class 'CheckIfUserRegisteredTask'. If call to the database takes too long then a timeout should occur.*/
@@ -383,6 +408,7 @@ public class RegisterWithHuntActivity extends Activity {
 		}
 		else {
 			mRegisterButton.setEnabled(false);
+			mCurrentHuntIdReturned = false;
 			showCouldNotRetrieveDetailsMessage();
 		}
 		
@@ -393,7 +419,7 @@ public class RegisterWithHuntActivity extends Activity {
 	/* Method that will check if the current treasure hunt is out of date i.e. it is no longer playable. If so,
 	 * prevent the participant from registering or playing the given hunt. Else, check if the hunt has already
 	 * been registered with or started. */
-	public void checkIfHuntFinished() {
+	public void checkIfHuntFinished(Bundle savedInstanceState) {
 		
 		Date today = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -404,6 +430,9 @@ public class RegisterWithHuntActivity extends Activity {
 			endDate = format.parse(mEndDate);
 			if(today.after(endDate)) {
 				mHuntAlreadyFinished = true;
+			}
+			else {
+				mHuntAlreadyFinished = false;
 			}
 		} catch (ParseException e) {
 			try {
@@ -419,12 +448,16 @@ public class RegisterWithHuntActivity extends Activity {
 			mAlertForHuntOver.show();
 		}
 		else {
-			if(!mUserAlreadyRegistered) {
+			if(savedInstanceState == null) {
+			
+				if(!mUserAlreadyRegistered) {
 				checkIfUserHasAlreadyRegistered();	
+				}
+			
+				if(!mHuntAlreadyStarted) {
+					checkIfHuntAlreadyStarted();
+				}	
 			}
-			if(!mHuntAlreadyStarted) {
-				checkIfHuntAlreadyStarted();
-			}	
 		}	
 	}
 	
@@ -733,6 +766,7 @@ public class RegisterWithHuntActivity extends Activity {
 					return json.getString(PHPHelper.MESSAGE);
 				}
 				else {
+					mRegistrationSuccessful = false;
 					Log.w("RegisterWithHunt", json.getString(PHPHelper.MESSAGE));
 					return json.getString(PHPHelper.MESSAGE);
 				}
@@ -920,12 +954,12 @@ public class RegisterWithHuntActivity extends Activity {
 					if(startTimeSuccess == 1) {
 						Log.i("RegisterWithHunt", "start time for " + mHuntId + " is " + mStartTime );
 						mHuntAlreadyStarted = true;
-						startTimeSaved = true;
+						mStartTimeSaved = true;
 						return saveStartTimeObject.getString(PHPHelper.MESSAGE);			
 					}
 					else {
 						Log.w("RegisterWithHunt", saveStartTimeObject.getString(PHPHelper.MESSAGE));
-						startTimeSaved = false;
+						mStartTimeSaved = false;
 						return saveStartTimeObject.getString(PHPHelper.MESSAGE);
 					}
 				}catch (JSONException e) {
@@ -945,7 +979,7 @@ public class RegisterWithHuntActivity extends Activity {
 			mSaveStartTimeTask = null;
 			mSavingStartTimeDialog.cancel();
 		
-			if(startTimeSaved) {
+			if(mStartTimeSaved) {
 				mEditor.putBoolean(mHuntId + " isHuntAlreadyStarted", mHuntAlreadyStarted);
 				mEditor.putLong(mHuntId + " startTime", mStartTime);
 				mEditor.commit(); 

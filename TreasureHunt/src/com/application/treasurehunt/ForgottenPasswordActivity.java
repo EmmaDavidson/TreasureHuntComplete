@@ -43,6 +43,7 @@ import org.json.JSONObject;
 import Utilities.InternetUtility;
 import Utilities.JSONParser;
 import Utilities.PHPHelper;
+import Utilities.ValidationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +74,13 @@ public class ForgottenPasswordActivity extends Activity {
 	private Button mSaveNewPasswordButton;
 	
 	private InternetUtility mInternetUtility;
+	private ValidationHelper mValidationHelper;
 	private String mConnectionTimeout = "Connection timeout. Please try again.";
 	
 	boolean mSetNewPasswordSuccess;
 	private int mUserId;
+	private int mMinPasswordLength = 6;
+	private int mMaxPasswordLength = 10;
 
 	/*
 	 * Method called when the Activity is created (as part of the Android Life Cycle) which sets up this Activity's variables.
@@ -110,6 +114,7 @@ public class ForgottenPasswordActivity extends Activity {
 		mSecurityQuestionText.setText(mSecurityQuestion);
 		
 		mInternetUtility = InternetUtility.getInstance(this);
+		mValidationHelper = ValidationHelper.getInstance(this);
 		
 		mSaveNewPasswordButton.setOnClickListener(
 				new View.OnClickListener() {
@@ -159,13 +164,12 @@ public class ForgottenPasswordActivity extends Activity {
 	/* Method that handles submission of a participant's security question in comparison to their answer stored in the database.
 	 * If successful, they are allowed to enter a new password. Else, they are notified of their error on screen.*/
 	public boolean isValidAnswer() {
-		if (TextUtils.isEmpty(mSecurityAnswerText.getText().toString())) {
-			
-			mSecurityAnswerText.setError("You must enter an answer.");
+		if (mValidationHelper.isEmpty(mSecurityAnswerText.getText().toString())) {
+			mSecurityAnswerText.setError(getString(R.string.error_answer_empty));
 			return false;
 		}
-		else if(!mSecurityAnswerText.getText().toString().equals(mSecurityAnswer)) {				
-			mSecurityAnswerText.setError("This answer does not match our records.");
+		else if(!mValidationHelper.isStringMatching(mSecurityAnswerText.getText().toString(), mSecurityAnswer)) {				
+			mSecurityAnswerText.setError(getString(R.string.error_invalid_answer));
 			return false;
 			}
 		return true;
@@ -174,13 +178,12 @@ public class ForgottenPasswordActivity extends Activity {
 	/* Method to check if the new password (to be saved) conforms with the validation rules for participant passwords.*/
 	private boolean isValidPassword() {
 		
-		if (TextUtils.isEmpty(mNewPasswordText.getText().toString())) {
+		if (mValidationHelper.isEmpty(mNewPasswordText.getText().toString())) {
 			mNewPasswordText.setError(getString(R.string.error_password_null));
 			return false;
 			
 		}
-		else if(mNewPasswordText.getText().toString().length() < 6	
-				|| mNewPasswordText.getText().toString().length() >= 10) {
+		else if(!mValidationHelper.isValidLength(mNewPasswordText.getText().toString(), mMinPasswordLength, mMaxPasswordLength)) {
 			mNewPasswordText.setError(getString(R.string.error_password_invalid_length));	
 			return false;
 		}
@@ -227,7 +230,7 @@ public class ForgottenPasswordActivity extends Activity {
 		
 		/* Method calling the database to save the new password.*/
 		@Override
-		protected String doInBackground(String... arg0) {
+		public String doInBackground(String... arg0) {
 			
 			int success;
 

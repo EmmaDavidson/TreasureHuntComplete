@@ -1,15 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/sign_in_button"
-	    android:layout_alignParentLeft="true"
-	    android:layout_marginBottom="15dp"
-	    android:layout_marginLeft="15dp"
-	    android:layout_marginTop="15dp"
-	    android:layout_marginRight="15dp"
-	    xmlns:tools="http://schemas.android.com/tools" >
-
-<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/register_form_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,17 +9,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".RegisterActivity" >
-
-    <EditText
-        android:id="@+id/register_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/prompt_name"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true" />
 
     <EditText
         android:id="@+id/register_email_address"
@@ -56,34 +35,42 @@
         android:maxLines="1"
         android:singleLine="true" />
 
+    <EditText
+        android:id="@+id/register_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/register_email_address"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="@string/prompt_name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
     <Spinner
         android:id="@+id/security_question_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
+        android:layout_above="@+id/security_question_answer"
         android:layout_alignLeft="@+id/register_password"
         android:layout_below="@+id/register_password" />
+
+    <Button
+        android:id="@+id/register_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignLeft="@+id/security_question_answer"
+        android:layout_alignParentBottom="true"
+        android:background="#0099CC"
+        android:text="@string/save" />
 
     <EditText
         android:id="@+id/security_question_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/register_save_button"
         android:layout_alignLeft="@+id/security_question_spinner"
-        android:layout_centerVertical="true"
         android:ems="10"
-        android:hint="@string/security_answer" >
+        android:hint="@string/security_answer" />
 
-        <requestFocus />
-    </EditText>
-
-    <Button
-        android:id="@+id/register_save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/security_question_answer"
-        android:layout_below="@+id/security_question_answer"
-        android:layout_marginTop="20dp"
-        android:background="#0099CC"
-        android:text="@string/save" />
-
-</RelativeLayout>
 </RelativeLayout>

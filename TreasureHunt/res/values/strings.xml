@@ -2,6 +2,7 @@
 
     <!-- Login Activity Strings --> 
     <string name="register">Register</string>
+    <string name="register_now_label">Register now and join the fun...</string>
     
     <!-- Choose Type Of My Hunt Activity Strings -->
     <string name="not_started">Not started</string>
@@ -12,6 +13,8 @@
     <string name="new_password">New password:</string>
     <string name="submit">Submit</string>
     <string name="save_new_password">Save Password</string>
+    <string name="error_answer_empty">You must enter an answer</string>
+    <string name="error_invalid_answer">This answer does not match our records</string>
     
     <!-- Homepage Activity Strings -->
     <string name="my_hunts">My Hunts</string>
@@ -22,7 +25,7 @@
     <string name="zbar_licence"> Please see the above link for the MIT Open Source Initiative licence for the usage of ZBar scanner within this application.</string> 
      
     <!-- Login Activity Strings -->
-    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password">  Forgot Password?  </string>
     <string name="licences">Licences</string>
     
     <!-- Register With Hunt Activity Strings -->
@@ -61,6 +64,10 @@
     <string name="prompt_name">Name</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_answer">Security Answer</string>
+    <string name="prompt_new_password">New Password</string>
+    
+    
     <string name="radio_button_staff">Staff</string>
     <string name="radio_button_student">Student</string>
     <string name="register_user_type">User Type</string>
@@ -73,7 +80,7 @@
     <string name="error_email_too_short">Should be more than 10 characters</string>
     <string name="error_name_null">Please enter your name</string>
     <string name="error_name_too_short">Should be more than 4 characters</string>
-    <string name="error_email_incorrect_format">Should be valid email format</string>
+    <string name="error_email_incorrect_format">Should be a valid email format</string>
     <string name="error_answer_null">Should not be empty</string>
     <string name="choose_hunt_header">Choose A Hunt</string>
     <string name="choose_hunt">Choose Hunt</string>

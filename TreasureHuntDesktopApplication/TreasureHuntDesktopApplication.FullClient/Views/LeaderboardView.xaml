@@ -15,12 +15,12 @@
     </UserControl.Resources>
     <Grid Background="White">
 
-        <Grid Background="#FFBDA78A" HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730">
+        <Grid Background="#99CC00" HorizontalAlignment="Left" Height="380" Margin="10,10,0,0" VerticalAlignment="Top" Width="730">
             <Grid.Effect>
                 <DropShadowEffect/>
             </Grid.Effect>
-            <Label Foreground="#FF54C8E2" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Leaderboard:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="320"/>
-            <ListView Grid.Row="0" Background="#FF54C8E2" ItemsSource="{Binding LeaderboardResults}" HorizontalAlignment="Left" Height="281" Margin="10,89,0,0" VerticalAlignment="Top" Width="538">
+            <Label Foreground="#33B5E5" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Leaderboard:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="320"/>
+            <ListView Grid.Row="0" Background="#33B5E5" ItemsSource="{Binding LeaderboardResults}" HorizontalAlignment="Left" Height="281" Margin="10,89,0,0" VerticalAlignment="Top" Width="538">
             <ListView.View>
                 <GridView>
                     <!-- Knowledge from the Agile project and also http://www.wpf-tutorial.com/listview-control/listview-with-gridview/-->
@@ -30,25 +30,25 @@
                 </GridView>
             </ListView.View>
         </ListView>
-            <Button Background="#FF54C8E2" FontFamily="Stereofidelic" FontSize="30" Content="Back" Command="{Binding BackCommand}"  HorizontalAlignment="Left" Margin="553,190,0,0" VerticalAlignment="Top" Width="170" Height="40">
+            <Button Background="#33B5E5" FontFamily="Stereofidelic" FontSize="30" Content="Back" Command="{Binding BackCommand}"  HorizontalAlignment="Left" Margin="553,190,0,0" VerticalAlignment="Top" Width="170" Height="40">
             <Button.BitmapEffect>
                 <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                 <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
             </Button.BitmapEffect>
         </Button>
-            <Button Background="#FF54C8E2" FontFamily="Stereofidelic" FontSize="30" Content="Refresh Leaderboard" Command="{Binding RefreshCommand}"  HorizontalAlignment="Left" Margin="553,141,0,0" VerticalAlignment="Top" Width="170" Height="44">
+            <Button Background="#33B5E5" FontFamily="Stereofidelic" FontSize="30" Content="Refresh Leaderboard" Command="{Binding RefreshCommand}"  HorizontalAlignment="Left" Margin="553,141,0,0" VerticalAlignment="Top" Width="170" Height="44">
             <Button.BitmapEffect>
                 <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                 <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
             </Button.BitmapEffect>
         </Button>
-            <Label FontFamily="Tw Cen MT Condensed" FontSize="30" Content="{Binding CurrentTreasureHunt.HuntName}" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="251,29,0,0" Height="55" Width="279"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="{Binding CurrentTreasureHunt.HuntName}" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="251,29,0,0" Height="55" Width="279"/>
 
         </Grid>
         <!-- http://social.msdn.microsoft.com/Forums/vstudio/en-US/41742469-ba87-454d-9a02-630f42299811/popup-wpf-control-how-does-it-work?forum=wpf -->
-        <StackPanel Background="White" Margin="166,107,137,85" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" >
+        <StackPanel Background="White" Margin="176,107,140,85" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" >
             <!--http://wpftutorial.net/ValueConverters.html-->
-            <TextBlock FontFamily="Stereofidelic" Text="Gathering Data..." Height="70" FontSize="70" Margin="100,0,55,0" RenderTransformOrigin="0.762,0.454"/>
+            <TextBlock Foreground="DarkSlateGray" FontFamily="Stereofidelic" Text="Gathering Data..." Height="70" FontSize="70" Margin="100,0,55,0" RenderTransformOrigin="0.762,0.454"/>
             <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="125,10,124,420" RenderTransformOrigin="3.935,0.005" Height="99">
                 <Image.RenderTransform>
                     <TransformGroup>

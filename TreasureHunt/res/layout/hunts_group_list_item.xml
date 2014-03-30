@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="55dip"
     android:orientation="vertical"
-    android:background="#FFBDA78A" >
+    android:background="#0099CC" >
 
     <ImageView
         android:id="@+id/imageView1"

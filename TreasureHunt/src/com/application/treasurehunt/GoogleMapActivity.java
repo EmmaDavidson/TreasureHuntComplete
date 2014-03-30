@@ -38,6 +38,9 @@ public class GoogleMapActivity extends SingleFragmentActivity {
 	 * Global variables used within GoogleMapActivity.
 	 */
 	private MapManager mMapManager;
+	
+	private SharedPreferences.Editor mEditor;
+	private SharedPreferences mSettings;
 
 	/* Method called when Activity created (as part of the Android Life Cycle) to create and display an instance of GoogleMapFragment
 	 * for the associated participant and treasure hunt. Based on Page 1456 */
@@ -50,6 +53,9 @@ public class GoogleMapActivity extends SingleFragmentActivity {
 			actionBar.setSubtitle("My current hunt map");
 		}
 		
+		mSettings = getSharedPreferences("UserPreferencesFile", 0);
+		mEditor = mSettings.edit();
+		
 		mMapManager = MapManager.get(this);
 		
 		int huntParticipantId = getIntent().getIntExtra("userParticipantIdForMap", -1);
@@ -61,31 +67,41 @@ public class GoogleMapActivity extends SingleFragmentActivity {
 		return new GoogleMapFragment();
 	}
 	
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
-	//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+		
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
 		switch(item.getItemId()) {
-			case 1:
-				SharedPreferences settings = getSharedPreferences("UserPreferencesFile", 0);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.clear();
-				editor.commit();
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(GoogleMapActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
 				
 				mMapManager.stopLocationUpdates();
 				
 				Intent loginActivityIntent = new Intent(GoogleMapActivity.this, LoginActivity.class);
 				startActivity(loginActivityIntent);
-				return true;
+			}
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 }

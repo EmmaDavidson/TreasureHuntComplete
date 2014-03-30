@@ -31,15 +31,15 @@
                 <TranslateTransform/>
             </TransformGroup>
         </Grid.RenderTransform>
-        <Grid Background="#FFBDAA8A" HorizontalAlignment="Left" Height="390" Margin="10,10,0,0" VerticalAlignment="Top" Width="739">
+        <Grid Background="#99CC00" HorizontalAlignment="Left" Height="390" Margin="10,10,0,0" VerticalAlignment="Top" Width="739">
             <Grid.Effect>
                 <DropShadowEffect/>
             </Grid.Effect>
-            <Label Foreground="#FF54C8E2" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Login" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="142" RenderTransformOrigin="-3.312,-0.128" Height="74"/>
+            <Label Foreground="#33B5E5" FontWeight="ExtraBold" FontFamily="Stereofidelic" FontSize="70" Content="Login" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="142" RenderTransformOrigin="-3.312,-0.128" Height="74"/>
             <TextBox ToolTip="{Binding ElementName=EmailAddressTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" FontSize="20" FontFamily="Tw Cen MT Condensed" Name="EmailAddressTextBox" HorizontalAlignment="Left" Height="44" Margin="173,147,0,0" TextWrapping="Wrap" Text="{Binding EmailAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" Width="327"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Email Address:" HorizontalAlignment="Left" Margin="21,144,0,0" VerticalAlignment="Top" Height="47" Width="147"/>
-            <Label Foreground="DarkSlateGray" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Password:" HorizontalAlignment="Left" Margin="64,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.51,0.133" Height="47" Width="104"/>
-            <Button  Command="{Binding LoginUserCommand}" Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30" Foreground="DarkSlateGray"  Content="Login" HorizontalAlignment="Left" Margin="543,170,0,0" VerticalAlignment="Top" Width="167" Height="42">
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Email Address:" HorizontalAlignment="Left" Margin="21,144,0,0" VerticalAlignment="Top" Height="47" Width="147"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="30" Content="Password:" HorizontalAlignment="Left" Margin="64,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.51,0.133" Height="47" Width="104"/>
+            <Button  Command="{Binding LoginUserCommand}" Background="#33B5E5"  FontFamily="Stereofidelic" FontSize="30" Foreground="DarkSlateGray"  Content="Login" HorizontalAlignment="Left" Margin="543,170,0,0" VerticalAlignment="Top" Width="167" Height="42">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
                     <DropShadowBitmapEffect Color="SaddleBrown" Direction="320" ShadowDepth="25" Softness="1"  Opacity="0.5"/>
@@ -47,7 +47,7 @@
             </Button>
 
 
-            <Button Background="#FF54C8E2"  Command="{Binding RegisterCommand}" Foreground="DarkSlateGray" FontFamily="Stereofidelic" FontSize="30" Content="Register" HorizontalAlignment="Left" Margin="543,343,0,0" VerticalAlignment="Top" Width="167" Height="37">
+            <Button Background="#33B5E5"  Command="{Binding RegisterCommand}" Foreground="DarkSlateGray" FontFamily="Stereofidelic" FontSize="30" Content="Register" HorizontalAlignment="Left" Margin="543,343,0,0" VerticalAlignment="Top" Width="167" Height="37">
 
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
@@ -56,7 +56,7 @@
 
             </Button>
             <PasswordBox FontSize="20" ToolTip="{Binding ElementName=PasswordTextBox, Path=(Validation.Errors).CurrentItem.ErrorContent}" Name="PasswordTextBox" utilities:PasswordBoxAssistant.BindPassword="true" utilities:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="173,199,0,0" VerticalAlignment="Top" Width="327" Height="44"/>
-            <Label FontFamily="Tw Cen MT Condensed" FontSize="15" Content="Join the fun! Register now..." HorizontalAlignment="Left" Margin="404,353,0,0" VerticalAlignment="Top"/>
+            <Label Foreground="White" FontFamily="Tw Cen MT Condensed" FontSize="15" Content="Join the fun! Register now..." HorizontalAlignment="Left" Margin="404,353,0,0" VerticalAlignment="Top"/>
             <Button Command="{Binding ForgotPasswordCommand}" Background="#FF54C8E2"  FontFamily="Stereofidelic" FontSize="30" Foreground="DarkSlateGray"  Content="Forgot Password?" HorizontalAlignment="Left" Margin="364,259,0,0" VerticalAlignment="Top" Width="136">
                 <Button.BitmapEffect>
                     <!--http://msdn.microsoft.com/en-us/library/vstudio/ms753350%28v=vs.90%29.aspx -->
@@ -67,7 +67,7 @@
 
             <!-- http://social.msdn.microsoft.com/Forums/vstudio/en-US/41742469-ba87-454d-9a02-630f42299811/popup-wpf-control-how-does-it-work?forum=wpf -->
             <StackPanel Background="White" Margin="168,97,135,95" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" > <!--http://wpftutorial.net/ValueConverters.html-->
-                <TextBlock FontFamily="Stereofidelic" Text="Logging in..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
+                <TextBlock Foreground="DarkSlateGray" FontFamily="Stereofidelic" Text="Logging in..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
                 <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="125,10,124,420" RenderTransformOrigin="3.935,0.005" Height="99">
                     <Image.RenderTransform>
                         <TransformGroup>

@@ -96,31 +96,39 @@ public class ChooseTypeOfMyHuntActivity extends Activity {
 				});
 	}
 
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)	{
 		
 		switch(item.getItemId()) {
-		case 1:
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(ChooseTypeOfMyHuntActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(ChooseTypeOfMyHuntActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(ChooseTypeOfMyHuntActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
 		
 		return super.onOptionsItemSelected(item);

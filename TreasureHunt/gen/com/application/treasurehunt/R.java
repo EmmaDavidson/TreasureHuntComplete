@@ -227,84 +227,82 @@ containing a value of this type.
         public static final int ic_plusone_standard_off_client=0x7f02001e;
         public static final int ic_plusone_tall_off_client=0x7f02001f;
         public static final int leaderboard_image=0x7f020020;
-        public static final int map_image=0x7f020021;
-        public static final int my_hunt_image=0x7f020022;
-        public static final int scan_question_result=0x7f020023;
-        public static final int treasure_hunt=0x7f020024;
-        public static final int treasure_hunt_2=0x7f020025;
-        public static final int treasure_hunt_text=0x7f020026;
-        public static final int treasurehunttext=0x7f020027;
+        public static final int login_image=0x7f020021;
+        public static final int login_welcome_image_selected=0x7f020022;
+        public static final int login_welcome_image_unselected=0x7f020023;
+        public static final int map_image=0x7f020024;
+        public static final int my_hunt_image=0x7f020025;
+        public static final int scan_question_result=0x7f020026;
+        public static final int treasure_hunt=0x7f020027;
+        public static final int treasure_hunt_2=0x7f020028;
+        public static final int treasure_hunt_text=0x7f020029;
+        public static final int treasurehunttext=0x7f02002a;
     }
     public static final class id {
-        public static final int action_forgot_password=0x7f050043;
-        public static final int action_settings=0x7f050042;
-        public static final int browse_hunts_button=0x7f050015;
-        public static final int button1=0x7f05000a;
-        public static final int choose_hunt_item=0x7f050037;
-        public static final int company_icon=0x7f050034;
-        public static final int company_list_view=0x7f050005;
-        public static final int company_name=0x7f050035;
-        public static final int company_password_textbox=0x7f050038;
+        public static final int action_forgot_password=0x7f05003e;
+        public static final int action_settings=0x7f05003d;
+        public static final int browse_hunts_button=0x7f050012;
+        public static final int choose_hunt_item=0x7f050032;
+        public static final int company_icon=0x7f05002f;
+        public static final int company_list_view=0x7f050006;
+        public static final int company_name=0x7f050030;
+        public static final int company_password_textbox=0x7f050033;
         public static final int completed_hunts_button=0x7f050009;
-        public static final int current_hunts_button=0x7f050008;
-        public static final int editText1=0x7f05000b;
-        public static final int email_address_reset_text_field=0x7f05003c;
-        public static final int enter_email_address_label=0x7f05003b;
-        public static final int enter_password_label=0x7f050039;
-        public static final int forgotten_password_button=0x7f050020;
-        public static final int fragment_container=0x7f050012;
-        public static final int homepage_username=0x7f050013;
-        public static final int hunt_description_box=0x7f05002d;
-        public static final int hunt_description_progress_bar=0x7f050030;
-        public static final int hunt_item_image=0x7f050036;
-        public static final int hunt_list_view=0x7f050006;
-        public static final int hunt_name_label=0x7f05002c;
-        public static final int hunts_list_header_label=0x7f05003e;
-        public static final int hunts_list_item_label=0x7f05003f;
+        public static final int current_hunts_button=0x7f05000a;
+        public static final int email_address_reset_text_field=0x7f050037;
+        public static final int enter_email_address_label=0x7f050036;
+        public static final int enter_password_label=0x7f050034;
+        public static final int forgotten_password_button=0x7f05001c;
+        public static final int fragment_container=0x7f05000f;
+        public static final int homepage_username=0x7f050011;
+        public static final int hunt_description_box=0x7f05002a;
+        public static final int hunt_description_progress_bar=0x7f050029;
+        public static final int hunt_item_image=0x7f050031;
+        public static final int hunt_list_view=0x7f050007;
+        public static final int hunt_name_label=0x7f050027;
+        public static final int hunts_list_header_label=0x7f050039;
+        public static final int hunts_list_item_label=0x7f05003a;
         public static final int hybrid=0x7f050004;
-        public static final int imageView1=0x7f05003d;
-        public static final int leaderboard_list_view=0x7f050017;
-        public static final int leaderboard_name=0x7f050041;
-        public static final int leaderboard_table_layout=0x7f050016;
-        public static final int leaderboard_tally_score=0x7f050040;
-        public static final int licence_button=0x7f050021;
-        public static final int list_of_user_hunts_id=0x7f050022;
-        public static final int login=0x7f050028;
-        public static final int login_email_address=0x7f05001f;
-        public static final int login_form_layout=0x7f05001b;
-        public static final int login_password=0x7f05001d;
-        public static final int menu_item_new_map=0x7f050044;
-        public static final int my_hunts_button=0x7f050014;
-        public static final int new_password=0x7f05000e;
+        public static final int imageView1=0x7f050038;
+        public static final int leaderboard_list_view=0x7f050014;
+        public static final int leaderboard_name=0x7f05003c;
+        public static final int leaderboard_table_layout=0x7f050013;
+        public static final int leaderboard_tally_score=0x7f05003b;
+        public static final int list_of_user_hunts_id=0x7f05001e;
+        public static final int login=0x7f050023;
+        public static final int login_email_address=0x7f05001b;
+        public static final int login_form_layout=0x7f050018;
+        public static final int login_password=0x7f05001a;
+        public static final int menu_item_new_map=0x7f05003f;
+        public static final int my_hunts_button=0x7f050010;
+        public static final int new_password=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int not_started_hunts_button=0x7f050007;
-        public static final int register_email_address=0x7f050026;
-        public static final int register_form_layout=0x7f050023;
-        public static final int register_hunt_button=0x7f05002e;
-        public static final int register_label=0x7f050024;
-        public static final int register_name=0x7f050025;
-        public static final int register_on_login_button=0x7f05001c;
-        public static final int register_password=0x7f050027;
-        public static final int register_save_button=0x7f050029;
+        public static final int not_started_hunts_button=0x7f050008;
+        public static final int register_email_address=0x7f050021;
+        public static final int register_form_layout=0x7f05001f;
+        public static final int register_hunt_button=0x7f05002b;
+        public static final int register_name=0x7f050020;
+        public static final int register_on_login_button=0x7f050019;
+        public static final int register_password=0x7f050022;
+        public static final int register_save_button=0x7f050026;
         public static final int satellite=0x7f050002;
-        public static final int save_new_password_button=0x7f050011;
-        public static final int save_password_check_box=0x7f05003a;
-        public static final int scan_content_received=0x7f050032;
-        public static final int scan_qr_code_button=0x7f050031;
-        public static final int scan_result_label=0x7f050033;
-        public static final int security_answer=0x7f05000f;
-        public static final int security_question=0x7f050010;
-        public static final int security_question_answer=0x7f05002b;
-        public static final int security_question_spinner=0x7f05002a;
-        public static final int sign_in_button=0x7f05001e;
-        public static final int start_treasure_hunt_button=0x7f05002f;
+        public static final int save_new_password_button=0x7f05000e;
+        public static final int save_password_check_box=0x7f050035;
+        public static final int scan_content_received=0x7f05002d;
+        public static final int scan_qr_code_button=0x7f05002c;
+        public static final int scan_result_label=0x7f05002e;
+        public static final int security_answer=0x7f05000d;
+        public static final int security_question=0x7f05000b;
+        public static final int security_question_answer=0x7f050025;
+        public static final int security_question_spinner=0x7f050024;
+        public static final int sign_in_button=0x7f050005;
+        public static final int start_treasure_hunt_button=0x7f050028;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f05000c;
-        public static final int textView2=0x7f05000d;
-        public static final int zbar_scanner_description=0x7f05001a;
-        public static final int zbar_scanner_header=0x7f050018;
-        public static final int zbar_scanner_link=0x7f050019;
+        public static final int textView1=0x7f05001d;
+        public static final int zbar_scanner_description=0x7f050017;
+        public static final int zbar_scanner_header=0x7f050015;
+        public static final int zbar_scanner_link=0x7f050016;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f070000;
@@ -313,28 +311,25 @@ containing a value of this type.
         public static final int activity_choose_company=0x7f030000;
         public static final int activity_choose_hunt=0x7f030001;
         public static final int activity_choose_type_of_my_hunt=0x7f030002;
-        public static final int activity_company_password=0x7f030003;
-        public static final int activity_forgotten_password=0x7f030004;
-        public static final int activity_fragment=0x7f030005;
-        public static final int activity_google_map=0x7f030006;
-        public static final int activity_homepage=0x7f030007;
-        public static final int activity_leaderboard=0x7f030008;
-        public static final int activity_licence=0x7f030009;
-        public static final int activity_login=0x7f03000a;
-        public static final int activity_my_hunts=0x7f03000b;
-        public static final int activity_register=0x7f03000c;
-        public static final int activity_register_with_hunt=0x7f03000d;
-        public static final int activity_scan_qrcode=0x7f03000e;
-        public static final int choose_company_list_item=0x7f03000f;
-        public static final int choose_hunt_list_item=0x7f030010;
-        public static final int company_password_dialog=0x7f030011;
-        public static final int email_address_dialog=0x7f030012;
-        public static final int fragment_leaderboard=0x7f030013;
-        public static final int hunts_group_list=0x7f030014;
-        public static final int hunts_group_list_item=0x7f030015;
-        public static final int leaderboard_list_item=0x7f030016;
-        public static final int login=0x7f030017;
-        public static final int trip_list=0x7f030018;
+        public static final int activity_forgotten_password=0x7f030003;
+        public static final int activity_fragment=0x7f030004;
+        public static final int activity_google_map=0x7f030005;
+        public static final int activity_homepage=0x7f030006;
+        public static final int activity_leaderboard=0x7f030007;
+        public static final int activity_licence=0x7f030008;
+        public static final int activity_login=0x7f030009;
+        public static final int activity_my_hunts=0x7f03000a;
+        public static final int activity_register=0x7f03000b;
+        public static final int activity_register_with_hunt=0x7f03000c;
+        public static final int activity_scan_qrcode=0x7f03000d;
+        public static final int choose_company_list_item=0x7f03000e;
+        public static final int choose_hunt_list_item=0x7f03000f;
+        public static final int company_password_dialog=0x7f030010;
+        public static final int email_address_dialog=0x7f030011;
+        public static final int hunts_group_list=0x7f030012;
+        public static final int hunts_group_list_item=0x7f030013;
+        public static final int leaderboard_list_item=0x7f030014;
+        public static final int login=0x7f030015;
     }
     public static final class menu {
         public static final int add_question=0x7f0b0000;
@@ -366,11 +361,11 @@ containing a value of this type.
         public static final int view_treasure_hunts=0x7f0b001a;
     }
     public static final class string {
-        public static final int action_forgot_password=0x7f06006e;
-        public static final int action_settings=0x7f060035;
-        public static final int action_sign_in_register=0x7f06006c;
-        public static final int action_sign_in_short=0x7f06006d;
-        public static final int altitude=0x7f060062;
+        public static final int action_forgot_password=0x7f060073;
+        public static final int action_settings=0x7f060038;
+        public static final int action_sign_in_register=0x7f060071;
+        public static final int action_sign_in_short=0x7f060072;
+        public static final int altitude=0x7f060067;
         public static final int app_name=0x7f06001a;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
@@ -395,10 +390,10 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f060014;
-        public static final int browse_hunts=0x7f060023;
-        public static final int browse_hunts_label=0x7f060057;
-        public static final int choose_hunt=0x7f06004d;
-        public static final int choose_hunt_header=0x7f06004c;
+        public static final int browse_hunts=0x7f060026;
+        public static final int browse_hunts_label=0x7f06005c;
+        public static final int choose_hunt=0x7f060052;
+        public static final int choose_hunt_header=0x7f060051;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -470,114 +465,119 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060013;
-        public static final int completed_hunts=0x7f06001e;
-        public static final int current_hunts=0x7f06001d;
-        public static final int elapsed_time=0x7f060061;
-        public static final int email_label=0x7f06004f;
+        public static final int completed_hunts=0x7f06001f;
+        public static final int current_hunts=0x7f06001e;
+        public static final int elapsed_time=0x7f060066;
+        public static final int email_label=0x7f060054;
         /**  Email Address Dialog Strings 
          */
-        public static final int enter_email_address=0x7f060032;
+        public static final int enter_email_address=0x7f060035;
         /**  Password Dialog Strings 
          */
-        public static final int enter_password=0x7f060030;
-        public static final int error_answer_invalid_length=0x7f06002a;
-        public static final int error_answer_null=0x7f06004b;
-        public static final int error_email_incorrect_format=0x7f06004a;
-        public static final int error_email_invalid_length=0x7f06002d;
-        public static final int error_email_null=0x7f060045;
-        public static final int error_email_too_short=0x7f060047;
-        public static final int error_field_required=0x7f060073;
-        public static final int error_incorrect_password=0x7f060072;
-        public static final int error_invalid_email=0x7f060070;
-        public static final int error_invalid_password=0x7f060071;
-        public static final int error_name_invalid_length=0x7f06002c;
-        public static final int error_name_null=0x7f060048;
-        public static final int error_name_too_short=0x7f060049;
-        public static final int error_password_invalid_length=0x7f06002b;
-        public static final int error_password_null=0x7f060046;
+        public static final int enter_password=0x7f060033;
+        public static final int error_answer_empty=0x7f060023;
+        public static final int error_answer_invalid_length=0x7f06002d;
+        public static final int error_answer_null=0x7f060050;
+        public static final int error_email_incorrect_format=0x7f06004f;
+        public static final int error_email_invalid_length=0x7f060030;
+        public static final int error_email_null=0x7f06004a;
+        public static final int error_email_too_short=0x7f06004c;
+        public static final int error_field_required=0x7f060078;
+        public static final int error_incorrect_password=0x7f060077;
+        public static final int error_invalid_answer=0x7f060024;
+        public static final int error_invalid_email=0x7f060075;
+        public static final int error_invalid_password=0x7f060076;
+        public static final int error_name_invalid_length=0x7f06002f;
+        public static final int error_name_null=0x7f06004d;
+        public static final int error_name_too_short=0x7f06004e;
+        public static final int error_password_invalid_length=0x7f06002e;
+        public static final int error_password_null=0x7f06004b;
         /**  Login Activity Strings 
          */
-        public static final int forgot_password=0x7f060026;
-        public static final int hello_world=0x7f060036;
-        public static final int hunt_name_label=0x7f060037;
-        public static final int latitude=0x7f06005f;
-        public static final int leaderboard_header=0x7f06005a;
-        public static final int licences=0x7f060027;
-        public static final int logging_in_spinner_info=0x7f060044;
-        public static final int login=0x7f06003a;
-        public static final int login_header=0x7f060034;
-        public static final int login_progress_signing_in=0x7f06006f;
-        public static final int longtitude=0x7f060060;
+        public static final int forgot_password=0x7f060029;
+        public static final int hello_world=0x7f060039;
+        public static final int hunt_name_label=0x7f06003a;
+        public static final int latitude=0x7f060064;
+        public static final int leaderboard_header=0x7f06005f;
+        public static final int licences=0x7f06002a;
+        public static final int logging_in_spinner_info=0x7f060049;
+        public static final int login=0x7f06003d;
+        public static final int login_header=0x7f060037;
+        public static final int login_progress_signing_in=0x7f060074;
+        public static final int longtitude=0x7f060065;
         /**  Homepage Activity Strings 
          */
-        public static final int my_hunts=0x7f060022;
-        public static final int my_hunts_label=0x7f060056;
-        public static final int my_stats_header=0x7f06005b;
-        public static final int name_label=0x7f060050;
+        public static final int my_hunts=0x7f060025;
+        public static final int my_hunts_label=0x7f06005b;
+        public static final int my_stats_header=0x7f060060;
+        public static final int name_label=0x7f060055;
         /**  Forgotten Password Activity Strings 
          */
-        public static final int new_password=0x7f06001f;
+        public static final int new_password=0x7f060020;
         /**  Choose Type Of My Hunt Activity Strings 
          */
-        public static final int not_started=0x7f06001c;
-        public static final int password_label=0x7f06004e;
+        public static final int not_started=0x7f06001d;
+        public static final int password_label=0x7f060053;
         /**  Register With Hunt Activity Strings 
          */
-        public static final int play=0x7f060028;
+        public static final int play=0x7f06002b;
+        public static final int prompt_answer=0x7f060041;
         /**  Strings related to login 
  Strings related to login 
          */
-        public static final int prompt_email=0x7f06003d;
-        public static final int prompt_name=0x7f06003b;
-        public static final int prompt_password=0x7f06003c;
-        public static final int radio_button_staff=0x7f06003e;
-        public static final int radio_button_student=0x7f06003f;
+        public static final int prompt_email=0x7f060040;
+        public static final int prompt_name=0x7f06003e;
+        public static final int prompt_new_password=0x7f060042;
+        public static final int prompt_password=0x7f06003f;
+        public static final int radio_button_staff=0x7f060043;
+        public static final int radio_button_student=0x7f060044;
         /**  Login Activity Strings 
          */
         public static final int register=0x7f06001b;
-        public static final int register_header=0x7f060033;
-        public static final int register_hunt_label=0x7f060052;
-        public static final int register_user_type=0x7f060040;
+        public static final int register_header=0x7f060036;
+        public static final int register_hunt_label=0x7f060057;
+        public static final int register_now_label=0x7f06001c;
+        public static final int register_user_type=0x7f060045;
         /**   Scan QR Code Activity Strings 
          */
-        public static final int result=0x7f06002e;
-        public static final int save=0x7f060038;
-        public static final int save_new_password=0x7f060021;
-        public static final int save_password=0x7f060031;
-        public static final int scan_qr_code=0x7f060042;
-        public static final int scan_qr_code_header=0x7f060043;
+        public static final int result=0x7f060031;
+        public static final int save=0x7f06003b;
+        public static final int save_new_password=0x7f060022;
+        public static final int save_password=0x7f060034;
+        public static final int scan_qr_code=0x7f060047;
+        public static final int scan_qr_code_header=0x7f060048;
         /**  Register Activity Strings 
          */
-        public static final int security_answer=0x7f060029;
-        public static final int shared_preferences=0x7f060053;
-        public static final int started=0x7f06005e;
-        public static final int submit=0x7f060020;
+        public static final int security_answer=0x7f06002c;
+        public static final int shared_preferences=0x7f060058;
+        public static final int started=0x7f060063;
+        public static final int submit=0x7f060021;
         /**   Temporary Data Strings 
          */
-        public static final int temp=0x7f06002f;
-        public static final int title_activity_choose_company=0x7f060067;
-        public static final int title_activity_choose_type_of_my_hunt=0x7f060066;
-        public static final int title_activity_company_password=0x7f060068;
-        public static final int title_activity_forgotten_password=0x7f060069;
-        public static final int title_activity_generate_hunt=0x7f060039;
-        public static final int title_activity_google_map=0x7f060065;
-        public static final int title_activity_homepage=0x7f060055;
-        public static final int title_activity_leaderboard=0x7f06005c;
-        public static final int title_activity_licence=0x7f06006a;
-        public static final int title_activity_login=0x7f06006b;
-        public static final int title_activity_login_activity1=0x7f060074;
-        public static final int title_activity_logout=0x7f060054;
-        public static final int title_activity_map=0x7f06005d;
-        public static final int title_activity_map_list=0x7f060064;
-        public static final int title_activity_my_hunts=0x7f060058;
-        public static final int title_activity_register_with_hunt=0x7f060051;
-        public static final int title_activity_scan_barcode=0x7f060041;
-        public static final int title_activity_stats=0x7f060059;
-        public static final int zbar_licence=0x7f060025;
+        public static final int temp=0x7f060032;
+        public static final int title_activity_choose_company=0x7f06006c;
+        public static final int title_activity_choose_type_of_my_hunt=0x7f06006b;
+        public static final int title_activity_company_password=0x7f06006d;
+        public static final int title_activity_forgotten_password=0x7f06006e;
+        public static final int title_activity_generate_hunt=0x7f06003c;
+        public static final int title_activity_google_map=0x7f06006a;
+        public static final int title_activity_homepage=0x7f06005a;
+        public static final int title_activity_leaderboard=0x7f060061;
+        public static final int title_activity_licence=0x7f06006f;
+        public static final int title_activity_login=0x7f060070;
+        public static final int title_activity_login_activity1=0x7f060079;
+        public static final int title_activity_logout=0x7f060059;
+        public static final int title_activity_map=0x7f060062;
+        public static final int title_activity_map_list=0x7f060069;
+        public static final int title_activity_my_hunts=0x7f06005d;
+        public static final int title_activity_register_with_hunt=0x7f060056;
+        public static final int title_activity_scan_barcode=0x7f060046;
+        public static final int title_activity_stats=0x7f06005e;
+        public static final int zbar_licence=0x7f060028;
         /**  Licence Activity Strings 
          */
-        public static final int zbar_scanner=0x7f060024;
-        public static final int zbar_scanner_licence_link=0x7f060063;
+        public static final int zbar_scanner=0x7f060027;
+        public static final int zbar_scanner_licence_link=0x7f060068;
     }
     public static final class style {
         /** 

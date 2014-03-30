@@ -77,6 +77,7 @@ public class ChooseCompanyActivity extends Activity {
 	private ProgressDialog mChooseCompanyDialog;
 	
 	public JSONParser jsonParser = new JSONParser();
+	
 	private static JSONArray sTagResult;
 	private ReturnCompaniesTask mCompaniesTask = null;
 
@@ -91,7 +92,10 @@ public class ChooseCompanyActivity extends Activity {
 	
 	private Handler mHandlerForUpdatingCompanyList;
 	
-	/*This Runnable  will periodically update the list of companies available from the database.*/
+	/*This Runnable  will periodically update the list of companies available from the database. Will only
+	 * do so as long as the screen is not tilted on its side. */
+	
+	//NOTE TO SELF - SHOULD I JUST ALLOW THE DB CALL ANYWAY TO RUN WHEN THE SCREEN HAS BEEN TILTED?
 	private final Runnable mUpdateCompanyList = new Runnable() {
 		
 		//http://stackoverflow.com/questions/12220239/repeat-task-in-android
@@ -104,12 +108,17 @@ public class ChooseCompanyActivity extends Activity {
 				attemptReturnCompanies();
 			}
 			else {
-				Toast.makeText(ChooseCompanyActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
+				Toast.makeText(ChooseCompanyActivity.this, InternetUtility.INTERNET_DISCONNECTED, 
+						Toast.LENGTH_LONG).show();
 					}
-				}
+			
+			mHandlerForUpdatingCompanyList.postDelayed(mUpdateCompanyList, 60000);
+			}
 		};
 	
 	private int mCurrentUserId;
+	private List<Company> mListOfCompanies;
+	private ChooseCompanyListAdapter mAdapter;
 	
 	/*
 	 * Method called when the Activity is created (as part of the Android Life Cycle) which sets up this Activity's variables.
@@ -131,27 +140,29 @@ public class ChooseCompanyActivity extends Activity {
 		mMapManager = MapManager.get(this);
 	
 		mCompanyDataSource = new CompanyDAO(this);
-		mCompanyDataSource.open();
-		mCompanyDataSource.refreshCompanies();
-		
+		mCompanyDataSource.open();	
+			
 		mSettings = getSharedPreferences("UserPreferencesFile", 0);
 		mEditor = mSettings.edit();
 		
 		mCurrentUserId = mSettings.getInt("currentUserId", 0);
 
 		mHandlerForUpdatingCompanyList = new Handler();
-		mHandlerForUpdatingCompanyList.post(mUpdateCompanyList);
-	
+		
+		if(savedInstanceState == null) {
+			mHandlerForUpdatingCompanyList.post(mUpdateCompanyList);
+		}
 	}
 	
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
 		
@@ -159,20 +170,51 @@ public class ChooseCompanyActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item)	{
 		
 		switch(item.getItemId()) {
-		case 1:
-		
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(ChooseCompanyActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(ChooseCompanyActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(ChooseCompanyActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+
+	/*
+	 * Method restoring the companies first retrieved to prevent a second database call when
+	 * the screen has been tilted.
+	 * */
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		mListOfCompanies = mCompanyDataSource.getAllCompanies();
+		mAdapter = new ChooseCompanyListAdapter(ChooseCompanyActivity.this, mListOfCompanies);
+		mCompanyListView.setAdapter(mAdapter);	
+	}
+	
+	/*
+	 * Method called when the activity is paused by the participant (as part of the Android Life Cycle).
+	 * It prevents the list of companies from being updated when it is not visible on screen.
+	 * */
+	@Override
+	protected void onPause() {
+		
+		super.onPause();
+		mHandlerForUpdatingCompanyList.removeCallbacks(mUpdateCompanyList);
 	}
 		
 	/* Method to call the asynchronous class 'ReturnCompaniesTask'. If call to the database takes too long then a timeout should occur.*/
@@ -281,8 +323,7 @@ public class ChooseCompanyActivity extends Activity {
 			else {
 				dialog.cancel();	
 				showFailedPasswordAttemptMessage();
-			}
-			
+			}			
 		}
 		});
 		
@@ -296,28 +337,6 @@ public class ChooseCompanyActivity extends Activity {
 	
 		AlertDialog passwordDialog = builder.create();
 		passwordDialog.show();
-	}
-	
-	/* Method to display a dialog if no company data is returned from the database call.
-	 * Associated with ReturnCompaniesTask onPostExecute() method.*/
-	private void showFailedCompanyDataReturnMessage() {
-		
-		Builder alertForNoData = new Builder(ChooseCompanyActivity.this);
-		alertForNoData.setTitle("Companies");
-		alertForNoData.setMessage("There are currently no companies to show. Please check back later.");
-		alertForNoData.setCancelable(false);
-		alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
-		
-		alertForNoData.create();
-		alertForNoData.show();
-		
-		Log.w("ChooseCompany", "No companies returned from the database");
 	}
 	
 	/* Method to display dialog if the password entered by a participant for the selected hunt is incorrect.
@@ -342,7 +361,7 @@ public class ChooseCompanyActivity extends Activity {
 	
 	/* This internal class attempts to return from the database a list of companies that are 
 	 * available for a participant to select from. */
-	private class ReturnCompaniesTask extends AsyncTask<String, String, String> {
+	public class ReturnCompaniesTask extends AsyncTask<String, String, String> {
 		
 		/* A dialog will appear on screen to show the participant that a search is being made.*/
 		@Override
@@ -357,7 +376,7 @@ public class ChooseCompanyActivity extends Activity {
 		
 		/* Method calling the database to return all companies present.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			//http://www.php.net/manual/en/pdostatement.fetchall.php
 			//http://stackoverflow.com/questions/14491430/using-pdo-to-echo-display-all-rows-from-a-table
@@ -414,17 +433,15 @@ public class ChooseCompanyActivity extends Activity {
 			mChooseCompanyDialog.cancel();
 
 			if (fileUrl != null) {	
-				List<Company> listOfCompanies = mCompanyDataSource.getAllCompanies();
-				final ChooseCompanyListAdapter adapter = 
-						new ChooseCompanyListAdapter(ChooseCompanyActivity.this, listOfCompanies);
-				mCompanyListView.setAdapter(adapter);	
+				mListOfCompanies = mCompanyDataSource.getAllCompanies();
+				mAdapter = new ChooseCompanyListAdapter(ChooseCompanyActivity.this, mListOfCompanies);
+				mCompanyListView.setAdapter(mAdapter);	
 				
 				//http://stackoverflow.com/questions/16189651/android-listview-selected-item-stay-highlighted
 				mCompanyListView.setOnItemClickListener(new OnItemClickListener() {
 					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						
-						checkHasPasswordBeenSaved(adapter, position);
+							int position, long id) {					
+						checkHasPasswordBeenSaved(mAdapter, position);
 					}
 				}); 
 			} 
@@ -439,6 +456,28 @@ public class ChooseCompanyActivity extends Activity {
 		protected void onCancelled() {
 			mCompaniesTask = null;
 			mChooseCompanyDialog.cancel();
+		}
+		
+		/* Method to display a dialog if no company data is returned from the database call.
+		 * Associated with ReturnCompaniesTask onPostExecute() method.*/
+		public void showFailedCompanyDataReturnMessage() {
+			
+			Builder alertForNoData = new Builder(ChooseCompanyActivity.this);
+			alertForNoData.setTitle("Companies");
+			alertForNoData.setMessage("There are currently no companies to show. Please check back later.");
+			alertForNoData.setCancelable(false);
+			alertForNoData.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();
+				}
+			});
+			
+			alertForNoData.create();
+			alertForNoData.show();
+			
+			Log.w("ChooseCompany", "No companies returned from the database");
 		}
 	}
 }

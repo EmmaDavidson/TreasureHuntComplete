@@ -171,31 +171,41 @@ public class LeaderboardActivity extends Activity {
 		mCurrentHuntId = savedInstanceState.getInt("currentHuntId");
 	}
 	
-	/* Methods to set up the on screen menu. This particular menu only contains an option to log out. */
+	/* Methods to set up the on screen menu. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login, menu);
-		menu.add(Menu.NONE, 1, Menu.NONE, "Log out");
+		menu.add(Menu.NONE, 1, Menu.NONE, "Home");
+		menu.add(Menu.NONE, 2, Menu.NONE, "Log out");
 		return true;
 	} 
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
 		switch(item.getItemId()) {
-		case 1:
-			mEditor.clear();
-			mEditor.commit();
-			
-			mMapManager.stopLocationUpdates();
-			
-			Intent loginActivityIntent = new Intent(LeaderboardActivity.this, LoginActivity.class);
-			startActivity(loginActivityIntent);
-			return true;
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(LeaderboardActivity.this, HomepageActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+			case 2: {
+				
+				mEditor.clear();
+				mEditor.commit();
+				
+				mMapManager.stopLocationUpdates();
+				
+				Intent loginActivityIntent = new Intent(LeaderboardActivity.this, LoginActivity.class);
+				startActivity(loginActivityIntent);
+			}
 		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -266,7 +276,7 @@ public class LeaderboardActivity extends Activity {
 		
 		/* Method calling the database to return all participants present for a given treasure hunt.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			//http://www.php.net/manual/en/pdostatement.fetchall.php
 			//http://stackoverflow.com/questions/14491430/using-pdo-to-echo-display-all-rows-from-a-table
