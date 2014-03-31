@@ -1,155 +1,147 @@
 package com.application.treasurehunt.test;
 
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Field;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import Utilities.JSONParser;
+
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.application.treasurehunt.ChooseCompanyActivity;
-import com.application.treasurehunt.LeaderboardActivity;
-import com.application.treasurehunt.ChooseCompanyActivity.ReturnCompaniesTask;
+import com.application.treasurehunt.ChooseHuntActivity;
+import com.application.treasurehunt.ChooseHuntActivity.ReturnHuntsTask;
 
-public class LeaderboardActivityTest extends ActivityInstrumentationTestCase2<LeaderboardActivity> {
+public class ChooseCompanyActivityTest extends ActivityInstrumentationTestCase2<ChooseCompanyActivity> {
+
+	//testListOfCompaniesGeneratedIfSuccessful runs fine.
+	//testlistOfCompaniesEmptyIfUnsuccessful has a problem where 'actualResult' is not null because as the 
+	//test begins the actual db call is made and it brings down all of the data. This is because the json returns '0',
+	//but the value of sTagResult is not changed in the ChooseCompanyActivity class and still retains 
+	//the value of the initial call when the test is being loaded. Therefore, it will not equal null.
+	
+	//Have not tested the check for the password as the it only decides whether or not to move onto the next activity
+	//(else it throws up an error message) and this is to be acceptance tested. 
 	
 	//The classes to be tested
-	LeaderboardActivity mLeaderboardActivity;
-	LeaderboardActivity.ReturnLeaderboardTask mReturnLeaderboardTask;
-	
-	//Class mChooseCompanyActivityClass;
-	//Class mReturnCompaniesTaskClass;	
-	//Method doInBackgroundMethod;
-	//Object doInBackgroundMethodObject;
+	ChooseCompanyActivity mChooseCompanyActivity;
+	ChooseCompanyActivity.ReturnCompaniesTask mReturnCompaniesTask;
 	
 	//Field within class to access using reflection
-	Field mReturnedLeaderboardResultField;
-	Field mReturnedListOfParticipantsResultField;
+	Field mReturnedCompanyResultField;
 	
 	//The JSON parser to be mocked
 	@Mock private JSONParser jsonParserMock;
 	
-	public LeaderboardActivityTest() {
-		super(LeaderboardActivity.class);
+	public ChooseCompanyActivityTest() {
+		super(ChooseCompanyActivity.class);
 	}
 	
-	public LeaderboardActivityTest(Class<LeaderboardActivity> activityClass) {
-		super(activityClass);
+	public ChooseCompanyActivityTest(Class<ChooseCompanyActivity> name) {
+		super(name);
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		
 		System.setProperty( "dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getPath());
 		
 		//Grabbing the classes
-		mLeaderboardActivity = getActivity();
-		mReturnLeaderboardTask = mLeaderboardActivity.new ReturnLeaderboardTask();
+		mChooseCompanyActivity = getActivity();
+		mReturnCompaniesTask = mChooseCompanyActivity.new ReturnCompaniesTask();
 		
 		//Setting up the mock
 		jsonParserMock = Mockito.mock(JSONParser.class);
-		mLeaderboardActivity.jsonParser = jsonParserMock;
+		mChooseCompanyActivity.jsonParser = jsonParserMock;
 		
 		//Using reflection to access the JSON result variable
 		//http://stackoverflow.com/questions/1555658/is-it-possible-in-java-to-access-private-fields-via-reflection
-		mReturnedLeaderboardResultField = LeaderboardActivity.class.getDeclaredField("sTagResult");
+		mReturnedCompanyResultField = ChooseCompanyActivity.class.getDeclaredField("sTagResult");
+		mReturnedCompanyResultField.setAccessible(true);
 		
-		mReturnedLeaderboardResultField.setAccessible(true);
-		
-		mReturnedListOfParticipantsResultField = LeaderboardActivity.class.getDeclaredField("sTagNameResult");
-		mReturnedListOfParticipantsResultField.setAccessible(true);
 		
 		//RELFECTION - DOESN'T WORK FOR 'DOINBACKGROUND'
 		//mChooseCompanyActivityClass = ChooseHuntActivity.class;
 		//mReturnCompaniesTaskClass = ReturnHuntsTask.class;
 		
 		//doInBackgroundMethod = mReturnCompaniesTaskClass.getDeclaredMethod("doInBackground", null);
-		//doInBackgroundMethod.setAccessible(true);	
-	}
-	
-	public void testlistOfParticipantsEmptyIfUnsuccessful() throws JSONException, 
-							IllegalArgumentException, IllegalAccessException {
-		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
+		//doInBackgroundMethod.setAccessible(true);
 		
+	}
+
+	public void testlistOfCompaniesEmptyIfUnsuccessful() throws JSONException, 
+										IllegalArgumentException, IllegalAccessException {
+		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
+		mChooseCompanyActivity = getActivity();
 		//Set up the JSONObject to be returned by the mock
-		String UNSUCCESSFUL_MESSAGE = "Leaderboard not returned.";
+		String UNSUCCESSFUL_MESSAGE = "No companies were returned.";
 		JSONObject fakeObject = new JSONObject();	
 		fakeObject.put("message", UNSUCCESSFUL_MESSAGE);
 		fakeObject.put("success", "0");
 		fakeObject.put("results", null);
-		
+	
 		//Set up the mock
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), 
-		Matchers.anyList())).thenReturn(fakeObject);
-		
+				Matchers.anyList())).thenReturn(fakeObject);
+	
 		//Call the method
 		try {
-			mReturnLeaderboardTask.doInBackground("");
+			mReturnCompaniesTask.doInBackground("");
 		} catch (IllegalArgumentException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} 
 		
 		//Assert that the database call was made
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), 
-		Matchers.anyString(), Matchers.anyList());	
+				Matchers.anyString(), Matchers.anyList());	
 		
 		//Having problems here asserting that the result should be empty
-		Object actualResult = mReturnedLeaderboardResultField.get(mLeaderboardActivity);
+		Object actualResult = mReturnedCompanyResultField.get(mChooseCompanyActivity);
 		assertEquals(null, actualResult);	
-		
-		Object listResult = mReturnedListOfParticipantsResultField.get(mLeaderboardActivity);
-		assertEquals(null, listResult);
 	}
-		
-		public void testListOfParticipantsGeneratedIfSuccessful()
-			  throws JSONException, IllegalArgumentException, IllegalAccessException {
+	
+	public void testListOfCompaniesGeneratedIfSuccessful()
+			throws JSONException, IllegalArgumentException, IllegalAccessException {
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
 		
 		//Set up the JSONObject to be returned by the mock
 		String SUCCESSFUL_MESSAGE = "Sucessfully returned companies!";
 		
 		JSONArray array = new JSONArray();
-		array.put("Emma results");
-		
-		JSONArray resultNames = new JSONArray();
-		resultNames.put("Emma");
-		resultNames.put("Adam");
-		resultNames.put("Kathryn");
-		
+		array.put("Emma treasure hunt");
+		 
 		JSONObject fakeObject = new JSONObject();	
 		fakeObject.put("message", SUCCESSFUL_MESSAGE);
 		fakeObject.put("success", "1");
 		fakeObject.put("results", array);
-		fakeObject.put("resultNames", resultNames);
-		
+	
 		//Set up the mock
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), 
-		Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
+				Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
 		
 		//Call the method
 		//Want to use reflection here! Not happy about making 'doInBackground' public.
 		try {
-			mReturnLeaderboardTask.doInBackground("");
+			mReturnCompaniesTask.doInBackground("");
 		} catch (IllegalArgumentException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} 
 		
 		//Assert that the database call was made
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), 
-		Matchers.anyString(), Matchers.anyList());		
+				Matchers.anyString(), Matchers.anyList());		
 		
 		//Assert that the array passed back the correct data
-		Object actualResult = mReturnedLeaderboardResultField.get(mLeaderboardActivity);
+		Object actualResult = mReturnedCompanyResultField.get(mChooseCompanyActivity);
 		assertEquals(array, actualResult);	
-		
-		Object listResult = mReturnedListOfParticipantsResultField.get(mLeaderboardActivity);
-		assertEquals(resultNames, listResult);
 	}
-
 }

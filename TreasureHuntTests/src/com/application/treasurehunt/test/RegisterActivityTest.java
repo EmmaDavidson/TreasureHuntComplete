@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 public class RegisterActivityTest extends ActivityInstrumentationTestCase2<RegisterActivity>{
 
+	//HAVING A PROBLEM WITH THE VALIDATION TESTS OF THE CLASS 
+	
 	private RegisterActivity mRegisterActivity;
 	private TextView mNameView;
 	private TextView mEmailView;
@@ -64,6 +66,8 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	@Before
 	public void setUp() throws Exception {
 		
+		System.setProperty( "dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getPath() );		
+		
 		mRegisterActivity = getActivity();
 		mNameView = (TextView) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.register_name);
 		mEmailView = (TextView) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.register_email_address);
@@ -89,23 +93,9 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		
 		isValidNameMethod = mRegisterActivityClass.getDeclaredMethod("isValidName", null);
 		isValidNameMethod.setAccessible(true);
-		
-		doInBackgroundMethod = mUserRegisterTaskClass.getDeclaredMethod("doInBackground", null);
-		doInBackgroundMethod.setAccessible(true);
-		
-		mRegisterActivity.runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
-				mNameView.setText(null);
-				mEmailView.setText(null);
-				mPasswordView.setText(null);
-			};
-			
-		});
+
 	}
-	
-	@Test
+
 	public void testPreconditions()
 	{
 		mName = mNameView.getText().toString();
@@ -118,8 +108,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		assertEquals("mPassword is empty","", mPassword);
 	}
 	
-	@Test
-	public void nameInvalidIfEmpty()
+	public void testNameInvalidIfEmpty()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -143,7 +132,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	}
 	
 	@Test
-	public void nameInvalidIfInvalidLength()
+	public void nameInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -164,9 +153,34 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 				assertEquals("Name is invalid length", false, isValidNameMethodObject);
 			}
 			
-		});
-			
+		});	
 	}
+	
+	@Test
+	public void nameInvalidIfTooLong()
+	{
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mNameView.setText("emmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+
+				try {
+					isValidNameMethodObject = isValidNameMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Name is invalid length", false, isValidNameMethodObject);
+			}
+			
+		});	
+	}
+	
 
 	@Test
 	public void emailInvalidIfEmpty()
@@ -192,13 +206,35 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	}
 	
 	@Test
-	public void emailInvalidIfInvalidLength()
+	public void emailInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
 			public void run()
 			{
 				mEmailView.setText("emma@com");try {
+					isValidEmailMethodObject = isValidEmailMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Email is invalid length", false, isValidEmailMethodObject);
+			}
+		});
+	}
+	
+	@Test
+	public void emailInvalidIfTooLong()
+	{
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mEmailView.setText("emmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmma@com");try {
 					isValidEmailMethodObject = isValidEmailMethod.invoke(mRegisterActivity, null);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
@@ -263,13 +299,37 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	}
 	
 	@Test
-	public void passwordInvalidIfInvalidLength()
+	public void passwordInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
 			public void run()
 			{
 				mPasswordView.setText("em");
+
+				try {
+					isValidPasswordMethodObject = isValidPasswordMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Password is invalid length", false, isValidPasswordMethodObject);
+			}
+		});
+	}
+	
+	@Test
+	public void passwordInvalidIfTooLong()
+	{
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mPasswordView.setText("emmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
 
 				try {
 					isValidPasswordMethodObject = isValidPasswordMethod.invoke(mRegisterActivity, null);
