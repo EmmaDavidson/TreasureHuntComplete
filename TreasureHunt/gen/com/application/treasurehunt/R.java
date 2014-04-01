@@ -239,8 +239,6 @@ containing a value of this type.
         public static final int treasurehunttext=0x7f02002a;
     }
     public static final class id {
-        public static final int action_forgot_password=0x7f05003e;
-        public static final int action_settings=0x7f05003d;
         public static final int browse_hunts_button=0x7f050012;
         public static final int choose_hunt_item=0x7f050032;
         public static final int company_icon=0x7f05002f;
@@ -273,7 +271,6 @@ containing a value of this type.
         public static final int login_email_address=0x7f05001b;
         public static final int login_form_layout=0x7f050018;
         public static final int login_password=0x7f05001a;
-        public static final int menu_item_new_map=0x7f05003f;
         public static final int my_hunts_button=0x7f050010;
         public static final int new_password=0x7f05000c;
         public static final int none=0x7f050000;
@@ -332,33 +329,7 @@ containing a value of this type.
         public static final int login=0x7f030015;
     }
     public static final class menu {
-        public static final int add_question=0x7f0b0000;
-        public static final int choose_company=0x7f0b0001;
-        public static final int choose_hunt=0x7f0b0002;
-        public static final int choose_type_of_my_hunt=0x7f0b0003;
-        public static final int company_password=0x7f0b0004;
-        public static final int forgotten_password=0x7f0b0005;
-        public static final int generate_hunt=0x7f0b0006;
-        public static final int google_map=0x7f0b0007;
-        public static final int homepage=0x7f0b0008;
-        public static final int leaderboard=0x7f0b0009;
-        public static final int licence=0x7f0b000a;
-        public static final int login=0x7f0b000b;
-        public static final int login_activity1=0x7f0b000c;
-        public static final int logout=0x7f0b000d;
-        public static final int main=0x7f0b000e;
-        public static final int map=0x7f0b000f;
-        public static final int map_list=0x7f0b0010;
-        public static final int map_list_options=0x7f0b0011;
-        public static final int my_hunts=0x7f0b0012;
-        public static final int register=0x7f0b0013;
-        public static final int register_with_hunt=0x7f0b0014;
-        public static final int run_list_items=0x7f0b0015;
-        public static final int scan_barcode=0x7f0b0016;
-        public static final int scan_qrcode=0x7f0b0017;
-        public static final int stats=0x7f0b0018;
-        public static final int view_questions=0x7f0b0019;
-        public static final int view_treasure_hunts=0x7f0b001a;
+        public static final int login=0x7f0b0000;
     }
     public static final class string {
         public static final int action_forgot_password=0x7f060073;

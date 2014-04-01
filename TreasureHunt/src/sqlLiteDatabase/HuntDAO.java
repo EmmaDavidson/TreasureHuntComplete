@@ -25,12 +25,13 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/* This class handles the interaction between the application and SQLite (local) database for the Hunt and UserHunt tables.
- * Based originally on //http://www.vogella.com/articles/AndroidSQLite/article.html*/
+/* This singleton class handles the interaction between the application and SQLite (local) database for 
+ * the Hunt and UserHunt tables. Based originally on //http://www.vogella.com/articles/AndroidSQLite/article.html*/
 
 public class HuntDAO {
 
   /* Global variables for HuntDAO*/
+  private static HuntDAO mHuntDAO;
   private SQLiteDatabase mDatabase;
   private MySQLiteHelper mDbHelper;
   private String[] mAllColumns = { MySQLiteHelper.COLUMN_HUNT_ID, MySQLiteHelper.COLUMN_HUNTNAME, 
@@ -39,9 +40,18 @@ public class HuntDAO {
 		  MySQLiteHelper.COLUMN_USER_HUNTS_DESCRIPTION, MySQLiteHelper.COLUMN_USER_HUNTS_END_DATE };
 
   /* Constructor*/
-  public HuntDAO(Context context) {
+  private HuntDAO(Context context) {
     mDbHelper = new MySQLiteHelper(context);
   }
+  
+  /* Method that returns an instance of MapManager.*/
+  public static HuntDAO getInstance(Context c) {
+		
+		if(mHuntDAO == null) {
+			mHuntDAO = new HuntDAO(c.getApplicationContext());
+		}
+		return mHuntDAO;
+   }
 
   /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
   public void open() throws SQLException {

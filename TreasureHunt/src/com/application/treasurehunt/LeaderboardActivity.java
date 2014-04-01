@@ -123,7 +123,7 @@ public class LeaderboardActivity extends Activity {
 		
 		mListView = (ListView) findViewById(R.id.leaderboard_list_view);
 		
-		mLeaderboardDataSource = new LeaderboardDAO(this);
+		mLeaderboardDataSource = LeaderboardDAO.getInstance(this);
 		mLeaderboardDataSource.open();
 		
 		mInternetUtility = InternetUtility.getInstance(this);

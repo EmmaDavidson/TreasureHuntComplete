@@ -81,7 +81,7 @@ public class MyHuntsActivity extends Activity {
 	private static JSONObject sHuntParticipantIdResult;
 	private ReturnUserHuntsTask mReturnUserHuntsTask;
 	private GetHuntParticipantIdTask mGetHuntParticipantIdTask;
-	private JSONParser jsonParser = new JSONParser();
+	public JSONParser jsonParser = new JSONParser();
 	
 	private static JSONArray sTagResult;
 	private static JSONArray sTagIdResult;
@@ -120,7 +120,7 @@ public class MyHuntsActivity extends Activity {
 		
 		mListView = (ExpandableListView) findViewById(R.id.list_of_user_hunts_id);
 		
-		mHuntDataSource = new HuntDAO(this);
+		mHuntDataSource = HuntDAO.getInstance(this);
 		mHuntDataSource.open();
 		
 		mInternetUtility = InternetUtility.getInstance(this);
@@ -145,7 +145,7 @@ public class MyHuntsActivity extends Activity {
 	 * Method called when the Activity is resumed (as part of the Android Life Cycle).
 	 * Updates the list of treasure hunts for the given section.
 	 * */
-	@Override
+	/*@Override
 	protected void onResume() {
 		
 		super.onResume();
@@ -157,7 +157,7 @@ public class MyHuntsActivity extends Activity {
 		else {
 			Toast.makeText(MyHuntsActivity.this, InternetUtility.INTERNET_DISCONNECTED, Toast.LENGTH_LONG).show();
 		}
-	}
+	}*/
 	
 	/* Methods to set up the on screen menu. */
 	@Override
@@ -197,7 +197,8 @@ public class MyHuntsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/* Method to call the asynchronous class 'ReturnUserHuntsTask'. If call to the database takes too long then a timeout should occur.*/
+	/* Method to call the asynchronous class 'ReturnUserHuntsTask'. If call to the database takes too 
+	 * long then a timeout should occur.*/
 	private void attemptToReturnUserHunts() {
 		
 		if (mReturnUserHuntsTask != null) {
@@ -219,7 +220,7 @@ public class MyHuntsActivity extends Activity {
 				}
 			}
 		}
-		, 10000);
+		, 60000);
 	}
 	
 	/* Method to call the asynchronous class 'GetParticipantIdTask'. If call to the database takes too long then a timeout should occur.*/
@@ -245,7 +246,7 @@ public class MyHuntsActivity extends Activity {
 				}
 			}
 		}
-		, 10000);	
+		, 60000);	
 	}
 
 	/* Method that will display the refreshed list of treasure hunts on screen. It will also handle what happens when the participant 
@@ -365,7 +366,7 @@ public class MyHuntsActivity extends Activity {
 		
 		/* Method calling the database to return all relevant treasure hunts.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			//http://www.php.net/manual/en/pdostatement.fetchall.php
 			//http://stackoverflow.com/questions/14491430/using-pdo-to-echo-display-all-rows-from-a-table
@@ -380,10 +381,10 @@ public class MyHuntsActivity extends Activity {
 					JSONObject jsonResult = new JSONObject();
 					
 					//look for hunts that have start times that are 0 i.e. registered but not started
-					if(mTypeOfHunt.equals(TypeOfHunt.NOT_STARTED.toString())) {
+					if(mTypeOfHunt.equals("NotStarted")) {
 						jsonResult = jsonParser.makeHttpRequest(USER_HUNTS_NOT_STARTED_URL, "POST", parameters);
 					}
-					else if(mTypeOfHunt.equals(TypeOfHunt.CURRENT.toString())) {
+					else if(mTypeOfHunt.equals("Current")) {
 						jsonResult = jsonParser.makeHttpRequest(USER_HUNTS_CURRENT_URL, "POST", parameters);
 					}
 					else {	//look for hunts where hunt end date is less than current date
@@ -488,7 +489,7 @@ public class MyHuntsActivity extends Activity {
 	
 		/* Method calling the database to return the HuntParticipantId associated with the given participant.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 				int success;

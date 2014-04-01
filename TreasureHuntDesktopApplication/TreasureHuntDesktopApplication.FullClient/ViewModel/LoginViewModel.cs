@@ -76,46 +76,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #endregion
 
-        #region Validation variables
-
-        public int EmailMinLength
-        {
-            get
-            {
-                return 10;
-
-            }
-        }
-
-        public int EmailMaxLength
-        {
-            get
-            {
-                return 30;
-
-            }
-        }
-
-        public int PasswordMinLength
-        {
-            get
-            {
-                return 6;
-
-            }
-        }
-
-        public int PasswordMaxLength
-        {
-            get
-            {
-                return 20;
-
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor
@@ -313,10 +273,6 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             if (!Validation.IsValidEmail(EmailAddress))
             {
                 return "Email is in an invalid format";
-            }
-            if (!Validation.IsValidLength(EmailAddress, EmailMaxLength, EmailMinLength))
-            {
-                return "Email Address is an invalid length!";
             }
 
             return null;

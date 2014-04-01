@@ -27,11 +27,12 @@ import android.location.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-/* This class handles the interaction between the application and SQLite (local) database for the Locations, Markers and Map
- * tables.*/
+/* This singleton class handles the interaction between the application and SQLite (local) 
+ * database for the Locations, Markers and Map tables.*/
 public class MapDataDAO {
 
 	  /* Global variables for MapDataDAO. */
+	  private static MapDataDAO mMapDataDAO;
 	  private SQLiteDatabase mDatabase;
 	  private MySQLiteHelper mDbHelper;
 	  private String[] mAllColumnsLocations = { MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelper.COLUMN_MAPS_LATITUDE, MySQLiteHelper.COLUMN_MAPS_LONGTITUDE, MySQLiteHelper.COLUMN_MAPS_ALTITUDE , MySQLiteHelper.COLUMN_MAPS_TIME_STAMP };
@@ -39,9 +40,18 @@ public class MapDataDAO {
 	  private String[] mAllColumnsMarkers = { MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, MySQLiteHelper.COLUMN_MAPS_LATITUDE, MySQLiteHelper.COLUMN_MAPS_LONGTITUDE };
 	  
 	  /* Constructor */
-	  public MapDataDAO(Context context) {
+	  private MapDataDAO(Context context) {
 	    mDbHelper = new MySQLiteHelper(context);
 	  }
+	  
+	  /* Method that returns an instance of MapManager.*/
+	  public static MapDataDAO getInstance(Context c) {
+			
+			if(mMapDataDAO == null) {
+				mMapDataDAO = new MapDataDAO(c.getApplicationContext());
+			}
+			return mMapDataDAO;
+	   }
 
 	  /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
 	  public void open() throws SQLException {

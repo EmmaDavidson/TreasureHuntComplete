@@ -70,7 +70,7 @@ public class ChooseTypeOfMyHuntActivity extends Activity {
 					@Override
 					public void onClick(View view) {
 						Intent myHuntsActivity = new Intent(ChooseTypeOfMyHuntActivity.this, MyHuntsActivity.class);
-						myHuntsActivity.putExtra("Type", TypeOfHunt.NOT_STARTED.toString());
+						myHuntsActivity.putExtra("Type", "NotStarted");
 						startActivity(myHuntsActivity);
 					}
 				});
@@ -80,7 +80,7 @@ public class ChooseTypeOfMyHuntActivity extends Activity {
 					@Override
 					public void onClick(View view) {
 						Intent myHuntsActivity = new Intent(ChooseTypeOfMyHuntActivity.this, MyHuntsActivity.class);
-						myHuntsActivity.putExtra("Type", TypeOfHunt.CURRENT.toString());
+						myHuntsActivity.putExtra("Type", "Current");
 						startActivity(myHuntsActivity);
 					}
 				});
@@ -90,7 +90,7 @@ public class ChooseTypeOfMyHuntActivity extends Activity {
 					@Override
 					public void onClick(View view) {
 						Intent myHuntsActivity = new Intent(ChooseTypeOfMyHuntActivity.this, MyHuntsActivity.class);
-						myHuntsActivity.putExtra("Type", TypeOfHunt.COMPLETED.toString());
+						myHuntsActivity.putExtra("Type", "Completed");
 						startActivity(myHuntsActivity);
 					}
 				});

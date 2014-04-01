@@ -1,5 +1,6 @@
 package sqlLiteDatabase;
 
+import Mapping.MapManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,20 +10,30 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/* This class handles the interaction between the application and SQLite (local) database for the Company table.*/
+/* This singleton class handles the interaction between the application and SQLite (local) database for the Company table.*/
 
 public class CompanyDAO {
 
 	  /* Global variables for CompanyDAO*/
+      private static CompanyDAO mCompanyDAO;
 	  private SQLiteDatabase mDatabase;
 	  private MySQLiteHelper mDbHelper;
 	  private String[] mAllColumns = { MySQLiteHelper.COLUMN_COMPANY_ID, MySQLiteHelper.COLUMN_COMPANY_NAME, MySQLiteHelper.COLUMN_COMPANY_PASSWORD };
 	  
 	  /* Constructor*/
-	  public CompanyDAO(Context context) {
-		  
+	  private CompanyDAO(Context context) {
 	    mDbHelper = new MySQLiteHelper(context);
 	  }
+	  
+	  /* Method that returns an instance of MapManager.*/
+	  public static CompanyDAO getInstance(Context c) {
+			
+			if(mCompanyDAO == null) {
+				mCompanyDAO = new CompanyDAO(c.getApplicationContext());
+			}
+			return mCompanyDAO;
+	   }
+  
 
 	  /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
 	  public void open() throws SQLException {

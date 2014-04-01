@@ -132,20 +132,23 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     var results = new ObservableCollection<Participant>();
 
                     //Grab a list of all of the participants in this treasure hunt.
-                    List<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipantsAsync(CurrentTreasureHunt).Result.ToList();
+                    IEnumerable<huntparticipant> huntParticipants = this.serviceClient.GetHuntParticipantsAsync(CurrentTreasureHunt).Result.ToList();
 
-                    //For each participant represented by an id in this list
-                    using (var participants = huntParticipants.GetEnumerator())
+                    if (huntParticipants != null)
                     {
-                        while (participants.MoveNext())
+                        //For each participant represented by an id in this list
+                        using (var participants = huntParticipants.GetEnumerator())
                         {
-                            //Get that participants details and add them to the list to be displayed
-                            user currentUser = await this.serviceClient.GetParticipantAsync(participants.Current.UserId);
-                            Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
-                            results.Add(newParticipant);
+                            while (participants.MoveNext())
+                            {
+                                //Get that participants details and add them to the list to be displayed
+                                user currentUser = await this.serviceClient.GetParticipantAsync(participants.Current.UserId);
+                                Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
+                                results.Add(newParticipant);
+                            }
+                            results.OrderBy(i => i.Tally);
+                            LeaderboardResults = results;
                         }
-                        
-                        LeaderboardResults = results;
                     }
                 }
                 PopupDisplayed = false;          

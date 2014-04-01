@@ -130,7 +130,7 @@ public class ChooseHuntActivity extends Activity {
 		mMapManager = MapManager.get(this);
 		mInternetUtility = InternetUtility.getInstance(this);
 		
-		mHuntDataSource = new HuntDAO(this);
+		mHuntDataSource = HuntDAO.getInstance(this);
 		mHuntDataSource.open();
 		
 		mSettings = getSharedPreferences("UserPreferencesFile", 0);

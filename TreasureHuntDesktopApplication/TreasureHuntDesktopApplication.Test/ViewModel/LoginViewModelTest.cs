@@ -74,28 +74,6 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
         }
 
         [Test]
-        public void EmailInvalidWhenGreaterThanMaxLength()
-        {
-            String email = "abcdefghijklmnopqrstidshvfsdhkfhdskjfjdhfkhdsjhfjhdshfdsjfdshfhdjhfkjsdhfhdu@email.com";
-            EmailAddress = email;
-            Password = "password";
-
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.LoginUserCommand.CanExecute(""));
-        }
-
-        [Test]
-        public void EmailInvalidWhenLessThanMinLength()
-        {
-            String email = "a@b.m";
-            EmailAddress = email;
-            Password = "password";
-
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.LoginUserCommand.CanExecute(""));
-        }
-
-        [Test]
         public void EmailInvalidWhenInvalidFormat()
         {
             String email = "existingUser.com";
@@ -172,13 +150,13 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             newUserRole.RoleId = 1;
             newUserRole.UserId = 1;
 
-            serviceClient.Setup(s => s.GetUser(EmailAddress)).Returns(loginUser);
-            serviceClient.Setup(s => s.GetUserRole(loginUser)).Returns(newUserRole);
+            serviceClient.Setup(s => s.GetUserAsync(EmailAddress)).Returns(Task.FromResult(loginUser));
+            serviceClient.Setup(s => s.GetUserRoleAsync(loginUser)).Returns(Task.FromResult(newUserRole));
 
             viewModel.ExecuteLoginUserCommand();
 
-            serviceClient.Verify(s => s.GetUser(EmailAddress), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetUserRole(loginUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserAsync(EmailAddress), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserRoleAsync(loginUser), Times.Exactly(1));
 
             //Message box appears to say incorrect. More of a UI test
         }
@@ -199,13 +177,12 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             newUserRole.UserId = 1;
 
             //I want to be able to return null - this doesnt work
-            serviceClient.Setup(s => s.GetUser(EmailAddress)).Returns(loginUser);
-            serviceClient.Setup(s => s.GetUserRole(loginUser)).Returns(newUserRole);
+            serviceClient.Setup(s => s.GetUserAsync(EmailAddress)).Returns(Task.FromResult(loginUser));
+            serviceClient.Setup(s => s.GetUserRoleAsync(loginUser)).Returns(Task.FromResult(newUserRole));
 
             viewModel.ExecuteLoginUserCommand();
 
-            serviceClient.Verify(s => s.GetUser(EmailAddress), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetUserRole(loginUser), Times.Exactly(0));
+            serviceClient.Verify(s => s.GetUserAsync(EmailAddress), Times.Exactly(1));
         }
 
 
@@ -227,13 +204,13 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             newUserRole.RoleId = 2;
             newUserRole.UserId = 1;
 
-            serviceClient.Setup(s => s.GetUser(EmailAddress)).Returns(loginUser);
-            serviceClient.Setup(s => s.GetUserRole(loginUser)).Returns(newUserRole);
+            serviceClient.Setup(s => s.GetUserAsync(EmailAddress)).Returns(Task.FromResult(loginUser));
+            serviceClient.Setup(s => s.GetUserRoleAsync(loginUser)).Returns(Task.FromResult(newUserRole));
 
             viewModel.ExecuteLoginUserCommand();
 
-            serviceClient.Verify(s => s.GetUser(EmailAddress), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetUserRole(loginUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserAsync(It.IsAny<string>()), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserRoleAsync(loginUser), Times.Exactly(1));
         }
 
         #endregion

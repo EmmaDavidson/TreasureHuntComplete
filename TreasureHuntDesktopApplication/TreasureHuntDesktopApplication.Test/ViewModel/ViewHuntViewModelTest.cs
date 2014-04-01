@@ -147,7 +147,7 @@ namespace TreasureHuntDesktopApplication.Test
            listOfQuestions.Add(myFakeQuestion);
 
            this.CurrentTreasureHunt = myFakeHunt;
-           serviceClient.Setup<long[]>(s => s.GetHuntQuestions(this.CurrentTreasureHunt)).Returns(returnedIds.ToArray());
+          // serviceClient.Setup<IEnumerable<question[]>(s => s.GetHuntQuestions(this.CurrentTreasureHunt)).Returns(returnedIds.ToArray());
            serviceClient.Setup<question>(s => s.GetQuestion(It.IsAny<long>())).Returns(myFakeQuestion);
            
            viewModel.SaveQuestionCommand.Execute(new Object());

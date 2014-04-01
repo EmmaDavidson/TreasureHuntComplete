@@ -25,20 +25,30 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/* This class handles the interaction between the application and SQLite (local) database for the Leaderboard table.
+/* This singleton class handles the interaction between the application and SQLite (local) database for the Leaderboard table.
  * Based originally on //http://www.vogella.com/articles/AndroidSQLite/article.html*/
 
 public class LeaderboardDAO {
 	
 	  /* Global variables for LeaderboardDAO*/
+	  private static LeaderboardDAO mLeaderboardDAO;
 	  private SQLiteDatabase mDatabase;
 	  private MySQLiteHelper mDbHelper;
 	  private String[] mAllColumns = { MySQLiteHelper.COLUMN_LEADERBOARD_USERNAME, MySQLiteHelper.COLUMN_LEADERBOARD_TALLY, MySQLiteHelper.COLUMN_LEADERBOARD_ELAPSED_TIME };
 	  
 	  /* Constructor*/
-	  public LeaderboardDAO(Context context) {
+	  private LeaderboardDAO(Context context) {
 	    mDbHelper = new MySQLiteHelper(context);
 	  }
+	  
+	  /* Method that returns an instance of MapManager.*/
+	  public static LeaderboardDAO getInstance(Context c) {
+			
+			if(mLeaderboardDAO == null) {
+				mLeaderboardDAO = new LeaderboardDAO(c.getApplicationContext());
+			}
+			return mLeaderboardDAO;
+	   }
 
 	  /* Method handling what happens when the helper is first opened. It retrieves access to the SQLite (local) database. */
 	  public void open() throws SQLException {
@@ -77,7 +87,7 @@ public class LeaderboardDAO {
 	  public List<Leaderboard> getAllResults() {
 	    List<Leaderboard> leaderboardEntries = new ArrayList<Leaderboard>();
 	    //http://stackoverflow.com/questions/12339121/multiple-orderby-in-sqlitedatabase-query-method
-	    String orderBy = MySQLiteHelper.COLUMN_LEADERBOARD_TALLY + " DESC, " + MySQLiteHelper.COLUMN_LEADERBOARD_ELAPSED_TIME + " DESC";
+	    String orderBy = MySQLiteHelper.COLUMN_LEADERBOARD_TALLY + " DESC, " + MySQLiteHelper.COLUMN_LEADERBOARD_ELAPSED_TIME + " ASC";
 	    Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_HUNT_LEADERBOARD,
 	    		mAllColumns, null, null, null, null, orderBy);
 

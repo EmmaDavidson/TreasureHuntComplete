@@ -298,7 +298,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             using (DocX documentOfQRCodes = DocX.Create(newDocumentFileLocation))
             {
                 Novacode.Paragraph p = documentOfQRCodes.InsertParagraph(this.currentTreasureHunt.HuntName);
-                Novacode.Paragraph space = documentOfQRCodes.InsertParagraph("");
+
                 documentOfQRCodes.InsertParagraph();
 
                 //For every question associated with the current treasure hunt
@@ -310,6 +310,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                         {
                             //Insert into the document the QR associated with the current question 
                             documentOfQRCodes.InsertParagraph(currentQuestionQRCode.Current.Question1);
+                            documentOfQRCodes.InsertParagraph();
                             Novacode.Paragraph q = documentOfQRCodes.InsertParagraph();
 
                             string locationOfImage = myFileDirectory + "QRCodes\\" + CurrentTreasureHunt.HuntId + " " + currentQuestionQRCode.Current.Question1 + ".png";

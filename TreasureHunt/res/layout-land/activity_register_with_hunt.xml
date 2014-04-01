@@ -24,8 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="#0099CC"
-        android:text="@string/play"
-        android:textColor="#FFFFFF" />
+        android:text="@string/play"/>
 
     <Button
         android:id="@+id/register_hunt_button"
@@ -35,8 +34,7 @@
         android:layout_alignLeft="@+id/start_treasure_hunt_button"
         android:layout_marginBottom="18dp"
         android:background="#0099CC"
-        android:text="@string/register"
-        android:textColor="#FFFFFF" />
+        android:text="@string/register" />
 
     <ProgressBar
         android:id="@+id/hunt_description_progress_bar"

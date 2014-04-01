@@ -32,15 +32,13 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
 
             CurrentTreasureHunt = myFakeHunt;
         }
-        #endregion
 
         #region Variables
         public hunt CurrentTreasureHunt
         {
-            get 
-            
-            { 
-                return viewModel.CurrentTreasureHunt; 
+            get
+            {
+                return viewModel.CurrentTreasureHunt;
             }
             set
             {
@@ -52,13 +50,14 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
         {
             get
             {
-                return viewModel.LeaderboardResults; 
+                return viewModel.LeaderboardResults;
             }
             set
             {
                 viewModel.LeaderboardResults = value;
             }
         }
+        #endregion
         #endregion
 
         #region Commands tests
@@ -80,13 +79,13 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
 
             huntParticipants.Add(participant);
 
-            serviceClient.Setup(s => s.GetHuntParticipants(myFakeHunt)).Returns(huntParticipants.ToArray());
-            serviceClient.Setup(s => s.GetParticipantName(newUser.UserId)).Returns(newUser);
+            serviceClient.Setup(s => s.GetHuntParticipantsAsync(myFakeHunt)).Returns(Task.FromResult(huntParticipants.ToArray()));
+            serviceClient.Setup(s => s.GetParticipantAsync(newUser.UserId)).Returns(Task.FromResult(newUser));
 
             viewModel.RefreshLeaderboard();
 
-            serviceClient.Verify(s => s.GetHuntParticipants(myFakeHunt), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetParticipantName(newUser.UserId), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetHuntParticipantsAsync(myFakeHunt), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetParticipantAsync(newUser.UserId), Times.Exactly(1));
 
             Participant newParticipant = new Participant(newUser.Name, participant.Tally, participant.ElapsedTime);
             ObservableCollection<Participant> participantsList = new ObservableCollection<Participant>();

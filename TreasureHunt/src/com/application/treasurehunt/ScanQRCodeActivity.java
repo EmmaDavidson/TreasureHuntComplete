@@ -129,7 +129,7 @@ public class ScanQRCodeActivity extends Activity {
 		mMapManager = MapManager.get(this);
 		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
-		mMapDataSource = new MapDataDAO(this);
+		mMapDataSource = MapDataDAO.getInstance(this);
 		mMapDataSource.open();
 		
 		mSettings = getSharedPreferences("UserPreferencesFile", 0);
@@ -281,8 +281,7 @@ public class ScanQRCodeActivity extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
-					
+					dialog.cancel();			
 				}
 			});
 			
@@ -334,7 +333,7 @@ public class ScanQRCodeActivity extends Activity {
 	
 	/* This internal class attempts to save in the database a participant's elapsed time for each valid scan made i.e. it takes
 	 * the participant's start time and compares it with the current time (of the scan) and date to work out the elapsed time. */
-	private class SaveScanResultTask extends AsyncTask<String, String, String> {
+	public class SaveScanResultTask extends AsyncTask<String, String, String> {
 		
 		/* A dialog will appear on screen to show the participant that a save is being made.*/
 		@Override
@@ -350,49 +349,49 @@ public class ScanQRCodeActivity extends Activity {
 			
 		/* Method calling the database a participant's elapsed time for each valid scan made.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
-				int success;
-				List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-				
-				//NEED TO FIND REFERENCES
-				//http://stackoverflow.com/questions/10862845/how-to-set-android-chronometer-base-time-from-date-object
-				mStartTime = mSettings.getLong(mCurrentHuntId + " startTime", 0);
-				Log.i("ScanQRCode", "The start time retrieved from the editor is: " + mStartTime);
-				Log.i("ScanQRCode", "Current millis time: " + System.currentTimeMillis());
-				long elapsedTime = System.currentTimeMillis() - mStartTime;
-				Log.i("ScanQRCode", "elapsed time from last scan: " + elapsedTime);
-				
-				//http://stackoverflow.com/questions/625433/how-to-convert-milliseconds-to-x-mins-x-seconds-in-java
-				//http://stackoverflow.com/questions/10593834/displaying-seconds-in-3-decimal-places-java
-				long timeElapsedSeconds = (elapsedTime / 1000);
-				Log.i("ScanQRCode","elapsedTime in seconds: "+ timeElapsedSeconds);
+			int success;
+			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+			
+			//NEED TO FIND REFERENCES
+			//http://stackoverflow.com/questions/10862845/how-to-set-android-chronometer-base-time-from-date-object
+			mStartTime = mSettings.getLong(mCurrentHuntId + " startTime", 0);
+			Log.i("ScanQRCode", "The start time retrieved from the editor is: " + mStartTime);
+			Log.i("ScanQRCode", "Current millis time: " + System.currentTimeMillis());
+			long elapsedTime = System.currentTimeMillis() - mStartTime;
+			Log.i("ScanQRCode", "elapsed time from last scan: " + elapsedTime);
+			
+			//http://stackoverflow.com/questions/625433/how-to-convert-milliseconds-to-x-mins-x-seconds-in-java
+			//http://stackoverflow.com/questions/10593834/displaying-seconds-in-3-decimal-places-java
+			long timeElapsedSeconds = (elapsedTime / 1000);
+			Log.i("ScanQRCode","elapsedTime in seconds: "+ timeElapsedSeconds);
 
-				double timeElapsedHours = (elapsedTime /(1000.0f*60.0f*60.0f));
-				Log.i("ScanQRCode","elapsedTime in hours with calc "+ timeElapsedHours);
+			double timeElapsedHours = (elapsedTime /(1000.0f*60.0f*60.0f));
+			Log.i("ScanQRCode","elapsedTime in hours with calc "+ timeElapsedHours);
+			
+			//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
+			//Chose elapsed hours because it may take some time to complete the hunt
+			parameters.add(new BasicNameValuePair("huntParticipantId", Integer.toString(mCurrentParticipantId)));
+			parameters.add(new BasicNameValuePair("timeElapsed", ""+ timeElapsedHours));
+			//Don't need to save the tally as it will update in the php call
+			//http://stackoverflow.com/questions/3866524/mysql-update-column-1
+			
+			try{
+				Log.i("ScanQRCode", "starting");
+				JSONObject json = jsonParser.makeHttpRequest(SCAN_RESULT_URL, "POST", parameters);
+				Log.i("ScanQRCode", json.toString());
+				success = json.getInt(PHPHelper.SUCCESS);
 				
-				//http://stackoverflow.com/questions/8603583/sending-integer-to-http-server-using-namevaluepair
-				//Chose elapsed hours because it may take some time to complete the hunt
-				parameters.add(new BasicNameValuePair("huntParticipantId", Integer.toString(mCurrentParticipantId)));
-				parameters.add(new BasicNameValuePair("timeElapsed", ""+ timeElapsedHours));
-				//Don't need to save the tally as it will update in the php call
-				//http://stackoverflow.com/questions/3866524/mysql-update-column-1
-				
-				try{
-					Log.i("ScanQRCode", "starting");
-					JSONObject json = jsonParser.makeHttpRequest(SCAN_RESULT_URL, "POST", parameters);
-					Log.i("ScanQRCode", json.toString());
-					success = json.getInt(PHPHelper.SUCCESS);
-					
-					if(success == 1) {
-						Log.i("ScanQRCode", "SCAN: huntParticipantId is: " + mCurrentParticipantId + ", timeElapsed= " + timeElapsedHours);
-						return json.getString(PHPHelper.MESSAGE);			
-					}
-					else {
-						Log.w("ScanQRCode", json.getString(PHPHelper.MESSAGE));
-						return json.getString(PHPHelper.MESSAGE);
-					}
+				if(success == 1) {
+					Log.i("ScanQRCode", "SCAN: huntParticipantId is: " + mCurrentParticipantId + ", timeElapsed= " + timeElapsedHours);
+					return json.getString(PHPHelper.MESSAGE);			
+				}
+				else {
+					Log.w("ScanQRCode", json.getString(PHPHelper.MESSAGE));
+					return json.getString(PHPHelper.MESSAGE);
+				}
 				
 			} catch (JSONException e) {
 				try {

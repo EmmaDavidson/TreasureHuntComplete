@@ -4,6 +4,7 @@ using TreasureHuntDesktopApplication.FullClient.ViewModel;
 using Moq;
 using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TreasureHuntDesktopApplication.Test
 {
@@ -48,7 +49,7 @@ namespace TreasureHuntDesktopApplication.Test
             }
         }
 
-        public String RetypedPassword
+       /* public String RetypedPassword
         {
             get 
             {
@@ -58,7 +59,7 @@ namespace TreasureHuntDesktopApplication.Test
             {
                 viewModel.RetypedPassword = value;
             }
-        }
+        }*/
 
         public String Description
         {
@@ -72,7 +73,7 @@ namespace TreasureHuntDesktopApplication.Test
             }
         }
 
-        private String password;
+      /*  private String password;
         public String Password
         {
             get 
@@ -83,7 +84,7 @@ namespace TreasureHuntDesktopApplication.Test
             {
                 viewModel.Password = value;
             }
-        }
+        }*/
         #endregion
 
         #region Validation Tests
@@ -93,35 +94,29 @@ namespace TreasureHuntDesktopApplication.Test
         {
             String nullHuntName = null;
             HuntName = nullHuntName;
-            Password = "password";
-            RetypedPassword = "password";
             Description = "description";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         [Test]
         public void HuntNameInvalidWhenWhitespace()
         {
             String WhitespaceHuntName = String.Empty;
-            Password = "password";
-            RetypedPassword = "password";
             Description = "description";
             HuntName = WhitespaceHuntName;
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         [Test]
         public void HuntNameInvalidWhenGreaterThanMaxLength() 
         {
-            String LongHuntName = "abcdefghijklmnopqrstidshvfsdhkfhdskjfjdhfkhdsjhfjhdshfdsjfdshfhdjhfkjsdhfhdu";
+            String LongHuntName = "abcdefghijklmnopqrstidshvfsdhkfhdskjfjdhfkhdsjhfjhdshfdsjfdshfhdjhfkjurtiuerutureiutoeriutoireuiotueroituoreutoierutioeuroituerituieoroutireuotieruoitueroitieruotuertsdhfhdu";
             HuntName = LongHuntName;
-            Password = "password";
-            RetypedPassword = "password";
             Description = "description";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         [Test]
@@ -129,59 +124,9 @@ namespace TreasureHuntDesktopApplication.Test
         {
             String LongHuntName = "a";
             HuntName = LongHuntName;
-            Password = "password";
-            RetypedPassword = "password";
             Description = "description";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
-        }
-
-        [Test]
-        public void PasswordInvalidWhenNull()
-        {
-            String password = null;
-            Password = password;
-            HuntName = "huntName";
-            RetypedPassword = "password";
-            Description = "description";
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
-        }
-
-        [Test]
-        public void PasswordInvalidWhenWhitespace()
-        {
-            String WhitespacePassword = String.Empty;
-            Password = WhitespacePassword;
-            HuntName = "huntName";
-            RetypedPassword = "password";
-            Description = "description";
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
-        }
-
-        [Test]
-        public void PasswordInvalidWhenGreaterThanMaxLength()
-        {
-            String LongPassword = "abcdefghijklmnopqrstidshvfsdhkfhdskjfjdhfkhdsjhfjhdshfdsjfdshfhdjhfkjsdhfhdu";
-            Password = LongPassword;
-            HuntName = "huntName";
-            RetypedPassword = "password";
-            Description = "description";
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
-        }
-
-        [Test]
-        public void PasswordInvalidWhenLessThanMinLength()
-        {
-            String LongPassword = "a";
-            Password = LongPassword;
-            HuntName = "huntName";
-            RetypedPassword = "password";
-            Description = "description";
-            Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         [Test]
@@ -190,10 +135,8 @@ namespace TreasureHuntDesktopApplication.Test
             String description = null;
             Description = description;
             HuntName = "huntName";
-            RetypedPassword = "password";
-            Password = "password";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         [Test]
@@ -202,20 +145,20 @@ namespace TreasureHuntDesktopApplication.Test
             String WhitespaceDescription = String.Empty;
             Description = WhitespaceDescription;
             HuntName = "huntName";
-            RetypedPassword = "password";
-            Password = "password";
+            //RetypedPassword = "password";
+            //Password = "password";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
-        //Description is too long to test for max length
         [Test]
         public void DescriptionInvalidWhenLessThanMinLength()
         {
-            String LongPassword = "a";
-            Password = LongPassword;
+            String WhitespaceDescription = "Des";
+            Description = WhitespaceDescription;
+            HuntName = "huntName";
             Assert.False(viewModel.IsValidDetails());
-            Assert.False(viewModel.SaveHuntNameCommand.CanExecute(""));
+            Assert.False(viewModel.SaveHuntCommand.CanExecute(""));
         }
 
         #endregion
@@ -248,23 +191,25 @@ namespace TreasureHuntDesktopApplication.Test
             
             this.HuntName = "This fake hunt";
             this.CurrentUser = currentUser;
-            this.Password = "description";
+            //this.Password = "description";
             this.Description = "Fake description";
+
+            long resultId = 1; 
+
             #endregion
 
-            serviceClient.Setup(s => s.GetTreasureHunts()).Returns(listOfHunts.ToArray());
-            serviceClient.Setup(s => s.SaveNewHunt(It.IsAny<hunt>())).Returns(1);
-            serviceClient.Setup(s => s.GetUserRole(It.IsAny<user>())).Returns(userRole);
-            serviceClient.Setup(s => s.SaveUserHunt(It.IsAny<userhunt>())).Verifiable();
-            serviceClient.Setup(s => s.GetHuntBasedOnName(fakeHunt.HuntName)).Returns(fakeHunt);
+            //-http://stackoverflow.com/questions/20859639/using-moq-to-mock-an-asynchronous-method-for-a-unit-test
+            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(currentUser)).Returns(Task.FromResult(listOfHunts.ToArray()));
+            serviceClient.Setup(s => s.SaveNewHuntAsync(It.IsAny<hunt>())).Returns(Task.FromResult(resultId));
+            serviceClient.Setup(s => s.SaveUserHuntAsync(It.IsAny<userhunt>())).Returns(Task.FromResult(""));
+            serviceClient.Setup(s => s.GetHuntBasedOnNameAsync(It.IsAny<string>(), It.IsAny<long>())).Returns(Task.FromResult(fakeHunt));
    
             viewModel.ExecuteSaveCommand();
 
-            serviceClient.Verify(s => s.SaveNewHunt(It.IsAny<hunt>()), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetTreasureHunts(), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetUserRole(It.IsAny<user>()), Times.Exactly(1));
-            serviceClient.Verify(s => s.SaveUserHunt(It.IsAny<userhunt>()), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetHuntBasedOnName(It.IsAny<String>()), Times.Exactly(1));
+            serviceClient.Verify(s => s.SaveNewHuntAsync(It.IsAny<hunt>()), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetTreasureHuntsForParticularUserAsync(currentUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.SaveUserHuntAsync(It.IsAny<userhunt>()), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetHuntBasedOnNameAsync(It.IsAny<String>(), It.IsAny<long>()), Times.Exactly(1));
         }
 
         //Need to silence the pop up box
@@ -290,23 +235,23 @@ namespace TreasureHuntDesktopApplication.Test
 
             this.HuntName = fakeHunt.HuntName;
             this.CurrentUser = currentUser;
-            this.Password = "description";
+            //this.Password = "description";
             this.Description = "Fake description";
+
+            long resultId = 1;
             #endregion
 
-            serviceClient.Setup(s => s.GetTreasureHunts()).Returns(listOfHunts.ToArray());
-            serviceClient.Setup(s => s.SaveNewHunt(It.IsAny<hunt>())).Returns(1);
-            serviceClient.Setup(s => s.GetUserRole(It.IsAny<user>())).Returns(userRole);
-            serviceClient.Setup(s => s.SaveUserHunt(It.IsAny<userhunt>())).Verifiable();
-            serviceClient.Setup(s => s.GetHuntBasedOnName(fakeHunt.HuntName)).Returns(fakeHunt);
-
+            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(currentUser)).Returns(Task.FromResult(listOfHunts.ToArray()));
+            serviceClient.Setup(s => s.SaveNewHuntAsync(It.IsAny<hunt>())).Returns(Task.FromResult(resultId));
+            serviceClient.Setup(s => s.SaveUserHuntAsync(It.IsAny<userhunt>())).Returns(Task.FromResult(""));
+            serviceClient.Setup(s => s.GetHuntBasedOnNameAsync(It.IsAny<string>(), It.IsAny<long>())).Returns(Task.FromResult(fakeHunt));
+   
             viewModel.ExecuteSaveCommand();
-        
-            serviceClient.Verify(s => s.GetTreasureHunts(), Times.Exactly(1));
-            serviceClient.Verify(s => s.SaveNewHunt(It.IsAny<hunt>()), Times.Exactly(0));
-            serviceClient.Verify(s => s.GetUserRole(It.IsAny<user>()), Times.Exactly(0));
-            serviceClient.Verify(s => s.SaveUserHunt(It.IsAny<userhunt>()), Times.Exactly(0));
-            serviceClient.Verify(s => s.GetHuntBasedOnName(It.IsAny<String>()), Times.Exactly(0));
+
+            serviceClient.Verify(s => s.SaveNewHuntAsync(It.IsAny<hunt>()), Times.Exactly(0));
+            serviceClient.Verify(s => s.GetTreasureHuntsForParticularUserAsync(currentUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.SaveUserHuntAsync(It.IsAny<userhunt>()), Times.Exactly(0));
+            serviceClient.Verify(s => s.GetHuntBasedOnNameAsync(It.IsAny<String>(), It.IsAny<long>()), Times.Exactly(0));
         }
         #endregion
     }

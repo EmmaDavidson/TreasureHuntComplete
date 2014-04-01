@@ -42,7 +42,7 @@ public class MapManager {
 		mAppContext = appContext;
 		mLocationManager = (LocationManager) mAppContext.getSystemService(Context.LOCATION_SERVICE);
 		
-		mHelper = new MapDataDAO(appContext);
+		mHelper = MapDataDAO.getInstance(appContext);
 		mHelper.open();
 		
 		mSettings = appContext.getSharedPreferences("UserPreferencesFile", 0);

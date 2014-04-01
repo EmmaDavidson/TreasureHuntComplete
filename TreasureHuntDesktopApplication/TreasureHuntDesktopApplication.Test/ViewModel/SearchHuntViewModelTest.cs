@@ -25,8 +25,27 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
         public void Setup()
         {
             serviceClient = new Mock<ITreasureHuntService>();
+
+            hunt newHunt = new hunt();
+            newHunt.HuntId = 1;
+            newHunt.HuntName = "New hunt";
+            newHunt.HuntDescription = "Hunt description";
+
+            List<hunt> listOfHunts = new List<hunt>();
+            listOfHunts.Add(newHunt);
+
+            user fakeUser = new user();
+            fakeUser.Name = "Current users name";
+            fakeUser.UserId = 1;
+            fakeUser.Password = "password";
+
+            this.CurrentUser = fakeUser;
+
+            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(CurrentUser)).
+                                       Returns(Task.FromResult(listOfHunts.ToArray()));
+
             viewModel = new SearchHuntViewModel(serviceClient.Object);
-            
+
             myFakeHunt1 = new hunt();
             myFakeHunt1.HuntName = "My Fake Hunt 1";
 
@@ -85,6 +104,12 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
         [Test]
         public void ShouldReturnInvalidIfCurrentTreasureHuntIsNull()
         {
+            user newUser = new user();
+            newUser.UserId = 1;
+            newUser.Name = "Emma";
+            newUser.Password = "password";
+
+            CurrentUser = newUser;
             this.CurrentTreasureHunt = null;
             Assert.False(viewModel.IsValidHunt());
             Assert.False(viewModel.SearchHuntCommand.CanExecute(""));

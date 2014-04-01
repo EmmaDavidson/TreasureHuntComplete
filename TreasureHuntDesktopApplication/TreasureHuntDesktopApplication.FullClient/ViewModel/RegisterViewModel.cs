@@ -649,7 +649,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             {
                 return "There are invalid characters";
             }
-            if (!Validation.IsValidLength(Password, PasswordMaxLength, PasswordMinLength))
+            if (!Validation.IsValidLength(CompanyPassword, PasswordMaxLength, PasswordMinLength))
             {
                 return "Password is an invalid length!";
             }

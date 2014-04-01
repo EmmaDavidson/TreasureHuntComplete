@@ -89,7 +89,6 @@ public class RegisterWithHuntActivity extends Activity {
 	public JSONParser jsonParser = new JSONParser();
 	
 	private static JSONObject sHuntParticipantIdResult;
-	private static JSONObject sHuntIdResult;
 	private static JSONObject sStartTimeResult;
 	
 	private SaveStartTimeTask mSaveStartTimeTask = null;
@@ -560,7 +559,7 @@ public class RegisterWithHuntActivity extends Activity {
 		
 		/* Method calling the database to check if the given participant's details have already been saved for the given treasure hunt.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 				int success;
@@ -650,7 +649,7 @@ public class RegisterWithHuntActivity extends Activity {
 		
 		/* Method calling the database to check if a start time has been associated with the given participant and treasure hunt.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 				Log.i("RegisterWithHunt", "CheckIfHuntStartedTask has begun");
@@ -742,7 +741,7 @@ public class RegisterWithHuntActivity extends Activity {
 		
 		/* Method calling the database to register the participant with the given hunt.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 			int success;
@@ -827,7 +826,7 @@ public class RegisterWithHuntActivity extends Activity {
 		
 		/* Method calling the database to return the HuntParticipantId associated with the given participant and treasure hunt.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 				int success;
@@ -840,7 +839,7 @@ public class RegisterWithHuntActivity extends Activity {
 				try{
 					Log.i("RegisterWithHunt", "starting");
 					JSONObject jsonResult = jsonParser.makeHttpRequest(GET_HUNT_PARTICIPANT_ID_URL, "POST", parameters);
-					Log.i("RegisterWitHunt", jsonResult.toString());
+					Log.i("RegisterWithHunt", jsonResult.toString());
 					success = jsonResult.getInt(PHPHelper.SUCCESS);
 					
 					if(success == 1) {
@@ -933,7 +932,7 @@ public class RegisterWithHuntActivity extends Activity {
 		/* Method calling the database to save the start time associated with the given participant and treasure hunt when the 'Play' button is first clicked after
 		 * registration.*/
 		@Override
-		protected String doInBackground(String... arg0) {
+		public String doInBackground(String... arg0) {
 			int startTimeSuccess;		
 			
 			try {

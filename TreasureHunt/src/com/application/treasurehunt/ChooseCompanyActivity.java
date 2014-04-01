@@ -139,7 +139,7 @@ public class ChooseCompanyActivity extends Activity {
 		mInternetUtility = InternetUtility.getInstance(this);
 		mMapManager = MapManager.get(this);
 	
-		mCompanyDataSource = new CompanyDAO(this);
+		mCompanyDataSource = CompanyDAO.getInstance(this);
 		mCompanyDataSource.open();	
 			
 		mSettings = getSharedPreferences("UserPreferencesFile", 0);
@@ -149,9 +149,8 @@ public class ChooseCompanyActivity extends Activity {
 
 		mHandlerForUpdatingCompanyList = new Handler();
 		
-		if(savedInstanceState == null) {
-			mHandlerForUpdatingCompanyList.post(mUpdateCompanyList);
-		}
+		mHandlerForUpdatingCompanyList.post(mUpdateCompanyList);
+		
 	}
 	
 	/* Methods to set up the on screen menu. */
@@ -201,9 +200,9 @@ public class ChooseCompanyActivity extends Activity {
 		
 		super.onRestoreInstanceState(savedInstanceState);
 		
-		mListOfCompanies = mCompanyDataSource.getAllCompanies();
-		mAdapter = new ChooseCompanyListAdapter(ChooseCompanyActivity.this, mListOfCompanies);
-		mCompanyListView.setAdapter(mAdapter);	
+		//mListOfCompanies = mCompanyDataSource.getAllCompanies();
+		//mAdapter = new ChooseCompanyListAdapter(ChooseCompanyActivity.this, mListOfCompanies);
+		//mCompanyListView.setAdapter(mAdapter);	
 	}
 	
 	/*
@@ -431,9 +430,11 @@ public class ChooseCompanyActivity extends Activity {
 		protected void onPostExecute(final String fileUrl) {
 			mCompaniesTask = null;
 			mChooseCompanyDialog.cancel();
+			
+			mListOfCompanies = mCompanyDataSource.getAllCompanies();
 
-			if (fileUrl != null) {	
-				mListOfCompanies = mCompanyDataSource.getAllCompanies();
+			if (mListOfCompanies.size() != 0) {	
+				
 				mAdapter = new ChooseCompanyListAdapter(ChooseCompanyActivity.this, mListOfCompanies);
 				mCompanyListView.setAdapter(mAdapter);	
 				
@@ -470,7 +471,8 @@ public class ChooseCompanyActivity extends Activity {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
+					Intent homepageIntent = new Intent(ChooseCompanyActivity.this, HomepageActivity.class);
+					startActivity(homepageIntent);
 				}
 			});
 			

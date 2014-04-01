@@ -187,8 +187,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #region General Methods
         /// <Summary> Method that attempts to check if a new hunt can be saved. </Summary>
-        public void ExecuteSaveCommand()
-        {
+        public void ExecuteSaveCommand() {
             if (connectionChecker.IsInternetConnected())
             {
                 PopupDisplayed = true; 
@@ -218,35 +217,35 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         private async void SaveNewHunt()
         { 
             hunt newHunt = new hunt();
-                    newHunt.HuntName = this.huntName;
-                    newHunt.HuntDescription = this.Description;
-                    newHunt.EndDate = EndDate;
+            newHunt.HuntName = this.huntName;
+            newHunt.HuntDescription = this.Description;
+            newHunt.EndDate = EndDate;
 
-                    //Create it and save it to the database.
-                    long huntId = await this.serviceClient.SaveNewHuntAsync(newHunt);
+            //Create it and save it to the database.
+            long huntId = await this.serviceClient.SaveNewHuntAsync(newHunt);
 
-                    userhunt newUserHunt = new userhunt();
-                    newUserHunt.HuntId = huntId;
-                    newUserHunt.UserId = this.currentUser.UserId;
+            userhunt newUserHunt = new userhunt();
+            newUserHunt.HuntId = huntId;
+            newUserHunt.UserId = this.currentUser.UserId;
 
-                    await this.serviceClient.SaveUserHuntAsync(newUserHunt);
+            await this.serviceClient.SaveUserHuntAsync(newUserHunt);
 
-                    //Grab the correct hunt's ID and pass it into the view hunt view.
-                    hunt huntToView = await serviceClient.GetHuntBasedOnNameAsync(newHunt.HuntName, currentUser.UserId);
+            //Grab the correct hunt's ID and pass it into the view hunt view.
+            hunt huntToView = await serviceClient.GetHuntBasedOnNameAsync(newHunt.HuntName, currentUser.UserId);
 
-                    PopupDisplayed = false;
+            PopupDisplayed = false;
 
-                    Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
-                    Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
-                    Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
+            Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "ViewHuntViewModel" });
+            Messenger.Default.Send<SelectedHuntMessage>(new SelectedHuntMessage() { CurrentHunt = huntToView });
+            Messenger.Default.Send<ViewUpdatedMessage>(new ViewUpdatedMessage() { UpdatedView = true });
 
-                    HuntName = null;
-                    Description = null;
-                    EndDate = DateTime.Today;
+            HuntName = null;
+            Description = null;
+            EndDate = DateTime.Today;
         }
 
         /// <Summary> Method to check whether or not the treasure hunt to be saved already exists in the database.  </Summary>
-        private bool DoesHuntAlreadyExist()
+        public bool DoesHuntAlreadyExist()
         {
             List<hunt> listOfUserHunts = serviceClient.GetTreasureHuntsForParticularUserAsync(currentUser).Result.ToList();
 
