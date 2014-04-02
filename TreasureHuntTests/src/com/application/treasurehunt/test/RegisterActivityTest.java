@@ -2,6 +2,7 @@ package com.application.treasurehunt.test;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -31,10 +32,12 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	private TextView mNameView;
 	private TextView mEmailView;
 	private TextView mPasswordView;
+	private TextView mAnswerView;
 	private Button mSaveButton;
 	private String mName;
 	private String mEmail;
 	private String mPassword;
+	private String mAnswer;
 	
 	@Mock private JSONParser jsonParserMock;
 	
@@ -43,6 +46,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	
 	Method isValidEmailMethod;
 	Method isValidPasswordMethod;
+	Method isValidAnswerMethod;
 	Method isValidNameMethod;
 	
 	Method doInBackgroundMethod;
@@ -50,7 +54,10 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 	Object isValidEmailMethodObject;
 	Object isValidPasswordMethodObject;
 	Object isValidNameMethodObject;
+	Object isValidAnswerMethodObject;
 	Object doInBackgroundMethodObject;
+	
+	Field mUserSucessfullyRegisteredField;
 	
 	RegisterActivity.UserRegisterTask registerTask;
 	
@@ -73,6 +80,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		mEmailView = (TextView) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.register_email_address);
 		mPasswordView = (TextView) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.register_password);
 		mSaveButton = (Button) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.register_save_button);
+		mAnswerView = (TextView) mRegisterActivity.findViewById(com.application.treasurehunt.R.id.security_question_answer);
 		
 		registerTask = mRegisterActivity.new UserRegisterTask();
 		
@@ -93,7 +101,12 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		
 		isValidNameMethod = mRegisterActivityClass.getDeclaredMethod("isValidName", null);
 		isValidNameMethod.setAccessible(true);
+		
+		isValidAnswerMethod = mRegisterActivityClass.getDeclaredMethod("isValidAnswer", null);
+		isValidAnswerMethod.setAccessible(true);
 
+		mUserSucessfullyRegisteredField = RegisterActivity.class.getDeclaredField("mUserSucessfullyRegistered");
+		mUserSucessfullyRegisteredField.setAccessible(true);
 	}
 
 	public void testPreconditions()
@@ -101,11 +114,13 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		mName = mNameView.getText().toString();
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
+		mAnswer = mAnswerView.getText().toString();
 			
 		assertNotNull("mLoginActivity is null", mRegisterActivity);
 		assertEquals("mName is empty","", mName);
 		assertEquals("Email is empty", "", mEmail);
 		assertEquals("mPassword is empty","", mPassword);
+		assertEquals("mAnswer is empty", "", mAnswer);
 	}
 	
 	public void testNameInvalidIfEmpty()
@@ -131,14 +146,13 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void nameInvalidIfTooShort()
+	public void testNameInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
 			public void run()
 			{
-				mNameView.setText("em");
+				mNameView.setText("e");
 
 				try {
 					isValidNameMethodObject = isValidNameMethod.invoke(mRegisterActivity, null);
@@ -156,8 +170,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});	
 	}
 	
-	@Test
-	public void nameInvalidIfTooLong()
+	public void testNameInvalidIfTooLong()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -181,15 +194,38 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});	
 	}
 	
+	public void testNameInvalidIfInvalidCharacters() {
+		
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mNameView.setText("emma!");
 
-	@Test
-	public void emailInvalidIfEmpty()
+				try {
+					isValidNameMethodObject = isValidNameMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Name has invalid characters", false, isValidNameMethodObject);
+			}
+			
+		});	
+	}
+	
+	public void testEmailInvalidIfEmpty()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
 			public void run()
 			{
-				mEmailView.setText(null);try {
+				mEmailView.setText(null);
+				try {
 					isValidEmailMethodObject = isValidEmailMethod.invoke(mRegisterActivity, null);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
@@ -205,8 +241,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void emailInvalidIfTooShort()
+	public void testEmailInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -227,8 +262,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void emailInvalidIfTooLong()
+	public void testEmailInvalidIfTooLong()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -249,8 +283,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void emailInvalidIfIncorrectFormat()
+	public void testEmailInvalidIfIncorrectFormat()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -273,8 +306,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void passwordInvalidIfEmpty()
+	public void testPasswordInvalidIfEmpty()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -298,8 +330,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 			
 	}
 	
-	@Test
-	public void passwordInvalidIfTooShort()
+	public void testPasswordInvalidIfTooShort()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -322,8 +353,7 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 	
-	@Test
-	public void passwordInvalidIfTooLong()
+	public void testPasswordInvalidIfTooLong()
 	{
 		mRegisterActivity.runOnUiThread(new Runnable()
 		{
@@ -346,8 +376,127 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		});
 	}
 
-	@Test
-	public void LoginActivityBeginsIfSuccessfullyLoggedIn() throws JSONException
+	public void testPasswordInvalidIfInvalidFormat () {
+		
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mPasswordView.setText("password!");
+
+				try {
+					isValidPasswordMethodObject = isValidPasswordMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Password is invalid length", false, isValidPasswordMethodObject);
+			}
+		});	
+	}
+	
+	public void testAnswerInvalidIfEmpty() {
+		
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mAnswerView.setText(null);
+
+				try {
+					isValidAnswerMethodObject = isValidAnswerMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Answer is null", false, isValidAnswerMethodObject);
+			}
+		});
+	}
+	
+	public void testAnswerInvalidIfInvalidFormat() {
+	
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mAnswerView.setText("answer!");
+
+				try {
+					isValidAnswerMethodObject = isValidAnswerMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Answer has invalid characters", false, isValidAnswerMethodObject);
+			}
+		});
+	}
+	
+	public void testAnswerInvalidIfTooLong() {
+		
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mAnswerView.setText("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+				try {
+					isValidAnswerMethodObject = isValidAnswerMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Answer is too long", false, isValidAnswerMethodObject);
+			}
+		});
+	}
+	
+	public void testAnswerInvalidIfTooShort() {
+		
+		mRegisterActivity.runOnUiThread(new Runnable()
+		{
+			public void run()
+			{
+				mAnswerView.setText("a");	
+				
+				try {
+					isValidAnswerMethodObject = isValidAnswerMethod.invoke(mRegisterActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				
+				assertEquals("Answer is too short", false, isValidAnswerMethodObject);
+			}
+		});
+			
+		
+	}
+	
+	
+	public void testSuccessfulRegistrationDatabaseCallMade() throws JSONException, IllegalAccessException, IllegalArgumentException
 	{
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
 		String SUCCESSFULLY_REGISTERED = "Registration successful!";
@@ -358,26 +507,20 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
 		
 		try {
-			doInBackgroundMethodObject = doInBackgroundMethod.invoke(registerTask, null);
+
+			registerTask.doInBackground();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		} 
 		
 		//Assert that the call was made
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());		
-			
-		//test here to see if the activity has changed
-		//Problem is, the test is running on the wrong thread - despite the screen appearing
-		//UI thread?
-		//Should be acceptance tested instead?
+
+		Object actualResult = mUserSucessfullyRegisteredField.get(mRegisterActivity);
+		assertEquals(true, actualResult);	
 	}
 	
-	@Test
-	public void RegisterFailsIfEmailAlreadyInUse() throws JSONException
+	public void testRegisterFailsIfEmailAlreadyInUse() throws JSONException, IllegalAccessException, IllegalArgumentException
 	{
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
 		String UNSUCCESSFUL_REGISTER = "This Email Address is already in use";
@@ -388,22 +531,15 @@ public class RegisterActivityTest extends ActivityInstrumentationTestCase2<Regis
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
 		
 		try {
-			doInBackgroundMethodObject = doInBackgroundMethod.invoke(registerTask, null);
+			registerTask.doInBackground();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}	
+		}
 		
 		//Assert that the call was made
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
 		
-		//test here to see if the activity has not changed
-		//Problem is, the test is running on the wrong thread - despite the screen appearing on the device...its not checking the ui thread
-		//UI thread?
-		//Should be acceptance tested instead?
-		//Maybe start the activity on the postExecuteMethod and check there?
+		Object actualResult = mUserSucessfullyRegisteredField.get(mRegisterActivity);
+		assertEquals(false, actualResult);
 	}
 }

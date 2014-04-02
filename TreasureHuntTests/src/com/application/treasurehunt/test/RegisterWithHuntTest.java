@@ -129,6 +129,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		
 	}
 	
+	//Runs green if debugged
 	public void testHuntFinishedIfHuntOutOfDate() throws IllegalAccessException, InvocationTargetException {
 		
 		mRegisterWithHuntActivity.runOnUiThread(new Runnable()
@@ -158,6 +159,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		});		
 	}
 	
+	//Runs green if debugged
 	public void testDatabaseCallMadeWhenAttemptingToSaveStartTime() throws JSONException {
 		
 		//Set up the JSONObject to be returned by the mock
@@ -215,7 +217,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		String actualResult = sHuntParticipantIdResultField.get(mRegisterWithHuntActivity).toString();
 		assertEquals(results.toString(), actualResult);	
 		
-		String returnedResult = mHuntParticipantIdReturnedField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mHuntParticipantIdReturnedField.get(mRegisterWithHuntActivity);
 		assertEquals(true, returnedResult);
 	}
 	
@@ -246,7 +248,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		Object actualResult = sHuntParticipantIdResultField.get(mRegisterWithHuntActivity);
 		assertEquals(null, actualResult);	
 		
-		String returnedResult = mHuntParticipantIdReturnedField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mHuntParticipantIdReturnedField.get(mRegisterWithHuntActivity);
 		assertEquals(false, returnedResult);	
 	}
 	
@@ -274,7 +276,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), 
 				Matchers.anyString(), Matchers.anyList());	
 		
-		String returnedResult = mRegistrationSuccessfulField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mRegistrationSuccessfulField.get(mRegisterWithHuntActivity);
 		assertEquals(true, returnedResult);	
 	}
 	
@@ -305,13 +307,13 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 				Matchers.anyString(), Matchers.anyList());	
 		
 		String startTime = mStartTimeField.get(mRegisterWithHuntActivity).toString();
-		assertNotNull("Start time is null", startTime);	
+		assertNotNull("Start time is null", Integer.parseInt(startTime));	
 		
-		String returnedResult = mHuntAlreadyStartedField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mHuntAlreadyStartedField.get(mRegisterWithHuntActivity);
 		assertEquals(true, returnedResult);
 		
 		//Assert that the array passed back the correct data
-		Object actualResult = sStartTimeResultField.get(mRegisterWithHuntActivity);
+		String actualResult = sStartTimeResultField.get(mRegisterWithHuntActivity).toString();
 		assertEquals(results.toString(), actualResult);	
 	}
 
@@ -339,13 +341,13 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 				Matchers.anyString(), Matchers.anyList());	
 		
 		String startTime = mStartTimeField.get(mRegisterWithHuntActivity).toString();
-		assertEquals(0, startTime);	
+		assertEquals(0, Integer.parseInt(startTime));	
 		
 		//Assert that the array passed back the correct data
 		Object actualResult = sStartTimeResultField.get(mRegisterWithHuntActivity);
 		assertEquals(null, actualResult);
 		
-		String returnedResult = mHuntAlreadyStartedField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mHuntAlreadyStartedField.get(mRegisterWithHuntActivity);
 		assertEquals(false, returnedResult);			
 	}
 	
@@ -374,7 +376,7 @@ public class RegisterWithHuntTest extends ActivityInstrumentationTestCase2<Regis
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), 
 				Matchers.anyString(), Matchers.anyList());		
 		
-		String returnedResult = mUserAlreadyRegisteredField.get(mRegisterWithHuntActivity).toString();
+		Object returnedResult = mUserAlreadyRegisteredField.get(mRegisterWithHuntActivity);
 		assertEquals(true, returnedResult);
 	}
 

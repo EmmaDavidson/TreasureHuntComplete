@@ -146,6 +146,7 @@ public class MyHuntsActivityTest extends ActivityInstrumentationTestCase2<MyHunt
 	//it will fail unless it is debugged through. i.e. the 'mTypeOfHunt' variable has not been set up quickly enough 
 	//therefore the test will fail.
 	
+	//runs clear when debugged
 	public void testlistOfHuntsEmptyIfUnsuccessful() throws JSONException, 
 		IllegalArgumentException, IllegalAccessException {
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
@@ -180,6 +181,8 @@ public class MyHuntsActivityTest extends ActivityInstrumentationTestCase2<MyHunt
 		assertEquals(null, actualResult);	
 	}
 	
+	//runs clear when debugged
+	
 	public void testListOfHuntsGeneratedIfSuccessful()
 			throws JSONException, IllegalArgumentException, IllegalAccessException {
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
@@ -205,6 +208,8 @@ public class MyHuntsActivityTest extends ActivityInstrumentationTestCase2<MyHunt
 		String actualResult = mReturnedHuntsResultField.get(mMyHuntsActivity).toString();
 		assertEquals(sTagResult.toString(), actualResult);	
 	}
+	
+	//Works but issue wanted <huntparticipantid 1> but got <huntparticipantid 1> same thing!
 	
 	public void testHuntParticipantIdReturnedIfSuccessfulDatabaseCall() throws IllegalAccessException, IllegalArgumentException, JSONException{
 			
@@ -238,7 +243,9 @@ public class MyHuntsActivityTest extends ActivityInstrumentationTestCase2<MyHunt
 		String returnedResult = mHuntParticipantIdReturnedField.get(mMyHuntsActivity).toString();
 		assertEquals(true, returnedResult);
 	}
-
+	
+	//Works when debugging. However, problem <false> but was <false>
+	
 	public void testHuntParticipantIdNotReturnedIfUnsuccessfulDatabaseCall() throws JSONException, IllegalAccessException, IllegalArgumentException{
 		
 		//Set up the JSONObject to be returned by the mock

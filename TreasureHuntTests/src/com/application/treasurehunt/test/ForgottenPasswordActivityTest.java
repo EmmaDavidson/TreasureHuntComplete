@@ -102,9 +102,7 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 		mSavePasswordSuccessField.setAccessible(true);
 
 		//http://stackoverflow.com/questions/9694282/activityunittestcase-and-activityrunonuithread
-		
-		//doInBackgroundMethod = mSavePasswordTaskClass.getDeclaredMethod("doInBackground", null);
-		//doInBackgroundMethod.setAccessible(true);
+	
 	}
 	
 	public void testPreconditions() {
@@ -218,7 +216,7 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 				//http://www.xyzws.com/Javafaq/how-to-use-reflection-to-call-methods-in-java/153
 				//http://blog.octo.com/en/android-testing-testing-private-methods/
 				//http://geekyouup.blogspot.co.uk/2010/01/android-app-optimization-using.html
-				mNewPasswordView.setText(null);
+				mNewPasswordView.setText("");
 				
 				try {
 					//OR IS IT .invoke(mLoginActivityClass)????
@@ -231,9 +229,11 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 					e.printStackTrace();
 				}
 				
-				assertEquals("Please enter your password", false, mIsValidNewPasswordMethodObject);  
-			}
+				assertEquals("Please enter your password", false, mIsValidNewPasswordMethodObject); 
+			}	
 		});	
+		
+		
 	}
 	
 	public void testPasswordInvalidIfLengthTooShort() {
@@ -243,7 +243,7 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 				//http://www.xyzws.com/Javafaq/how-to-use-reflection-to-call-methods-in-java/153
 				//http://blog.octo.com/en/android-testing-testing-private-methods/
 				//http://geekyouup.blogspot.co.uk/2010/01/android-app-optimization-using.html
-				mNewPasswordView.setText("pa");
+				mNewPasswordView.setText("p");
 				
 				try {
 					//OR IS IT .invoke(mLoginActivityClass)????
@@ -268,7 +268,7 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 				//http://www.xyzws.com/Javafaq/how-to-use-reflection-to-call-methods-in-java/153
 				//http://blog.octo.com/en/android-testing-testing-private-methods/
 				//http://geekyouup.blogspot.co.uk/2010/01/android-app-optimization-using.html
-				mNewPasswordView.setText("passwordpassword");
+				mNewPasswordView.setText("passwordpasswordpassword");
 				
 				try {
 					mIsValidNewPasswordMethodObject = mIsValidNewPasswordMethod.invoke(mForgottenPasswordActivity, null);
@@ -284,4 +284,30 @@ public class ForgottenPasswordActivityTest extends ActivityInstrumentationTestCa
 			}
 		});	
 	}
+
+	public void testPasswordInvalidIfInvalidCharacters() {
+		
+		mForgottenPasswordActivity.runOnUiThread(new Runnable() {
+			public void run() {
+				//http://www.xyzws.com/Javafaq/how-to-use-reflection-to-call-methods-in-java/153
+				//http://blog.octo.com/en/android-testing-testing-private-methods/
+				//http://geekyouup.blogspot.co.uk/2010/01/android-app-optimization-using.html
+				mNewPasswordView.setText("password!");
+				
+				try {
+					mIsValidNewPasswordMethodObject = mIsValidNewPasswordMethod.invoke(mForgottenPasswordActivity, null);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				
+				assertEquals("Length must be between 6 and 10 characters", false, mIsValidNewPasswordMethodObject);
+			}
+		});	
+	}
+
+
 }
