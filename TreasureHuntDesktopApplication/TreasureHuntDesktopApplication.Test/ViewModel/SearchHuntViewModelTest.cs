@@ -34,17 +34,17 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             List<hunt> listOfHunts = new List<hunt>();
             listOfHunts.Add(newHunt);
 
+            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(It.IsAny<user>()))
+                    .Returns(Task.FromResult(listOfHunts.ToArray()));
+
+            viewModel = new SearchHuntViewModel(serviceClient.Object);
+
             user fakeUser = new user();
             fakeUser.Name = "Current users name";
             fakeUser.UserId = 1;
             fakeUser.Password = "password";
 
-            this.CurrentUser = fakeUser;
-
-            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(CurrentUser)).
-                                       Returns(Task.FromResult(listOfHunts.ToArray()));
-
-            viewModel = new SearchHuntViewModel(serviceClient.Object);
+            CurrentUser = fakeUser;
 
             myFakeHunt1 = new hunt();
             myFakeHunt1.HuntName = "My Fake Hunt 1";
@@ -96,21 +96,14 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             }     
         }
 
-
-
         #endregion
 
         #region Validation Tests
         [Test]
-        public void ShouldReturnInvalidIfCurrentTreasureHuntIsNull()
+        public void ShouldPreventSearchIfCurrentTreasureHuntIsNull()
         {
-            user newUser = new user();
-            newUser.UserId = 1;
-            newUser.Name = "Emma";
-            newUser.Password = "password";
+            CurrentTreasureHunt = null;
 
-            CurrentUser = newUser;
-            this.CurrentTreasureHunt = null;
             Assert.False(viewModel.IsValidHunt());
             Assert.False(viewModel.SearchHuntCommand.CanExecute(""));
         }
@@ -127,11 +120,11 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
 
             CurrentUser = fakeUser;
 
-            serviceClient.Setup<hunt[]>(s => s.GetTreasureHuntsForParticularUser(fakeUser)).Returns(returnedHunts.ToArray());
+            serviceClient.Setup(s => s.GetTreasureHuntsForParticularUserAsync(fakeUser)).Returns(Task.FromResult(returnedHunts.ToArray()));
 
             viewModel.RefreshTreasureHunts();
 
-            serviceClient.Verify(s => s.GetTreasureHuntsForParticularUser(fakeUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetTreasureHuntsForParticularUserAsync(fakeUser), Times.Exactly(1));
             Assert.AreEqual(returnedHunts, TreasureHunts);
         }
         #endregion

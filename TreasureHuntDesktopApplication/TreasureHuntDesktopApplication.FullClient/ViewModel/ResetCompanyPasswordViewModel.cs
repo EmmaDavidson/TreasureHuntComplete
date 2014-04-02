@@ -145,13 +145,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             NewPassword = String.Empty;
             Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "SearchHuntViewModel" });
-            // DO I NEED TO SEND BACK THE USER ID HERE?
         }
 
         /// <summary>
         /// Method that attempts to reset the password of the company associated with the current administrator. 
         /// </summary>
-        private async void ExecuteResetCompanyPasswordCommand()
+        public async void ExecuteResetCompanyPasswordCommand()
         {
             if (connectionChecker.IsInternetConnected())
             {
@@ -242,7 +241,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(NewPassword))
+            if (!Validation.IsValidPasswordCharacters(NewPassword))
             {
                 return "There are invalid characters";
             }

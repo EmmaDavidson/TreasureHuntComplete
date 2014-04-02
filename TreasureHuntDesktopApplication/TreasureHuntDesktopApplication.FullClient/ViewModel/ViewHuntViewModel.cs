@@ -193,7 +193,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         /// Method that attempts to pull down from the database a list of questions associated with the given
         /// treasure hunt. 
         /// </summary>
-        private void RefreshQuestions()
+        public void RefreshQuestions()
         {
             if (connectionChecker.IsInternetConnected())
             {
@@ -213,7 +213,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         /// <summary>
         /// Method that attempts to save a new question for the given treasure hunt.
         /// </summary>
-        private async void ExecuteSaveQuestionCommand()
+        public async void ExecuteSaveQuestionCommand()
         {
             PopupMessage = "Saving...";
             PopupDisplayed = true;

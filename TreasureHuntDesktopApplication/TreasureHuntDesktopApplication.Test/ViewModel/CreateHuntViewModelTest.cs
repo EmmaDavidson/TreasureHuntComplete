@@ -49,18 +49,6 @@ namespace TreasureHuntDesktopApplication.Test
             }
         }
 
-       /* public String RetypedPassword
-        {
-            get 
-            {
-                return viewModel.RetypedPassword; 
-            }
-            set
-            {
-                viewModel.RetypedPassword = value;
-            }
-        }*/
-
         public String Description
         {
             get 
@@ -72,19 +60,6 @@ namespace TreasureHuntDesktopApplication.Test
                 viewModel.Description = value;
             }
         }
-
-      /*  private String password;
-        public String Password
-        {
-            get 
-            { 
-                return viewModel.Password; 
-            }
-            set
-            {
-                viewModel.Password = value;
-            }
-        }*/
         #endregion
 
         #region Validation Tests
@@ -191,7 +166,6 @@ namespace TreasureHuntDesktopApplication.Test
             
             this.HuntName = "This fake hunt";
             this.CurrentUser = currentUser;
-            //this.Password = "description";
             this.Description = "Fake description";
 
             long resultId = 1; 

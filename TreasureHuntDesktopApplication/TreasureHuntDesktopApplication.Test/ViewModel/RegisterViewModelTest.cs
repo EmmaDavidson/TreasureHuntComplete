@@ -617,7 +617,6 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
 
         #region Command Tests
 
-        //Problem with s => s.SaveUser(.newUser)
         [Test]
         public void ShouldRegisterUserIfNonExistingEmailAddress()
         {
@@ -652,15 +651,20 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             CompanyName = "Company Name";
             CompanyPassword = fakeCompany.CompanyPassword;
 
+            securityquestion question = new securityquestion();
+            question.SecurityQuestionId = 1;
+            CurrentSecurityQuestion = question;
+            SecurityAnswer = "answer";
+
             long id = 1;
             #endregion 
 
             serviceClient.Setup(s => s.GetExistingUsersAsync()).Returns(Task.FromResult(listOfUsers.ToArray()));
             serviceClient.Setup(s => s.SaveUserAsync(It.IsAny<user>())).Returns(Task.FromResult(id));
-            serviceClient.Setup(s => s.saveCompanyAsync(It.IsAny<companydetail>())).Verifiable();
-            serviceClient.Setup(s => s.SaveUserRoleAsync(It.IsAny<userrole>())).Verifiable();
+            serviceClient.Setup(s => s.saveCompanyAsync(It.IsAny<companydetail>())).Returns(Task.FromResult(""));
+            serviceClient.Setup(s => s.SaveUserRoleAsync(It.IsAny<userrole>())).Returns(Task.FromResult(""));
             serviceClient.Setup(s => s.getExistingCompaniesAsync()).Returns(Task.FromResult(listOfCompanies.ToArray()));
-            serviceClient.Setup(s => s.SaveUserSecurityQuestionAsync(It.IsAny<usersecurityquestion>())).Verifiable();
+            serviceClient.Setup(s => s.SaveUserSecurityQuestionAsync(It.IsAny<usersecurityquestion>())).Returns(Task.FromResult(""));
             
             viewModel.ExecuteRegisterUserCommand();
 

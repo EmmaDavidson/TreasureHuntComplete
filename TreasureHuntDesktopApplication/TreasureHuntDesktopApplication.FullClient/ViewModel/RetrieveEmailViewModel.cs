@@ -99,19 +99,19 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         /// Method that attempts to check if the email address supplied on screen exists in the database and is associated with
         /// an administrative user. 
         /// </summary>
-        private void ExecuteCheckEmailAddressCommand()
+        public async void ExecuteCheckEmailAddressCommand()
          {
              if (connectionChecker.IsInternetConnected())
              {
                  PopupDisplayed = true;
                  
                  //Grab the user associated with the given email address
-                 user emailUser = this.serviceClient.GetUser(EmailAddress);
+                 user emailUser = await this.serviceClient.GetUserAsync(EmailAddress);
 
                  if (emailUser != null)
                  {
                      //If the user exists, then check to see if it is an administrative type user. 
-                     userrole emailUserRole = this.serviceClient.GetUserRole(emailUser);
+                     userrole emailUserRole = await this.serviceClient.GetUserRoleAsync(emailUser);
 
                      if (emailUserRole.RoleId == 2)
                      {

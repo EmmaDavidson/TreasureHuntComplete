@@ -186,7 +186,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         /// <summary>
         /// Method that attempts to reset the administrator's password with the new password submitted on screen.
         /// </summary>
-        private async void ExecutePasswordResetCommand()
+        public async void ExecutePasswordResetCommand()
         {
             if (connectionChecker.IsInternetConnected())
             {
@@ -305,7 +305,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 return "Password cannot be empty!";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
-            if (!Validation.IsValidCharacters(NewPassword))
+            if (!Validation.IsValidPasswordCharacters(NewPassword))
             {
                 return "There are invalid characters";
             }
