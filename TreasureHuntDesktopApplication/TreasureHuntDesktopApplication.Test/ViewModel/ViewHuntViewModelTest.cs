@@ -117,7 +117,7 @@ namespace TreasureHuntDesktopApplication.Test
             Assert.False(viewModel.SaveQuestionCommand.CanExecute(""));
         }
 
-      [Test]
+        [Test]
         public void NewQuestionInvalidWhenWhitespace()
         {
             String WhitespaceNewQuestion = String.Empty;
@@ -135,10 +135,10 @@ namespace TreasureHuntDesktopApplication.Test
             Assert.False(viewModel.SaveQuestionCommand.CanExecute(""));
         }
 
-        //Test for max length ommited as length too long to check
+
         #endregion
 
-        #region Service Call Tests
+        #region Command tests
 
         [Test] 
         public void ShouldRefreshQuestions()

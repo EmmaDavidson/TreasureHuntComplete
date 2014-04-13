@@ -37,6 +37,7 @@
     <string name="error_password_invalid_length">Length must be between 6 and 10 characters</string>
     <string name="error_name_invalid_length">Length must be between 3 and 30 characters</string>
     <string name="error_email_invalid_length">Length must be between 10 and 30 characters</string>
+    <string name="error_invalid_characters">Some characters are invalid.</string>
     
     <!--  Scan QR Code Activity Strings -->
     <string name="result">Result</string>

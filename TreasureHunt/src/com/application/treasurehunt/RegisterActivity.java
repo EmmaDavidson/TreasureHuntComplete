@@ -185,7 +185,7 @@ public class RegisterActivity extends Activity {
 	
 	/* Method to check if the email address entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidEmailAddress() {	
-		
+		mEmail = mEmailView.getText().toString();
 		if (mValidationHelper.isEmpty(mEmail)) {
 			mEmailView.setError(getString(R.string.error_email_null));
 			return false;
@@ -204,8 +204,8 @@ public class RegisterActivity extends Activity {
 	}
 	
 	/* Method to check if the security question answer entered on screen conforms with the validation rules for this field.*/
-	private boolean isValidAnswer() {
-		
+	public boolean isValidAnswer() {
+		mAnswer = mAnswerView.getText().toString();
 		if (mValidationHelper.isEmpty(mAnswer)) {
 			mAnswerView.setError(getString(R.string.error_answer_null));
 			return false;
@@ -214,12 +214,16 @@ public class RegisterActivity extends Activity {
 			mAnswerView.setError(getString(R.string.error_answer_invalid_length));	
 			return false;
 		}
+		else if(!mValidationHelper.isValidPassword(mAnswer)) {
+			mAnswerView.setError(getString(R.string.error_invalid_characters));	
+			return false;
+		}
 		return true;
 	}
 	
 	/* Method to check if the password entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidPassword() {
-		
+		mPassword = mPasswordView.getText().toString();
 		if (mValidationHelper.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_password_null));
 			return false;
@@ -229,13 +233,17 @@ public class RegisterActivity extends Activity {
 			mPasswordView.setError(getString(R.string.error_password_invalid_length));	
 			return false;
 		}
+		else if(!mValidationHelper.isValidPassword(mPassword)) {
+			mPasswordView.setError(getString(R.string.error_invalid_characters));	
+			return false;
+		}
 		
 		return true;
 	}
 	
 	/* Method to check if the name entered on screen conforms with the validation rules for this field.*/
 	private boolean isValidName() {
-		
+		mName = mNameView.getText().toString();
 		if (mValidationHelper.isEmpty(mName)) {
 			mNameView.setError(getString(R.string.error_name_null));
 			return false;
@@ -243,6 +251,10 @@ public class RegisterActivity extends Activity {
 		}
 		else if(!mValidationHelper.isValidLength(mName, mMinNameLength, mMaxNameLength)) {
 			mNameView.setError(getString(R.string.error_name_invalid_length));	
+			return false;
+		}
+		else if(!mValidationHelper.isValidCharacters(mName)) {
+			mNameView.setError(getString(R.string.error_invalid_characters));	
 			return false;
 		}
 		return true;	
@@ -289,7 +301,7 @@ public class RegisterActivity extends Activity {
 		/* Method calling the database to save the details submitted on screen. It will also save the user role of this 
 		 * participant as a role of the same name.*/
 		@Override
-		protected String doInBackground(String... args) {
+		public String doInBackground(String... args) {
 			//http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/
 			
 			int success;

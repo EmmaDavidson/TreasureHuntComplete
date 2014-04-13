@@ -124,13 +124,13 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
             newUserRole.RoleId = 1;
             newUserRole.UserId = 1;
 
-            serviceClient.Setup(s => s.GetUser(EmailAddress)).Returns(loginUser);
-            serviceClient.Setup(s => s.GetUserRole(loginUser)).Returns(newUserRole);
+            serviceClient.Setup(s => s.GetUserAsync(It.IsAny<String>())).Returns(Task.FromResult(loginUser));
+            serviceClient.Setup(s => s.GetUserRoleAsync(loginUser)).Returns(Task.FromResult(newUserRole));
 
             viewModel.ExecuteLoginUserCommand();
 
-            serviceClient.Verify(s => s.GetUser(EmailAddress), Times.Exactly(1));
-            serviceClient.Verify(s => s.GetUserRole(loginUser), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserAsync(It.IsAny<String>()), Times.Exactly(1));
+            serviceClient.Verify(s => s.GetUserRoleAsync(It.IsAny<user>()), Times.Exactly(1));
         }
 
         [Test]

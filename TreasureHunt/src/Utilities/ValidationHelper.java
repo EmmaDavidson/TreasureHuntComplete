@@ -56,5 +56,24 @@ public class ValidationHelper {
 		}
 		return true;
 	}
-
+	
+	//http://stackoverflow.com/questions/11241690/regex-for-checking-if-a-string-is-strictly-alphanumeric
+		public boolean isValidCharacters(String stringOne) {
+			String regex = "^[a-zA-Z]*$";
+			if(!stringOne.matches(regex)) {
+				return false;
+			}
+			return true;
+		}
+	
+	//http://stackoverflow.com/questions/11241690/regex-for-checking-if-a-string-is-strictly-alphanumeric
+	public boolean isValidPassword(String stringOne) {
+		String regex = "^[a-zA-Z0-9]*$";
+		if(!stringOne.matches(regex)) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 }

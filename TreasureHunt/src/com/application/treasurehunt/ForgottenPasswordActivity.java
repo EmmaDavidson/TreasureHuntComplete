@@ -171,7 +171,7 @@ public class ForgottenPasswordActivity extends Activity {
 		else if(!mValidationHelper.isStringMatching(mSecurityAnswerText.getText().toString(), mSecurityAnswer)) {				
 			mSecurityAnswerText.setError(getString(R.string.error_invalid_answer));
 			return false;
-			}
+		}
 		return true;
 	}
 	
@@ -185,6 +185,10 @@ public class ForgottenPasswordActivity extends Activity {
 		}
 		else if(!mValidationHelper.isValidLength(mNewPasswordText.getText().toString(), mMinPasswordLength, mMaxPasswordLength)) {
 			mNewPasswordText.setError(getString(R.string.error_password_invalid_length));	
+			return false;
+		}
+		else if(!mValidationHelper.isValidPassword(mNewPasswordText.getText().toString())) {				
+			mNewPasswordText.setError(getString(R.string.error_invalid_characters));
 			return false;
 		}
 		

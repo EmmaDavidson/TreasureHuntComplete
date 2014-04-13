@@ -109,7 +109,7 @@ namespace TreasureHuntDesktopApplication.Test.ViewModel
         }
         #endregion
 
-        #region RefreshingDataTests/ServiceCalls
+        #region Command tests
 
         [Test]
         public void ShouldReturnAllTreasureHuntsFromDatabaseForAParticularUser()

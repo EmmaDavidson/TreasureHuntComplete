@@ -115,13 +115,14 @@ public class LoginActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		
+		setContentView(R.layout.activity_login);
+		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			ActionBar actionBar = getActionBar();
 			actionBar.setTitle("Treasure Hunt");
 			actionBar.setSubtitle("Login");
 		}
 
-		setContentView(R.layout.activity_login);
 		mEmailView = (EditText) findViewById(R.id.login_email_address);
 		mPasswordView = (EditText) findViewById(R.id.login_password);
 		mForgotPasswordButton = (Button) findViewById(R.id.forgotten_password_button);
