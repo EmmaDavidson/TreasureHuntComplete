@@ -216,7 +216,7 @@ public class ChooseHuntActivity extends Activity {
 				}
 			}
 			
-			, 10000);
+			, 20000);
 			try {
 				mReturnHuntsTask.get();
 			} catch (InterruptedException e) {

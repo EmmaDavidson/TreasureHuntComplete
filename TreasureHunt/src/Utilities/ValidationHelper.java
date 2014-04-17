@@ -59,7 +59,7 @@ public class ValidationHelper {
 	
 	//http://stackoverflow.com/questions/11241690/regex-for-checking-if-a-string-is-strictly-alphanumeric
 		public boolean isValidCharacters(String stringOne) {
-			String regex = "^[a-zA-Z]*$";
+			String regex = "^[a-zA-Z ]*$";
 			if(!stringOne.matches(regex)) {
 				return false;
 			}

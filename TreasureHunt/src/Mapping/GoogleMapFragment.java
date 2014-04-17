@@ -91,15 +91,9 @@ public class GoogleMapFragment extends SupportMapFragment implements LoaderCallb
 		//http://www.mkyong.com/java/how-do-loop-iterate-a-list-in-java/
 
 		for(int i = 0 ; i < locationsForMarkers.size(); i++) {
-			MarkerOptions marker = new MarkerOptions().position(new LatLng(locationsForMarkers.get(i).getLatitude(), locationsForMarkers.get(i).getLongitude()));
-			marker.title(i + 1 + "");
 			
-			if(i == 0) {//i.e. the starting point
-				marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-			}
-			else {
-				marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-			}
+			MarkerOptions marker = new MarkerOptions().position(new LatLng(locationsForMarkers.get(i).getLatitude(), locationsForMarkers.get(i).getLongitude()));
+			marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
 			mGoogleMap.addMarker(marker);
 		}
 	}

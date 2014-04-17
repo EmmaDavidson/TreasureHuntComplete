@@ -36,7 +36,7 @@
         <activity
             android:name="com.application.treasurehunt.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,7 +49,8 @@
         </activity>
         <activity
             android:name="com.application.treasurehunt.RegisterActivity"
-            android:label="@string/register_header" >
+            android:label="@string/register_header"
+            android:windowSoftInputMode="adjustResize|stateVisible"  >
         </activity>
         <activity
             android:name="com.application.treasurehunt.ScanQRCodeActivity"

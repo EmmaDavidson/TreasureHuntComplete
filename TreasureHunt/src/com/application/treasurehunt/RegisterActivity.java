@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -145,6 +147,33 @@ public class RegisterActivity extends Activity {
 		mPasswordView.setText(savedInstanceState.getString("REGISTER_PASSWORD"));	
 	}
 	
+	/* Methods to set up the on screen menu. */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		//http://mobileorchard.com/android-app-development-menus-part-1-options-menu/
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.login, menu);
+		menu.add(Menu.NONE, 1, Menu.NONE, "Login");
+		return true;
+	} 
+		
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)	{
+		
+		switch(item.getItemId()) {
+			case 1: {
+					
+				Intent homepageActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+				startActivity(homepageActivityIntent);
+				
+				return true;
+			}
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
+	
 	/* Method to call the asynchronous class 'UserRegisterTask'. If call to the database takes too long then a timeout should occur.*/
 	private void attemptRegister() {
 		
@@ -179,7 +208,7 @@ public class RegisterActivity extends Activity {
 					}
 				}
 			}
-			, 10000);
+			, 20000);
 		}
 	}
 	
@@ -262,11 +291,11 @@ public class RegisterActivity extends Activity {
 	
 	/* Method to show dialog on screen if participant registration fails. 
 	 * Associated with UserRegisterTask OnPostExecute() method.*/
-	public void showFailedRegistrationMessage() {
+	public void showFailedRegistrationMessage(String fileUrl) {
 		
 		Builder alertForFailedRegistration = new Builder(RegisterActivity.this);
 		alertForFailedRegistration.setTitle("Register");
-		alertForFailedRegistration.setMessage("Could not register with the details provided. Please try again.");
+		alertForFailedRegistration.setMessage(fileUrl);
 		alertForFailedRegistration.setCancelable(false);
 		alertForFailedRegistration.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 			
@@ -278,6 +307,7 @@ public class RegisterActivity extends Activity {
 		
 		alertForFailedRegistration.create();
 		alertForFailedRegistration.show();
+		mEmailView.setText("");
 		
 		Log.w("Register", "Failure to register user.");
 	}
@@ -345,7 +375,7 @@ public class RegisterActivity extends Activity {
 		 * then they are notified and taken to the login screen; else, the participant is notified of an error on screen.*/
 		@Override
 		protected void onPostExecute(final String fileUrl) {
-			
+			mRegisterDialog.cancel();
 			mRegisterTask = null;
 			
 			if(mUserSucessfullyRegistered) {
@@ -370,7 +400,7 @@ public class RegisterActivity extends Activity {
 				mAlertForFailedStartTimeSave.show();		
 			}
 			else {
-				showFailedRegistrationMessage();
+				showFailedRegistrationMessage(fileUrl);
 			}
 		}
 

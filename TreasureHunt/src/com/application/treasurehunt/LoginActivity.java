@@ -222,8 +222,11 @@ public class LoginActivity extends Activity {
 						}
 					}
 				}	
-				, 100000);
-			}	
+				, 20000);
+			}
+			else {
+				mLoginDialog.cancel();
+			}
 	}
 
 	/* Method to call the asynchronous class 'VerifyEmailTask'. If call to the database takes too long then a timeout should occur.*/

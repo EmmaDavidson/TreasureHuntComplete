@@ -263,7 +263,7 @@ public class ScanQRCodeActivity extends Activity {
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 	
 	/* Method to check whether location services are turned on for a device. If turned off then

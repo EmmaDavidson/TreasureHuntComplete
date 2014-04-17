@@ -220,7 +220,7 @@ public class MyHuntsActivity extends Activity {
 				}
 			}
 		}
-		, 60000);
+		, 20000);
 	}
 	
 	/* Method to call the asynchronous class 'GetParticipantIdTask'. If call to the database takes too long then a timeout should occur.*/
@@ -246,7 +246,7 @@ public class MyHuntsActivity extends Activity {
 				}
 			}
 		}
-		, 60000);	
+		, 20000);	
 	}
 
 	/* Method that will display the refreshed list of treasure hunts on screen. It will also handle what happens when the participant 
@@ -452,7 +452,7 @@ public class MyHuntsActivity extends Activity {
 					List<String> huntOptions = new ArrayList<String>();
 					huntOptions.add("Continue");
 					huntOptions.add("Leaderboard");
-					huntOptions.add("Map list");
+					huntOptions.add("Map");
 					
 					listDataChild.put(listDataHeader.get(i), huntOptions);		
 				}

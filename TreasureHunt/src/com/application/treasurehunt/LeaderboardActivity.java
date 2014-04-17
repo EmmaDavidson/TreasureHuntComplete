@@ -232,7 +232,7 @@ public class LeaderboardActivity extends Activity {
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 	
 	/* Method to show a dialog if no leader board data could be returned from the database. 

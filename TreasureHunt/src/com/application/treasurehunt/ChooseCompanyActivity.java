@@ -242,7 +242,7 @@ public class ChooseCompanyActivity extends Activity {
 			}
 		}
 			
-		, 10000);
+		, 20000);
 		
 		try {
 			mCompaniesTask.get();

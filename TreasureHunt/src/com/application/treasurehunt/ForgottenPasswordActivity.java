@@ -158,7 +158,7 @@ public class ForgottenPasswordActivity extends Activity {
 				}
 			}
 		}
-		, 10000);		
+		, 20000);		
 	}
 	
 	/* Method that handles submission of a participant's security question in comparison to their answer stored in the database.

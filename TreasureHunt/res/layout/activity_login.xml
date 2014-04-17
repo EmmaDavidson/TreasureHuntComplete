@@ -25,6 +25,19 @@
 	
 	    android:isScrollContainer="true">
 
+	    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="358dp"
+            android:orientation="vertical" >
 	<Button 
 	    android:background="#0099CC"
 		android:textColor="#FFFFFF"
@@ -95,5 +108,8 @@
 	    android:text="@string/register_now_label" />
 
 	</RelativeLayout>
+	</ScrollView>
+	</RelativeLayout>
+	
 
 </RelativeLayout>

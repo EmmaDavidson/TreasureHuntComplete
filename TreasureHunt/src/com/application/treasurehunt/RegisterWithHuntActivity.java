@@ -118,6 +118,8 @@ public class RegisterWithHuntActivity extends Activity {
 	private boolean mHuntAlreadyFinished = false;
 	private boolean mStartTimeSaved = false;
 	
+	private String mConnectionTimeout = "Connection timeout. Please try again.";
+	
 	private SharedPreferences.Editor mEditor;
 	private SharedPreferences mSettings;
 	
@@ -282,12 +284,12 @@ public class RegisterWithHuntActivity extends Activity {
 					if(mUserRegisteredTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mUserRegisteredTask.cancel(true);
 						mCheckStatusDialog.cancel();
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+						Toast.makeText(RegisterWithHuntActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
 					}
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 
 	/* Method to call the asynchronous class 'CheckIfHuntStartedTask'. If call to the database takes too long then a timeout should occur.*/
@@ -307,13 +309,13 @@ public class RegisterWithHuntActivity extends Activity {
 					if(mHuntStartedTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mHuntStartedTask.cancel(true);
 						mPreparationDialog.cancel();
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+						Toast.makeText(RegisterWithHuntActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
 						//mRefreshButton.setVisibility(Button.VISIBLE);
 					}
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 	
 	/* Method to call the asynchronous class 'UserRegisterWithHuntTask'. If call to the database takes too long then a timeout should occur.*/
@@ -334,12 +336,12 @@ public class RegisterWithHuntActivity extends Activity {
 						if(mRegisterWithHuntTask.getStatus() == AsyncTask.Status.RUNNING) {
 							mRegisterWithHuntTask.cancel(true);
 							mRegisterDialog.cancel();
-							Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+							Toast.makeText(RegisterWithHuntActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
 						}
 					}
 				}
 			}
-			, 100000);				
+			, 20000);				
 	}
 	
 	/* Method to call the asynchronous class 'GetParticipantIdTask'. If call to the database takes too long then a timeout should occur.*/
@@ -359,12 +361,12 @@ public class RegisterWithHuntActivity extends Activity {
 					if(mGetHuntParticipantIdTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mSavingStartTimeDialog.cancel();
 						mGetHuntParticipantIdTask.cancel(true);
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();	
+						Toast.makeText(RegisterWithHuntActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();	
 					}
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 	
 	/* Method to call the asynchronous class 'SaveStartTimeTask'. If call to the database takes too long then a timeout should occur.*/
@@ -383,12 +385,12 @@ public class RegisterWithHuntActivity extends Activity {
 					if(mSaveStartTimeTask.getStatus() == AsyncTask.Status.RUNNING) {
 						mSaveStartTimeTask.cancel(true);
 						mSavingStartTimeDialog.cancel();
-						Toast.makeText(RegisterWithHuntActivity.this, "Connection timeout. Please try again.", Toast.LENGTH_LONG).show();
+						Toast.makeText(RegisterWithHuntActivity.this, mConnectionTimeout, Toast.LENGTH_LONG).show();
 					}
 				}
 			}
 		}
-		, 10000);	
+		, 20000);	
 	}
 	
 	/* Method that retrieves the data sent by the previous Activity and assigns it to the relevant variables. */
