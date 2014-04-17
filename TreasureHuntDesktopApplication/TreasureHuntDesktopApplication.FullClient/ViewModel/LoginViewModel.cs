@@ -267,12 +267,12 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(EmailAddress))
             {
-                return "Email address cannot be empty!";
+                return "Email address cannot be empty.";
             }
             //-http://stackoverflow.com/questions/5342375/c-sharp-regex-email-validation
             if (!Validation.IsValidEmail(EmailAddress))
             {
-                return "Email is in an invalid format";
+                return "Email address must be in a valid email format.";
             }
 
             return null;
@@ -286,7 +286,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(Password))
             {
-                return "Password cannot be empty!";
+                return "Password cannot be empty.";
             }
             return null;
         }

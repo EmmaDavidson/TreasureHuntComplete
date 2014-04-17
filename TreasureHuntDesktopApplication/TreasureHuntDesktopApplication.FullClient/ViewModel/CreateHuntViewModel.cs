@@ -131,7 +131,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             get
             {
-                return 100;
+                return 30;
             }
         }
 
@@ -356,15 +356,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(HuntName))
             {
-                return "Hunt name cannot be empty!";
+                return "Hunt Name cannot be empty.";
             }
             if (!Validation.IsValidCharacters(HuntName))
             {
-                return "There are invalid characters";
+                return "Hunt Name must be made up on alphabetic characters only.";
             }
             if (!Validation.IsValidLength(HuntName, HuntNameMaxLength, HuntNameMinLength))
             {
-                return "Hunt name is an invalid length!";
+                return "Hunt Name must be between 5 and 30 characters.";
             }          
             return null;
         }
@@ -377,11 +377,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(Description))
             {
-                return "This field cannot be empty!";
+                return "Hunt Description cannot be empty.";
             }
             if (!Validation.IsValidLength(Description, DescriptionMaxLength, DescriptionMinLength))
             {
-                return "Description is an invalid length!";
+                return "Hunt Description must be between 10 and 1000 characters.";
             }
             return null;
         }

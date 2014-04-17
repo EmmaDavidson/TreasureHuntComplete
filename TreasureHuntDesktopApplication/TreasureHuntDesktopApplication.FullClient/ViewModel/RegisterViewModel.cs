@@ -144,7 +144,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
          {
              get
              {
-                 return 4;
+                 return 3;
 
              }
          }
@@ -550,16 +550,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(Name))
             {
-                return "Name cannot be empty!";
+                return "Name cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(Name))
             {
-                return "There are invalid characters";
+                return "Name must be made up of only alphabetic characters.";
             }
             if (!Validation.IsValidLength(Name, NameMaxLength, NameMinLength))
             {
-                return "Name is an invalid length!";
+                return "Name must be between 3 and 30 characters.";
             }
 
             return null;
@@ -573,16 +573,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(EmailAddress))
             {
-                return "Email address cannot be empty!";
+                return "Email address cannot be empty.";
             }
             //-http://stackoverflow.com/questions/5342375/c-sharp-regex-email-validation
             if (!Validation.IsValidEmail(EmailAddress))
             {
-                return "Email address is in an invalid format";
+                return "Email address must be in a valid email format.";
             }
             if (!Validation.IsValidLength(EmailAddress, EmailMaxLength, EmailMinLength))
             {
-                return "Email Address is an invalid length!";
+                return "Email Address must be between 10 and 30 characters.";
             }
 
             return null;
@@ -596,16 +596,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(Password))
             {
-                return "Password cannot be empty!";
+                return "Password cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidPasswordCharacters(Password))
             {
-                return "There are invalid characters";
+                return "Password must be made up of only alphanumeric characters.";
             }
             if (!Validation.IsValidLength(Password, PasswordMaxLength, PasswordMinLength))
             {
-                return "Password is an invalid length!";
+                return "Password must be between 6 and 20 characters.";
             }
 
             return null;
@@ -619,16 +619,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(CompanyName))
             {
-                return "Company Name cannot be empty!";
+                return "Company Name cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(CompanyName))
             {
-                return "There are invalid characters";
+                return "Company Name must be made up of only alphabetic characters.";
             }
             if (!Validation.IsValidLength(CompanyName, CompanyNameMaxLength, CompanyNameMinLength))
             {
-                return "Company Name is an invalid length!";
+                return "Company Name must be between 4 and 30 characters.";
             }
 
             return null;
@@ -642,16 +642,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(CompanyPassword))
             {
-                return "Password cannot be empty!";
+                return "Company Password cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidPasswordCharacters(CompanyPassword))
             {
-                return "There are invalid characters";
+                return "Company password must be made up of only alphanumeric characters.";
             }
             if (!Validation.IsValidLength(CompanyPassword, PasswordMaxLength, PasswordMinLength))
             {
-                return "Password is an invalid length!";
+                return "Company Password must be between 6 and 20 characters.";
             }
 
             return null;
@@ -665,16 +665,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(SecurityAnswer))
             {
-                return "Answer cannot be empty!";
+                return "Answer cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(SecurityAnswer))
             {
-                return "There are invalid characters";
+                return "Answer must be made up of alphabetic characters only.";
             }
             if (!Validation.IsValidLength(SecurityAnswer, SecurityAnswerMaxLength, SecurityAnswerMinLength))
             {
-                return "Answer is an invalid length!";
+                return "Answer must be between 3 and 30 characters.";
             }
 
             return null;   

@@ -483,16 +483,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(NewQuestion))
             {
-                return "Question cannot be empty!";
+                return "Question cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(NewQuestion))
             {
-                return "There are invalid characters";
+                return "Question must be made up of only alphabetic characters.";
             }
             if (!Validation.IsValidLength(NewQuestion, NewQuestionMaxLength, NewQuestionMinLength))
             {
-                return "Question is an invalid length!";
+                return "Question must be between 10 and 150 characters.";
             }
             if (CurrentTreasureHunt.EndDate < DateTime.Today)
             {

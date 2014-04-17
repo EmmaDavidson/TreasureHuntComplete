@@ -93,7 +93,7 @@ namespace TreasureHuntDesktopApplication.DataService
             using (var context = new TreasureHuntEntities())
             {
                 if (currentTreasureHunt == null) return null;
-                var returnedHuntParticipants = context.huntparticipants.Where(c => c.HuntId == currentTreasureHunt.HuntId).OrderByDescending(c => c.ElapsedTime).ThenByDescending(s => s.Tally).ToList();
+                var returnedHuntParticipants = context.huntparticipants.Where(c => c.HuntId == currentTreasureHunt.HuntId).OrderByDescending(s => s.Tally).ThenBy(s => s.ElapsedTime).ToList();
                 returnedHuntParticipants.ForEach(e => context.ObjectStateManager.ChangeObjectState(e, System.Data.EntityState.Detached));
                 return returnedHuntParticipants;
             }

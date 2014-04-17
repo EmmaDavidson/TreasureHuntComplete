@@ -31,9 +31,13 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         #region Fields
         #region General global variables
+       
         private ITreasureHuntService serviceClient;
         public RelayCommand BackCommand { get; private set; }
         public RelayCommand RefreshCommand { get; private set; }
+
+        private InternetConnectionChecker connectionChecker;
+
         #endregion
 
         #region Binding variables
@@ -94,6 +98,8 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
              );
 
+            connectionChecker = InternetConnectionChecker.GetInstance();
+
             RefreshLeaderboard();
         }
         #endregion
@@ -126,9 +132,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         public async void RefreshLeaderboard()
         {
             PopupDisplayed = true;
-
+            
+            if (connectionChecker.IsInternetConnected())
+            {
                 if (this.currentTreasureHunt != null)
-                { 
+                {
                     var results = new ObservableCollection<Participant>();
 
                     //Grab a list of all of the participants in this treasure hunt.
@@ -146,12 +154,18 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                                 Participant newParticipant = new Participant(currentUser.Name, participants.Current.Tally, participants.Current.ElapsedTime);
                                 results.Add(newParticipant);
                             }
-                            results.OrderBy(i => i.Tally);
+                            results.OrderBy(i => i.ElapsedTime);
                             LeaderboardResults = results;
                         }
                     }
                 }
-                PopupDisplayed = false;          
+            }
+            else
+            {
+                MessageBoxResult messageBox = MessageBox.Show(connectionChecker.ShowConnectionErrorMessage());
+            }
+           
+            PopupDisplayed = false;          
         }
         #endregion
     }

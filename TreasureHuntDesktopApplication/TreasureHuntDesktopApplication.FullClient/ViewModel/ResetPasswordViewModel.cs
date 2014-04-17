@@ -282,13 +282,13 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(UserSubmittedAnswer))
             {
-                return "Hunt name cannot be empty!";
+                return "Answer cannot be empty.";
             }
             //Check to see whether or not the answer submitted on screen matches the answer saved in the database 
             //for the given administrator. 
             if (!UserSubmittedAnswer.Equals(SecurityAnswer.Answer))
             {
-                return "This is not the correct answer to your security question.";
+                return "This is not the correct answer to the security question above.";
             }
             
             return null;
@@ -302,16 +302,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(NewPassword))
             {
-                return "Password cannot be empty!";
+                return "Password cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidPasswordCharacters(NewPassword))
             {
-                return "There are invalid characters";
+                return "Password must be made up of only alphabetic characters,";
             }
             if (!Validation.IsValidLength(NewPassword, PasswordMaxLength, PasswordMinLength))
             {
-                return "Password is an invalid length!";
+                return "Password must be between 6 and 20 characters.";
             }
 
             return null;

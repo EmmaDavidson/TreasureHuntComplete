@@ -205,11 +205,11 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
          {
              if (Validation.IsNullOrEmpty(EmailAddress))
              {
-                 return "Email address cannot be empty";
+                 return "Email address cannot be empty.";
              }
              if (!Validation.IsValidEmail(EmailAddress))
              {
-                 return "Email address format is invalid";
+                 return "Email address is not in a valid email format.";
              }
              return null;
          }
