@@ -388,7 +388,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
 
         private String ValidateEndDate()
         {
-            if (EndDate.Value < DateTime.Today)
+            if (EndDate.Value <= DateTime.Today)
             {
                 return "End date must not be before today's date";
             }

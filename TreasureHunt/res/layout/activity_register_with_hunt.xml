@@ -12,12 +12,12 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#99CC00"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".RegisterWithHuntActivity"
-    android:background="#99CC00" >
+    tools:context=".RegisterWithHuntActivity" >
 
     <TextView
         android:id="@+id/hunt_name_label"
@@ -25,17 +25,16 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFFFF"
-        android:textSize="30sp"  />
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/start_treasure_hunt_button"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="#0099CC"
-        android:text="@string/play"
-         />
+        android:text="@string/play" />
 
     <ProgressBar
         android:id="@+id/hunt_description_progress_bar"
@@ -46,27 +45,31 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="42dp" />
 
+    <Button
+        android:id="@+id/register_hunt_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/start_treasure_hunt_button"
+        android:layout_alignLeft="@+id/start_treasure_hunt_button"
+        android:layout_marginBottom="17dp"
+        android:background="#0099CC"
+        android:text="@string/register" />
+
     <TextView
         android:id="@+id/hunt_description_box"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_alignParentRight="true"
+        android:layout_above="@+id/register_hunt_button"
+        android:layout_alignLeft="@+id/register_hunt_button"
         android:layout_below="@+id/hunt_name_label"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/scan_question_result"
+        android:maxLines="100"
         android:scrollbars="vertical"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/register_hunt_button"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:background="#0099CC"
-        android:layout_alignLeft="@+id/hunt_description_box"
-        android:layout_below="@+id/hunt_description_box"
-        android:text="@string/register"
-        />
+        android:textSize="20sp"
+        android:textIsSelectable="true" />
 
 </RelativeLayout>
+
 </RelativeLayout>

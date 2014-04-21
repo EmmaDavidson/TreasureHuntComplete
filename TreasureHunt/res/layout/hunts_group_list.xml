@@ -17,11 +17,12 @@
 
     <TextView
         android:id="@+id/hunts_list_header_label"
-        android:layout_width="194dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageView1"
         android:text="@string/temp"
-        android:textSize="21sp" />
+        android:textSize="21sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

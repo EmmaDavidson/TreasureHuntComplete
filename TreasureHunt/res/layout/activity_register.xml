@@ -41,7 +41,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/prompt_name"
-        android:inputType="text"
+        android:inputType="textCapWords"
         android:maxLines="1"
         android:singleLine="true" />
 
@@ -81,21 +81,19 @@
         android:id="@+id/security_question_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/security_question_spinner"
-        android:layout_centerVertical="true"
-        android:inputType="textPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/security_question_spinner"
         android:ems="10"
-        android:hint="@string/security_answer" >
-
-        <requestFocus />
-    </EditText>
+        android:hint="@string/security_answer"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/register_save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/security_question_answer"
+        android:layout_marginTop="17dp"
         android:background="#0099CC"
         android:text="@string/save" />
     

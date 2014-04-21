@@ -9,7 +9,6 @@
 	    android:layout_marginRight="15dp"
 	    xmlns:tools="http://schemas.android.com/tools" >
 
-
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,12 +18,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".HomepageActivity"  >
+    tools:context=".HomepageActivity" >
 
     <Button
         android:id="@+id/my_hunts_button"
         android:layout_width="wrap_content"
-        android:layout_height="175dp"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
@@ -45,13 +44,14 @@
     <Button
         android:id="@+id/browse_hunts_button"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/my_hunts_button"
         android:layout_alignLeft="@+id/my_hunts_button"
-        android:layout_below="@+id/homepage_username"
-        android:layout_marginTop="17dp"
+        android:layout_marginBottom="23dp"
         android:background="#0099CC"
         android:text="@string/browse_hunts"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>
+
 </RelativeLayout>
