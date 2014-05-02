@@ -1,3 +1,7 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
+
 package Utilities;
 
 import java.util.List;

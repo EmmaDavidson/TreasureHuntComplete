@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package sqlLiteDatabase;
 
 import Mapping.MapManager;
@@ -10,7 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/* This singleton class handles the interaction between the application and SQLite (local) database for the Company table.*/
+/* This singleton class handles the interaction between the application and SQLite (local) 
+ * database for the Company table.*/
 
 public class CompanyDAO {
 

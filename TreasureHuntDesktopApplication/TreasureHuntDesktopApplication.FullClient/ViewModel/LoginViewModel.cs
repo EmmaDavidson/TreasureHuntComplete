@@ -15,6 +15,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -126,7 +129,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 if (user == null)
                 {
                     PopupDisplayed = false;
-                    MessageBoxResult messageBox = MessageBox.Show("User does not exist", "Invalid details");
+                    MessageBoxResult messageBox = MessageBox.Show("User does not exist!", "Invalid details");
                     EmailAddress = String.Empty;
                     Password = String.Empty;
                 }
@@ -143,7 +146,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                     else
                     {
                         PopupDisplayed = false;
-                        MessageBoxResult messageBox = MessageBox.Show("You cannot access this application with your email address", "Invalid user for this application");
+                        MessageBoxResult messageBox = MessageBox.Show("The submitted email address is associated with the mobile application. You cannot use this address to log into this application.", "Invalid user for this application");
                         EmailAddress = String.Empty;
                         Password = String.Empty;
                     }

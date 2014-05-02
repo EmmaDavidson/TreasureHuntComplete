@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package Mapping;
 
 import android.app.PendingIntent;
@@ -16,8 +19,9 @@ import java.util.List;
 
 /*Based on the Nerd Ranch Guide RunManager class Page 1338. */
 
-/* The purpose of this class is to handle the behaviour of the Google Map aspect of the application. This class is a Singleton
- * i.e. there should only be one MapManager object created.*/
+/* The purpose of this class is to handle the behaviour of the Google Map aspect of the application. 
+ * This class is a Singleton i.e. there should only be one MapManager object created for the use of the 
+ * entire application. */
 
 public class MapManager {
 	
@@ -60,7 +64,7 @@ public class MapManager {
 		return sMapManager;
 	}
 	
-	/* Method 'creates an Intent to be broadcast when location updates happen.' Page 1339/1341. */
+	/* Method 'creates an Intent to be broadcast when location updates happen.' Based upon Nerd Ranch Guide Page 1339/1341. */
 	private PendingIntent getLocationPendingIntent(boolean shouldCreate) {
 		
 		Intent broadcast = new Intent(ACTION_LOCATION);
@@ -68,7 +72,7 @@ public class MapManager {
 		return PendingIntent.getBroadcast(mAppContext, 0, broadcast, flags);
 	}
 	
-	/* Method that 'you specifically tell LocationManager to give you location updates' Page 1339/1340. */
+	/* Method that 'you specifically tell LocationManager to give you location updates' Nerd Ranch Guide Page 1339/1340. */
 	public void startLocationUpdates() {
 		
 		String provider = LocationManager.GPS_PROVIDER;
@@ -83,14 +87,13 @@ public class MapManager {
 		mLocationManager.requestLocationUpdates(provider, 0, 0, pi);
 	}
 	
-	//???????????????????????????????
 	private void broadcastLocation(Location location) {
 		Intent broadcast = new Intent(ACTION_LOCATION);
 		broadcast.putExtra(LocationManager.KEY_LOCATION_CHANGED, location);
 		mAppContext.sendBroadcast(broadcast);
 	}
 	
-	/* Method to stop location updates from continuing. Page 1339 */
+	/* Method to stop location updates from continuing. Based upon Nerd Ranch Guide Page 1339 */
 	public void stopLocationUpdates() {
 		PendingIntent pi = getLocationPendingIntent(false);
 		if(pi != null) {
@@ -99,14 +102,14 @@ public class MapManager {
 		}
 	}
 	
-	/* Method to call the database and add a new map. Based on Page 1375. */
+	/* Method to call the database and add a new map. Based on Nerd Ranch Guide Page 1375. */
 	public MapData startNewMap(int huntParticipantId) {
 		MapData map = insertMap(huntParticipantId);
 		startTrackingMap(map);
 		return map;
 	}
 	
-	/* Method to track the map for the given HuntParticipantId. Page 1376. */
+	/* Method to track the map for the given HuntParticipantId. Based upon Nerd Ranch Guide Page 1376. */
 	public void startTrackingMap(MapData map) {
 		mHuntParticipantId = map.getParticipantId();
 		mEditor.putInt("userParticipantIdForMap", mHuntParticipantId);
@@ -114,7 +117,7 @@ public class MapManager {
 		startLocationUpdates();
 	}
 	
-	/* Halts the location updates for the current huntParticipantId. Page 1376*/
+	/* Halts the location updates for the current huntParticipantId. Based upon Nerd Ranch Guide Page 1376*/
 	public void stopMap() {
 		stopLocationUpdates();
 		mHuntParticipantId = -1;
@@ -122,7 +125,8 @@ public class MapManager {
 		mEditor.commit();
 	}
 	
-	/* Method to physically add new MapData to the SQLite (local) database for the given HuntParticipantId. Page 1376*/
+	/* Method to physically add new MapData to the SQLite (local) database for the given HuntParticipantId.
+	 *  Based upon Nerd Ranch Guide Page 1376*/
 	public MapData insertMap(int huntParticipantId) {
 		MapData map = new MapData();
 		map.setParticipantId(huntParticipantId);
@@ -133,7 +137,7 @@ public class MapManager {
 	
 	/* Method inserting a recorded location into the SQLite (local) database for the given HuntParticipantId. 
 	 * Not currently being used but could be utilised for later expansion.
-	 * Based upon Page 1381.*/
+	 * Based upon Nerd Ranch Guide Page 1381.*/
 	public void insertLocation(Location loc) {	//I added this in
 		mHuntParticipantId = mSettings.getInt("userParticipantIdForMap", -1);
 		
@@ -147,7 +151,7 @@ public class MapManager {
 	}
 	
 	/* Method that will return all of the MapData saved in the SQLite (local) database for the given HuntParticipantId.
-	 * Based on Page 1407. */
+	 * Based upon Nerd Ranch Guide Page 1407. */
 	public MapData getMapData(int huntParticipantId) {
 		MapData map = null;
 		map = mHelper.queryMap(huntParticipantId);
@@ -155,12 +159,13 @@ public class MapManager {
 	}
 	
 	/* Method that will return all of the MapData saved in the SQLite (local) database for the given HuntParticipantId.
-	 * Based on Page 1407. */
+	 * Based upon Nerd Ranch Guide Page 1407. */
 	public boolean isTrackingMap(MapData map) {
 		return map!=null && map.getParticipantId() == mHuntParticipantId;
 	}
 	
-	/* Method retrieves the last location stored for the given map identified by the HuntParticipantId. Based on Page 1414.*/
+	/* Method retrieves the last location stored for the given map identified by the HuntParticipantId. 
+	 * Based upon Nerd Ranch Guide Page 1414.*/
 	public Location getLastLocationForMap(int huntParticipantId) {
 		Location location = mHelper.queryLastLocationForMap(huntParticipantId);
 		return location;
@@ -172,10 +177,8 @@ public class MapManager {
 		return mHelper.queryLocationsForMapAsync(huntParticipantId);
 	}
 	
-	/* Method that will call the map database helper (MapDataDAO) to query a list of locations for a given HuntParticipantId
-	 * and return them. Based on Nerd Ranch Guide Page 1463. */
-	//Shouldn't have to be async as it is unlikely that a hunt would contain hundreds of questions thus hundreds of pins for
-	//each successful scan.
+	/* Method that will call the map database helper (MapDataDAO) to query a list of locations for a
+	 *  given HuntParticipantId and return them. Based on Nerd Ranch Guide Page 1463. */
 	public List<Location> queryLocationsForMarkers(int huntParticipantId) {
 		return mHelper.queryMarkersForMap(huntParticipantId);	
 	}	

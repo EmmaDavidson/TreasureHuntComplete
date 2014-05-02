@@ -15,6 +15,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -201,7 +204,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 else
                 {
                     PopupDisplayed = false;
-                    String messageBoxText = "This hunt already exists in the database.";
+                    String messageBoxText = "This hunt already exists in the database!";
                     String caption = "Hunt Already Exists";
                     MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
                     HuntName = null;
@@ -356,15 +359,15 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(HuntName))
             {
-                return "Hunt Name cannot be empty.";
+                return "Hunt name cannot be empty.";
             }
             if (!Validation.IsValidCharacters(HuntName))
             {
-                return "Hunt Name must be made up on alphabetic characters only.";
+                return "Hunt name must be made up of only alphabetic characters .";
             }
             if (!Validation.IsValidLength(HuntName, HuntNameMaxLength, HuntNameMinLength))
             {
-                return "Hunt Name must be between 5 and 30 characters.";
+                return "Hunt name must be between 5 and 30 characters.";
             }          
             return null;
         }
@@ -390,7 +393,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (EndDate.Value <= DateTime.Today)
             {
-                return "End date must not be before today's date";
+                return "End date must not be before or equal to today's date";
             }
                 
             return null;

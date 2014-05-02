@@ -1,19 +1,6 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
  */
-
 package com.application.treasurehunt;
 
 import android.location.Location;
@@ -61,17 +48,18 @@ import Utilities.PHPHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-//http://mobile.tutsplus.com/tutorials/android/android-sdk-create-a-barcode-reader/ - ZXING
-//https://github.com/DushyanthMaguluru/ZBarScanner for ZBAR - USING THIS CURRENTLY, referencing the source forge project
-//Whole Activity taken from this either of these websites - now with my own added features for timing and saving to the database
+//https://github.com/DushyanthMaguluru/ZBarScanner for ZBAR - 
+//This class references and uses the source forge project. 
 
-/* The purpose of this Activity is to allow a participant to scan a QR Code and view on screen the question that the code
- * represents in order to complete the treasure hunt.
+/* The purpose of this Activity is to allow a participant to scan a QR Code and view on screen the question 
+ * that the code represents in order to complete the treasure hunt.
  * [See Dissertation Section 2.4.2.6]*/
 
-//MIT Licence - http://opensource.org/licenses/MIT
+//For the use of ZBar Scanner - MIT Licence - http://opensource.org/licenses/MIT
 //is released under the MIT Open Source Initiative license (MIT) which is unrestricted usage rights providing
 //the copyright notice and permission notice at the link below should be included in the source code as comments.
+//This copyright notice is found within the Licences Activity and the referenced project itself.
+
 public class ScanQRCodeActivity extends Activity {
 
 	/*
@@ -221,6 +209,7 @@ public class ScanQRCodeActivity extends Activity {
 	/* Method to deal with the result of a scan. If the scan was valid for the given treasure hunt (i.e. the participant
 	 * did not scan a QR code unrelated to this particular treasure hunt) their scan is saved. Else, a dialog appears 
 	 * to inform the participant of an error.*/
+	//https://github.com/dm77/ZBarScanner
 	public void onActivityResult(int requestCode, int resultCode, Intent intent)  {
 		
 		if (resultCode == RESULT_OK)  {	

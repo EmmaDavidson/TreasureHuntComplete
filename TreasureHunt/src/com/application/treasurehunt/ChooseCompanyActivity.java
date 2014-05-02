@@ -1,17 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
  */
 
 package com.application.treasurehunt;
@@ -95,7 +83,6 @@ public class ChooseCompanyActivity extends Activity {
 	/*This Runnable  will periodically update the list of companies available from the database. Will only
 	 * do so as long as the screen is not tilted on its side. */
 	
-	//NOTE TO SELF - SHOULD I JUST ALLOW THE DB CALL ANYWAY TO RUN WHEN THE SCREEN HAS BEEN TILTED?
 	private final Runnable mUpdateCompanyList = new Runnable() {
 		
 		//http://stackoverflow.com/questions/12220239/repeat-task-in-android
@@ -344,7 +331,7 @@ public class ChooseCompanyActivity extends Activity {
 		
 		Builder incorrectPasswordBuilder = new Builder(ChooseCompanyActivity.this);									
 		incorrectPasswordBuilder.setTitle("Incorrect password");
-		incorrectPasswordBuilder.setMessage("You entered the wrong password for this company");
+		incorrectPasswordBuilder.setMessage("You entered the wrong password for this company!");
 		incorrectPasswordBuilder.setCancelable(false);
 		incorrectPasswordBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
 			

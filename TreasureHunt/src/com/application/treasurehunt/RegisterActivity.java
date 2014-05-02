@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package com.application.treasurehunt;
 
 import android.os.AsyncTask;
@@ -73,7 +76,7 @@ public class RegisterActivity extends Activity {
 	private int mMinAnswerLength = 3;
 	private int mMaxAnswerLength = 30;
 	private int mMinPasswordLength = 6;
-	private int mMaxPasswordLength = 10;
+	private int mMaxPasswordLength = 20;
 	private int mMinNameLength = 3;
 	private int mMaxNameLength = 30;
 	
@@ -244,7 +247,7 @@ public class RegisterActivity extends Activity {
 			return false;
 		}
 		else if(!mValidationHelper.isValidPassword(mAnswer)) {
-			mAnswerView.setError(getString(R.string.error_invalid_characters));	
+			mAnswerView.setError(getString(R.string.answer_alphabetical_characters_only));	
 			return false;
 		}
 		return true;
@@ -263,7 +266,7 @@ public class RegisterActivity extends Activity {
 			return false;
 		}
 		else if(!mValidationHelper.isValidPassword(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_invalid_characters));	
+			mPasswordView.setError(getString(R.string.password_alphanumerical_characters_only));	
 			return false;
 		}
 		
@@ -283,7 +286,7 @@ public class RegisterActivity extends Activity {
 			return false;
 		}
 		else if(!mValidationHelper.isValidCharacters(mName)) {
-			mNameView.setError(getString(R.string.error_invalid_characters));	
+			mNameView.setError(getString(R.string.name_alphabetical_characters_only));	
 			return false;
 		}
 		return true;	

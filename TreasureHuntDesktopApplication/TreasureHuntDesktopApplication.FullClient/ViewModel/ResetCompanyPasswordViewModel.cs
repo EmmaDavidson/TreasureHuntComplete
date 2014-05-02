@@ -14,6 +14,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 

@@ -8,17 +8,17 @@ using System.Windows;
 using System.Windows.Data;
 
 //----------------------------------------------------------
-//<copyright>
-//</copyright>
+//Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
 //----------------------------------------------------------
 
 namespace TreasureHuntDesktopApplication.FullClient.Project_Utilities
 {
     /// <Summary>  The purpose of this class is to convert between boolean and visibility values which are non compatible. 
     /// Used in the context of deciding whether or not displaying pop up loading screens should be visible or
-    /// hidden on screen. </Summary>
+    /// hidden on screen. The entire class has been taken from //-http://wpftutorial.net/ValueConverters.html and I do not own
+    /// it.</Summary>
 
-    //-http://wpftutorial.net/ValueConverters.html
+    
     public class BoolToVisibilityConverter : IValueConverter
     {
         //-http://nocodemonkey.blogspot.co.uk/2012/12/wpf-bool-to-visibility-converter.html/

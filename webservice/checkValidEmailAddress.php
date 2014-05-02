@@ -51,7 +51,7 @@ password is a valid email address for this application. */
 			if($row2['RoleId'] == 1)
 			{
 				$response["success"] = 0;
-	   		        $response["message"] = "You cannot reset the password for this email address with this application";
+	   		        $response["message"] = "You cannot reset the password for an administrative email address on this application";
 	    			echo json_encode($response);
 					
 	      		}

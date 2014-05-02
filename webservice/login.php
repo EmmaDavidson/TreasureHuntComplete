@@ -54,7 +54,7 @@ mobile application with valid details. */
 	    	if($row2['RoleId'] == 1)
 	        {
 			$response["success"] = 0;
-	       		$response["message"] = "You cannot log into this application with this email address";
+	       		$response["message"] = "You cannot log into this application with an email address associated with the desktop application!";
 	    		echo json_encode($response);					
 	    	}
 	        else		
@@ -69,7 +69,7 @@ mobile application with valid details. */
 			else
 			{
 				$response["success"] = 0;
-	   			$response["message"] = "Login details incorrect.";
+	   			$response["message"] = "Login details were incorrect.";
 	    			echo json_encode($response);
 			}		
 	     	}
@@ -78,7 +78,7 @@ mobile application with valid details. */
 	 else
 	  {
 		$response["success"] = 0;
-	   	$response["message"] = "User does not exist.";
+	   	$response["message"] = "The submitted user details do not exist in our database records!";
 	    	echo json_encode($response);
 	  }
 	    	  

@@ -1,3 +1,7 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
+
 package Utilities;
 
 import org.apache.http.HttpEntity;
@@ -24,7 +28,8 @@ import android.util.Log;
 //http://www.androidhive.info/2012/01/android-json-parsing-tutorial/
 
 /* The purpose of this class is to parse JSON information received from the remote database. Entire class taken from
- * //http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/ */
+ * //http://www.mybringback.com/tutorial-series/13193/android-mysql-php-json-part-5-developing-the-android-application/ 
+ * I do not own this class*/
 public class JSONParser {
  
     static InputStream is = null;

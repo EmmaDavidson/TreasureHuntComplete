@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace TreasureHuntDesktopApplication.Test
 {
+
+    //----------------------------------------------------------
+    //<copyright>
+    //Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+    //</copyright>
+    //----------------------------------------------------------
     [TestFixture]
     public class CreateHuntViewModelTest
     {

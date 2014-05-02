@@ -17,7 +17,7 @@
         <StackPanel Background="White" Margin="174,97,169,95" Visibility="{Binding PopupDisplayed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Converter={StaticResource converter}}" >
             <!--http://wpftutorial.net/ValueConverters.html-->
             <TextBlock Foreground="DarkSlateGray" FontFamily="Stereofidelic" Text="Preparing..." Height="70" FontSize="70" Margin="112,0,104,0" RenderTransformOrigin="0.762,0.454"/>
-            <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="125,10,124,420" RenderTransformOrigin="3.935,0.005" Height="99">
+            <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\ic_launcher.png" Margin="21,10,219,420" RenderTransformOrigin="3.935,0.005" Height="99">
                 <Image.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="-1"/>

@@ -1,9 +1,12 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package sqlLiteDatabase;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-/* Entire class taken from Nerd Ranch Guide Page 1436. */
+/* Entire class taken from Nerd Ranch Guide Page 1436. I do not own this class. */
 
 /* The purpose of this abstract class is to be a 'simple loader' to 'handle arbitrary data' and to be a 'generic loader' 
  * Page 1435. Used by the LastLocationLoader class.  */
@@ -20,7 +23,7 @@ public abstract class DataLoader<D> extends AsyncTaskLoader<D> {
 	}
 	
 	/* Method 'checks for the presence of... whatever data it is loading' else it 'calls the superclass's forceLoad()
-	 * method to go and fetch it' Page 1437. */
+	 * method to go and fetch it' Nerd Ranch Guide Page 1437. */
 	@Override
 	protected void onStartLoading() {
 		if(mData != null) {
@@ -31,7 +34,7 @@ public abstract class DataLoader<D> extends AsyncTaskLoader<D> {
 		}
 	}
 	
-	/*Method to 'stash away the new data object' Page 1437. */
+	/*Method to 'stash away the new data object' Nerd Ranch Guide Page 1437. */
 	@Override
 	public void deliverResult(D data) {
 		mData = data;

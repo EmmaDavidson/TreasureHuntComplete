@@ -1,3 +1,7 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
+
 package com.application.treasurehunt.test;
 
 import java.util.ArrayList;
@@ -5,11 +9,13 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -35,6 +41,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.application.treasurehunt.ChooseCompanyActivity;
 import com.application.treasurehunt.ChooseHuntActivity;
 import com.application.treasurehunt.LoginActivity;
 import com.application.treasurehunt.LoginActivity.UserLoginTask;
@@ -54,12 +61,16 @@ import com.application.treasurehunt.R.id;
 public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginActivity> {
 
 	private LoginActivity mLoginActivity;
+	private LoginActivity.UserLoginTask mLoginTask;
+	private LoginActivity.VerifyEmailTask mVerifyEmailTask;
+	
 	private TextView mEmailView;
 	private TextView mPasswordView;
 	private Button mRegisterButton;
 	private Button mLoginButton;
 	private String mEmail;
 	private String mPassword;
+	
 	@Mock private JSONParser jsonParserMock;
 	
 	Class mLoginActivityClass;
@@ -73,10 +84,11 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 	Object isValidPasswordMethodObject;
 	Object doInBackgroundMethodObject;
 	
+	Field mLoginSuccessfulField;
+	Field mExistingEmailField;
+	
 	//http://stackoverflow.com/questions/9053864/no-enclosing-instance-of-type-error-while-calling-method-from-another-class-in
 		
-	LoginActivity.UserLoginTask loginTask;
-	
 	public LoginActivityTest(Class<LoginActivity> name) {
 		super(name);
 	}
@@ -89,6 +101,8 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 	@Before
 	protected void setUp() throws Exception {
 		super.setUp();
+		
+		System.setProperty( "dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getPath() );		
 		mLoginActivity = getActivity();
 	
 		mEmailView = (TextView) mLoginActivity.findViewById(com.application.treasurehunt.R.id.login_email_address);
@@ -96,7 +110,8 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 		mRegisterButton = (Button) mLoginActivity.findViewById(com.application.treasurehunt.R.id.register_on_login_button);
 		mLoginButton = (Button) mLoginActivity.findViewById(com.application.treasurehunt.R.id.sign_in_button);
 		
-		loginTask = mLoginActivity.new UserLoginTask();
+		mLoginTask = mLoginActivity.new UserLoginTask();
+		mVerifyEmailTask = mLoginActivity.new VerifyEmailTask();
 		
 		jsonParserMock = Mockito.mock(JSONParser.class);
 		mLoginActivity.jsonParser = jsonParserMock;
@@ -113,24 +128,15 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 		isValidPasswordMethod = mLoginActivityClass.getDeclaredMethod("isValidPassword", null);
 		isValidPasswordMethod.setAccessible(true);
 		
-		doInBackgroundMethod = mUserLoginTaskClass.getDeclaredMethod("doInBackground", null);
-		doInBackgroundMethod.setAccessible(true);
+		mLoginSuccessfulField = LoginActivity.class.getDeclaredField("mLoginSuccessful");
+		mLoginSuccessfulField.setAccessible(true);
 		
-		//http://stackoverflow.com/questions/9694282/activityunittestcase-and-activityrunonuithread
-		mLoginActivity.runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
-				mEmailView.setText(null);
-				mPasswordView.setText(null);
-			};
-			
-		});
+		mExistingEmailField = LoginActivity.class.getDeclaredField("mExistingEmailAddress");
+		mExistingEmailField.setAccessible(true);
+	
 	}
 	
-	@Test
-	public void testPreconditions()
-	{
+	public void testPreconditions() {
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
 		
@@ -139,8 +145,7 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 		assertEquals("Email is empty", "", mEmail);
 	}
 	
-	@Test
-	public void emailInvalidIfEmpty()
+	public void testEmailInvalidIfEmpty()
 	{	
 		mLoginActivity.runOnUiThread(new Runnable()
 		{
@@ -149,7 +154,6 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 				//http://www.xyzws.com/Javafaq/how-to-use-reflection-to-call-methods-in-java/153
 				//http://blog.octo.com/en/android-testing-testing-private-methods/
 				//http://geekyouup.blogspot.co.uk/2010/01/android-app-optimization-using.html
-				mEmailView.setText(null);
 				
 				try {
 					//OR IS IT .invoke(mLoginActivityClass)????
@@ -162,43 +166,15 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 					e.printStackTrace();
 				}
 				
-				assertEquals("Email is empty", false, isValidEmailMethodObject);  
+				assertEquals("Please enter an email address", false, isValidEmailMethodObject);  
 			}
 		});
 	}
 	
-	@Test
-	public void emailInvalidIfInvalidLength()
-	{
-		mLoginActivity.runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
-				mEmailView.setText("emma@com");
-				
-				try {
-					isValidEmailMethodObject = isValidEmailMethod.invoke(mLoginActivity, null);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				
-				assertEquals("Email is invalid length", false, isValidEmailMethodObject);
-			}
-		});
+	public void testEmailInvalidIfIncorrectFormat() {
 		
-	}
-	
-	@Test
-	public void emailInvalidIfIncorrectFormat()
-	{
-		mLoginActivity.runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
+		mLoginActivity.runOnUiThread(new Runnable() {
+			public void run() {
 				mEmailView.setText("emmadotcom");
 				
 				try {
@@ -212,13 +188,11 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 				}
 				
 				assertEquals("Email is invalid format", false, isValidEmailMethodObject);
-			}
-			
+			}	
 		});
 	}
 	
-	@Test
-	public void passwordInvalidIfEmpty()
+	public void testPasswordInvalidIfEmpty()
 	{
 		mLoginActivity.runOnUiThread(new Runnable()
 		{
@@ -240,142 +214,108 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 			}
 		});
 	}
-	
-	@Test
-	public void passwordInvalidIfInvalidLength()
+
+	public void testLoginSuccessfulIfValidDetails() throws JSONException, 
+						IllegalArgumentException, IllegalAccessException
 	{
-		mLoginActivity.runOnUiThread(new Runnable()
-		{
-			public void run()
-			{
-				mPasswordView.setText("em");
-				
-				try {
-					isValidPasswordMethodObject = isValidPasswordMethod.invoke(mLoginActivity, null);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				
-				assertEquals("Password is invalid length", false, isValidPasswordMethodObject);
-			}
-		});
+		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
+		String SUCCESSFUL_LOGIN = "Successful login";
+		JSONObject fakeObject = new JSONObject();	
+		fakeObject.put("message", SUCCESSFUL_LOGIN);
+		fakeObject.put("success", "1");
+		
+		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
+		
+		try {
+			mLoginTask.doInBackground("");
+		} catch (IllegalArgumentException e) {
+		e.printStackTrace();
+		} 
+		
+		//Assert that the call was made
+		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
+		
+		Object actualResult = mLoginSuccessfulField.get(mLoginActivity);
+		assertEquals(true, actualResult);	
+	}
+	
+	public void testLoginFailsIfIncorrectDetailsOrUserDoesNotExist() throws JSONException, 
+					IllegalArgumentException, IllegalAccessException
+	{
+		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
+		String UNSUCCESSFUL_LOGIN = "Login details incorrect.";
+		JSONObject fakeObject = new JSONObject();	
+		fakeObject.put("message", UNSUCCESSFUL_LOGIN);
+		fakeObject.put("success", "0");
+	
+		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
+		
+		try {
+			mLoginTask.doInBackground("");
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} 
+		
+		//Assert that the call was made
+		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
 			
+		Object actualResult = mLoginSuccessfulField.get(mLoginActivity);
+		assertEquals(false, actualResult);	
 	}
 
-	//http://stackoverflow.com/questions/9405561/test-if-a-button-starts-a-new-activity-in-android-junit-pref-without-robotium
-	@Test
-	public void registerActivityShouldStartIfRegisterButtonPressed()
-	{
-    	ActivityMonitor activityMonitor = getInstrumentation().addMonitor(RegisterActivity.class.getName(), null, false);
+	public void testResetPasswordSuccessfulIfValidEmailAddress() throws JSONException, IllegalArgumentException, IllegalAccessException{
 		
-		mLoginActivity.runOnUiThread(new Runnable(){
-			@Override
-			public void run() {
-				mRegisterButton.performClick();
-			}
-			
-		});
+		String SUCCESSFUL_RESET = "Valid email address retrieved";
 		
-		RegisterActivity nextActivity = (RegisterActivity) getInstrumentation().waitForMonitorWithTimeout(activityMonitor, 10000);
-		assertNotNull(nextActivity);
-		nextActivity.finish();
-	}
-	
-	//I wanted it to test that an activity was started afterwards but issues (See below)
-	@Test
-	public void chooseHuntActivityBeginsIfSuccessfullyLoggedIn() throws JSONException
-	{	
-		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
-		String SUCCESSFULLY_LOGGED_IN = "Successfully logged in!";
+		JSONObject array = new JSONObject();
+		array.put("email", "email");
+		array.put("UserId", 1);
+		array.put("securityquestion", "question");
+		array.put("Answer", "answer");
+		
 		JSONObject fakeObject = new JSONObject();	
-		fakeObject.put("message", SUCCESSFULLY_LOGGED_IN);
+		fakeObject.put("message", SUCCESSFUL_RESET);
 		fakeObject.put("success", "1");
-	
+		fakeObject.put("result", array);
+		fakeObject.put("securityquestion", "question");
+		
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
 		
 		try {
-			doInBackgroundMethodObject = doInBackgroundMethod.invoke(loginTask, null);
+			mVerifyEmailTask.doInBackground("");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		} 
 		
 		//Assert that the call was made
-		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());		
+		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
 			
-		//test here to see if the activity has changed
-		//Problem is, the test is running on the wrong thread - despite the screen appearing
-		//UI thread?
-		//Should be acceptance tested instead?
+		boolean actualResult = mExistingEmailField.getBoolean(mLoginActivity);
+		assertEquals(true, actualResult);	
+	
 	}
 	
-	@Test
-	public void loginFailsIfIncorrectDetails() throws JSONException
-	{
+	public void testResetPasswordFailsIfInvalidEmailAddress() throws JSONException, IllegalArgumentException, IllegalAccessException {
 		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
-		String UNSUCCESSFUL_LOGIN = "Login details incorrect.";
+		String UNSUCCESSFUL_RESET = "User invalid.";
 		JSONObject fakeObject = new JSONObject();	
-		fakeObject.put("message", UNSUCCESSFUL_LOGIN);
+		fakeObject.put("message", UNSUCCESSFUL_RESET);
 		fakeObject.put("success", "0");
 	
 		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
 		
 		try {
-			doInBackgroundMethodObject = doInBackgroundMethod.invoke(loginTask, null);
+			mVerifyEmailTask.doInBackground("");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}	
+		} 
 		
 		//Assert that the call was made
 		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
-		
-		//test here to see if the activity has not changed
-		//Problem is, the test is running on the wrong thread - despite the screen appearing on the device...its not checking the ui thread
-		//UI thread?
-		//Should be acceptance tested instead?
-		//Maybe start the activity on the postExecuteMethod and check there?		
-	}
+			
+		Object actualResult = mExistingEmailField.get(mLoginActivity);
+		assertEquals(false, actualResult);	
+}
 	
-	@Test
-	public void loginFailsIfUserDoesNotExist() throws JSONException
-	{		
-		//http://stackoverflow.com/questions/3559063/how-to-enter-quotes-in-a-string
-		String UNSUCCESSFUL_LOGIN = "Login details incorrect.";
-		JSONObject fakeObject = new JSONObject();	
-		fakeObject.put("message", UNSUCCESSFUL_LOGIN);
-		fakeObject.put("success", "0");
-	
-		Mockito.when(jsonParserMock.makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList())).thenReturn(fakeObject);
-		
-		try {
-			doInBackgroundMethodObject = doInBackgroundMethod.invoke(loginTask, null);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		
-		//Assert that the call was made
-		Mockito.verify(jsonParserMock, Mockito.times(1)).makeHttpRequest(Matchers.anyString(), Matchers.anyString(), Matchers.anyList());
-		
-		//test here to see if the activity has not changed
-		//Problem is, the test is running on the wrong thread - despite the screen appearing
-		//UI thread?
-		//Should be acceptance tested instead?
-		
-	}
 }
 

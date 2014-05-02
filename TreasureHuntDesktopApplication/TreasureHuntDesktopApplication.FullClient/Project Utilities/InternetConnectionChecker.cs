@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 //----------------------------------------------------------
 //<copyright>
+//Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
 //</copyright>
 //----------------------------------------------------------
 
 namespace TreasureHuntDesktopApplication.FullClient.Project_Utilities
 {
-     /// <Summary> The purpose of this singleton is to be a helper class with relation to the WPF application and the internet connection
-     /// of a user's machine. </Summary>
+     /// <Summary> The purpose of this singleton is to be a helper class with relation to the WPF application 
+     /// and the internet connection of a user's machine. </Summary>
     public class InternetConnectionChecker
     {
         //-http://etaktix.blogspot.co.uk/2013/01/check-if-internet-connection-is.html
-
         private static InternetConnectionChecker connectionChecker;
 
         /// <Summary> Private constructor </Summary>

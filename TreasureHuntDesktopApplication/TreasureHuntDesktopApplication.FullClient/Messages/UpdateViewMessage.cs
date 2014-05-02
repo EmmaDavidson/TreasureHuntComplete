@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 //----------------------------------------------------------
 //<copyright>
+//Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
 //</copyright>
 //----------------------------------------------------------
 

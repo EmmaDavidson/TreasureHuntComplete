@@ -19,7 +19,7 @@
         </Border>
         <ContentControl Content="{Binding CurrentViewModel}" Margin="10,13,10,10" Grid.Row="1"/>
         <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\Treasure Hunt Logo Transparent.png" Margin="0,0,515,418" Grid.RowSpan="2"/>
-        <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\TreasureChestBySelf.png" Margin="591,10,-63,420" Grid.RowSpan="2" RenderTransformOrigin="1.283,0.581"/>
+        <Image Source="C:\\Users\\Emma\\Documents\\GitHub\\EmmaProject\\TreasureHuntDesktopApplication\\ic_launcher.png" Margin="591,10,-63,420" Grid.RowSpan="2" RenderTransformOrigin="1.283,0.581"/>
 
     </Grid>
 

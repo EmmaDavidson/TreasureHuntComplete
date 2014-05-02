@@ -1,3 +1,7 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
+
 package com.application.treasurehunt.test;
 
 import com.application.treasurehunt.HomepageActivity;

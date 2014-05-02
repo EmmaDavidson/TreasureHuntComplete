@@ -1,3 +1,7 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
+
 package Utilities;
 
 import android.content.Context;
@@ -15,9 +19,9 @@ import java.util.List;
 
 /* The purpose of this class is to aid the creation of a generic expandable list to 'group data' and that has
  *  the 'capability of expanding and collapsing' its groups. 
- * Entire class Taken from the website below. */
-//
-//http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+ * Entire class Taken and adapted from the website: 
+ * //http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/ */
+
 //http://stackoverflow.com/questions/19494572/cannot-instantiate-the-type-expandablelistadapter
 public class ExpandableListAdapter extends BaseExpandableListAdapter{
 

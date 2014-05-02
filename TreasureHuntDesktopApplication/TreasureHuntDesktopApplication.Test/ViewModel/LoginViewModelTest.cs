@@ -10,6 +10,11 @@ using TreasureHuntDesktopApplication.FullClient.ViewModel;
 
 namespace TreasureHuntDesktopApplication.Test.ViewModel
 {
+    //----------------------------------------------------------
+    //<copyright>
+    //Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+    //</copyright>
+    //----------------------------------------------------------
     class LoginViewModelTest
     {
         #region Setup

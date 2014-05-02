@@ -1,17 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
  */
 
 package com.application.treasurehunt;
@@ -56,8 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-//http://net.tutsplus.com/tutorials/php/php-database-access-are-you-doing-it-correctly/
-
 /* The purpose of this Activity is to allow a participant to select from a list of treasure hunts for a particular
  * company. [See dissertation Section 2.4.2.4].*/
 
@@ -73,6 +59,7 @@ public class ChooseHuntActivity extends Activity {
 	public static JSONArray sTagResult;
 	private ReturnHuntsTask mReturnHuntsTask = null;
 	 
+	//http://net.tutsplus.com/tutorials/php/php-database-access-are-you-doing-it-correctly/
 	private HuntDAO mHuntDataSource;
 	private String mConnectionTimeout = "Connection timeout. Please try again.";
 	

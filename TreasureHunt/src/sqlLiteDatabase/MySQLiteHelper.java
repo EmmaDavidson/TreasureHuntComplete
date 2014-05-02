@@ -1,19 +1,6 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
  */
-
 package sqlLiteDatabase;
 
 import android.content.Context;
@@ -21,8 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-/* The purpose of this class is to aid the setting up of the SQLite (local) database, where the data is stored locally on 
- * a participants device. Based on //http://www.vogella.com/articles/AndroidSQLite/article.html*/
+/* The purpose of this class is to aid the setting up of the SQLite (local) database, where the data is stored 
+ * locally on a participants device. 
+ * Based on //http://www.vogella.com/articles/AndroidSQLite/article.html*/
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
   /* Global variables used by MySQLiteHelper*/

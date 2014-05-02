@@ -14,6 +14,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -197,6 +200,9 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 PopupDisplayed = false;
                 MessageBoxResult messageBox = MessageBox.Show("Your password has been updated.", "Updated password");
                 Messenger.Default.Send<UpdateViewMessage>(new UpdateViewMessage() { UpdateViewTo = "LoginViewModel" });
+
+                UserSubmittedAnswer = String.Empty;
+                NewPassword = String.Empty;
             }
             else
             {
@@ -288,7 +294,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             //for the given administrator. 
             if (!UserSubmittedAnswer.Equals(SecurityAnswer.Answer))
             {
-                return "This is not the correct answer to the security question above.";
+                return "This is not the correct answer to the security question stated.";
             }
             
             return null;

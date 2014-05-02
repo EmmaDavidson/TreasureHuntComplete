@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package com.application.treasurehunt;
 
 import android.content.Context;
@@ -6,10 +9,10 @@ import android.location.Location;
 import Mapping.LocationReceiver;
 import Mapping.MapManager;
 
-/* Android Programming Nerd Ranch Guide - Entire class taken from here*/
+/* Android Programming Nerd Ranch Guide - Entire class taken from here, I do not own this class. */
 
-/* The purpose of this class is to receive the location broadcasted by a device's location services, regardless of the user
- * interface being visible [Page 1378]*/
+/* The purpose of this class is to receive the location broadcasted by a device's location services, 
+ * regardless of the user interface being visible [Based upon Nerd Ranch Guide Page 1378]*/
 public class TrackingLocationReceiver extends LocationReceiver {
 	
 	

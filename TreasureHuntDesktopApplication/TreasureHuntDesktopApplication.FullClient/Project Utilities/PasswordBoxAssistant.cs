@@ -7,16 +7,15 @@ using System.Windows;
 using System.Windows.Controls;
 
 //----------------------------------------------------------
-//<copyright>
-//</copyright>
+//Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
 //----------------------------------------------------------
 
 
-//-http://blog.functionalfun.net/2008/06/wpf-passwordbox-and-data-binding.html
 namespace TreasureHuntDesktopApplication.FullClient.Project_Utilities
 {
   /// <Summary> The purpose of this class is to assist data binding on password fields i.e. on fields 
-  /// where the data is masked by circles.  </Summary>
+    /// where the data is masked by asterisk. The entire class has been taken from
+    //-http://blog.functionalfun.net/2008/06/wpf-passwordbox-and-data-binding.html and I do not own it  </Summary>
   
     public static class PasswordBoxAssistant
   {

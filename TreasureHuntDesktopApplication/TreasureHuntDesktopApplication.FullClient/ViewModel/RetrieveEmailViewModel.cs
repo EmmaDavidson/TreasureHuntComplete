@@ -14,6 +14,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -116,7 +119,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                      if (emailUserRole.RoleId == 2)
                      {
                          PopupDisplayed = false;
-                         MessageBoxResult messageBox = MessageBox.Show("You cannot reset this email address on this application", "Invalid user");
+                         MessageBoxResult messageBox = MessageBox.Show("You cannot reset a mobile user's login password on this application.", "Invalid user");
                          EmailAddress = String.Empty;
                      }
                      else
@@ -131,7 +134,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                  else
                  {
                      PopupDisplayed = false;
-                     MessageBoxResult messageBox = MessageBox.Show("This email address does not exist.", "Invalid email address");
+                     MessageBoxResult messageBox = MessageBox.Show("This email address does not exist!", "Invalid email address");
                      EmailAddress = String.Empty;
                  }
              }

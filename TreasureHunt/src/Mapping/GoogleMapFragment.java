@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package Mapping;
 
 import android.database.Cursor;
@@ -21,8 +24,10 @@ import java.util.List;
 
 import sqlLiteDatabase.MapDataDAO.LocationCursor;
 
-/* The purpose of this Fragment is to display a Google Map for a given participant and a given treasure hunt. It should display
- * pin drops at the locations of successful QR Code scans to allow a participant to view where they have travelled on their treasure hunt.
+/* The purpose of this Fragment is to display a Google Map for a given participant and a given treasure hunt. 
+ * It should display pin drops at the locations of successful QR Code scans to allow a 
+ * participant to view where they have travelled on their treasure hunt. Based on Nerd Ranch guide with
+ * appropriate references stated below. 
  * [See Dissertation Section 2.4.2.9] */
 
 public class GoogleMapFragment extends SupportMapFragment implements LoaderCallbacks<Cursor> {
@@ -48,7 +53,7 @@ public class GoogleMapFragment extends SupportMapFragment implements LoaderCallb
 	
 	/*
 	 * Method called when the Fragment is created (as part of the Android Life Cycle) which sets up this Fragments's variables.
-	 * Page 1465.
+	 * Based upon Nerd Ranch Guide Page 1465.
 	 *
 	 * */
 	@Override
@@ -77,10 +82,11 @@ public class GoogleMapFragment extends SupportMapFragment implements LoaderCallb
 		return v;
 	}
 	
-	/* Method called when the list of pin locations saved in the SQLite database for the given HuntParticipantId has finished loading
-	 * (see method onLoadFinished()). The pins are drawn on screen to show the given participant where they have made a successful 
-	 * QR Code scan for the given treasure hunt. The first pin dropped is highlighted in a different colour
-	 * than the other pins. Page 1476. */
+	/* Method called when the list of pin locations saved in the SQLite database for the given HuntParticipantId
+	 *  has finished loading (see method onLoadFinished()). The pins are drawn on screen to show the
+	 *   given participant where they have made a successful QR Code scan for the given treasure hunt. 
+	 *   The first pin dropped is highlighted in a different colour
+	 * than the other pins. Based upon Nerd Ranch Guide Page 1476. */
 	private void updateUI() {
 		
 		if(mGoogleMap == null || mLocationCursor == null ) {
@@ -98,7 +104,8 @@ public class GoogleMapFragment extends SupportMapFragment implements LoaderCallb
 		}
 	}
 
-	/* Method that creates a new instance of the LocationListCursorLoader for the given HuntParticipantId. Page 1465. */
+	/* Method that creates a new instance of the LocationListCursorLoader for the given HuntParticipantId. 
+	 * Based upon Nerd Ranch Guide Page 1465. */
 	@Override
 	public Loader<Cursor> onCreateLoader(int value, Bundle args) {
 		int huntParticipantId = args.getInt("userParticipantId", -1);
@@ -106,14 +113,14 @@ public class GoogleMapFragment extends SupportMapFragment implements LoaderCallb
 	}
 
 	/* Method handling what happens when the LocationListCursorLoader has finished loading. The map shown on screen
-	 * will be updated with the new data gathered. Page 1465. */
+	 * will be updated with the new data gathered. Based upon Nerd Ranch Guide Page 1465. */
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		mLocationCursor = (LocationCursor) cursor;
 		updateUI();
 	}
 
-	/* Method handling what happens when the LocationListCursorLoader is reset. Page 1466. */
+	/* Method handling what happens when the LocationListCursorLoader is reset. Based upon Nerd Ranch Guide Page 1466. */
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		mLocationCursor.close();

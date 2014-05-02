@@ -52,7 +52,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>TreasureChest.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aspose.Words">
@@ -377,19 +378,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="Images\Splashscreen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Splashscreen.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="TreasureChest.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TreasureHuntDesktopApplication.DataService\TreasureHuntDesktopApplication.DataService.csproj">
       <Project>{5b3bb04e-fda5-4fed-8889-5aadbe402fc4}</Project>
       <Name>TreasureHuntDesktopApplication.DataService</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="Images\NewSplashscreen.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

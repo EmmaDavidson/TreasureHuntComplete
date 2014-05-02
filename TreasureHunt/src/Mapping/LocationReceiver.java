@@ -1,3 +1,6 @@
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 package Mapping;
 
 import android.content.BroadcastReceiver;
@@ -7,9 +10,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-/* Entire class taken from the Nerd Ranch Guide - 1343 and 1344.*/
+/* Entire class taken from the Nerd Ranch Guide - Pages 1343 and 1344 . I do not own this class.*/
 
-/* Class whose purpose is to 'log out the locations it receives' - Page 1343. */
+/* Class whose purpose is to 'log out the locations it receives' - [Page 1343] */
 public class LocationReceiver extends BroadcastReceiver {
 
 	/*

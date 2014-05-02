@@ -24,6 +24,9 @@ using TreasureHuntDesktopApplication.FullClient.Utilities;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -238,7 +241,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
                 else
                 {
                     PopupDisplayed = false;
-                    String messageBoxText = "This question already exists.";
+                    String messageBoxText = "This question already exists!";
                     String caption = "Question Already Exists";
                     MessageBoxResult box = MessageBox.Show(messageBoxText, caption);
                     NewQuestion = String.Empty;

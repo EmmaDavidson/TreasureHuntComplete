@@ -1,19 +1,6 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
- * limitations under the License.
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
  */
-
 package sqlLiteDatabase;
 
 import android.content.ContentValues;
@@ -63,7 +50,8 @@ public class MapDataDAO {
 	    mDbHelper.close();
 	  }
 	  
-	  /* Method that inserts a new row into the Map table with the MapData supplied. Based on Page 1370. */
+	  /* Method that inserts a new row into the Map table with the MapData supplied. 
+	   * Based upon Nerd Ranch Guide Page 1370. */
 	  public void insertMap(MapData map) {
 		  ContentValues values = new ContentValues();
 		  values.put(MySQLiteHelper.COLUMM_MAPS_PARTICIPANT_ID, map.getParticipantId());
@@ -92,7 +80,8 @@ public class MapDataDAO {
 		  long insertId = mDatabase.insert(MySQLiteHelper.TABLE_MARKERS, null, values);
 	  }
 	  
-	  /* Method that returns all of the data from the SQLite (local) database for a given HuntParticipantId. Based on Page 1406 */
+	  /* Method that returns all of the data from the SQLite (local) database for a given HuntParticipantId. 
+	   * Based upon Nerd Ranch Guide Page 1406 */
 	  public MapData queryMap(int huntParticipantId) {
 		  String arguments =  "HuntParticipantId = '"+huntParticipantId + "'";
 		  Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_MAPS, mAllColumnsMaps , arguments, null , null , null, null, "1");
@@ -104,7 +93,8 @@ public class MapDataDAO {
 		  return null;  
 	  }
 	  
-	  /*Method retrieves the last location stored for the given map identified by the HuntParticipantId. Based on Page 1414.*/
+	  /*Method retrieves the last location stored for the given map identified by the HuntParticipantId. 
+	   * Based upon Nerd Ranch Guide Page 1414.*/
 	  public Location queryLastLocationForMap(int participantId) {
 		  String arguments =  "HuntParticipantId = '"+participantId + "'";
 		  Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_LOCATIONS, mAllColumnsLocations , arguments, null , null , null, MySQLiteHelper.COLUMN_MAPS_TIME_STAMP + " DESC", "1");
@@ -142,7 +132,8 @@ public class MapDataDAO {
 	  
 	  /* Method returns from the SQLite (local) database data of all locations stored for a given HuntParticipantId.
 	   * The list is returned into a LocationCursor to ensure that the displaying of data is done off the main UI thread i.e.
-	   * in the scenario where there is lots of location data we do not want to slow down the main UI thread. Page 1463. */
+	   * in the scenario where there is lots of location data we do not want to slow down the main UI thread. 
+	   * Based upon Nerd Ranch Guide Page 1463. */
 	  public LocationCursor queryLocationsForMapAsync(int huntParticipantId) {
 		  String arguments =  "HuntParticipantId = '"+huntParticipantId + "'";
 		   Cursor cursor = mDatabase.query(MySQLiteHelper.TABLE_LOCATIONS,
@@ -181,8 +172,9 @@ public class MapDataDAO {
 	  }
 	  
 	  /* This internal class is for the purpose of wrapping 'a cursor intended to returns rows from the location table
-	   * and converts their various fields into properties on the Location object' as quoted from Page 1412.
-	   * 'CursorWrapper is designed to wrap an existing Cursor and forward along all of the method calls to it'. Page 1386.
+	   * and converts their various fields into properties on the Location object' as quoted from Nerd Ranch Guide Page 1412.
+	   * 'CursorWrapper is designed to wrap an existing Cursor and forward along all of the method calls to it' 
+	   * as quoted from Nerd Ranch Guide Page 1386.
 	   * Taken from Nerd Ranch Guide Page 1412.*/
 	  public class LocationCursor extends CursorWrapper {
 
@@ -192,9 +184,8 @@ public class MapDataDAO {
 			}
 			
 			/* Method 'creates and configures an instance of (Location) based on the values of the current row's 
-			 * columns' Page 1388.
-			 * Page 1412
-			 * COULD POTENTIALLY BE TAKEN OUT?*/
+			 * columns' - Nerd Ranch Guide Page 1388.
+			 * Based upon Nerd Ranch Guide Page 1412 */
 			public Location getLocation() {
 				if(isBeforeFirst() || isAfterLast()) {
 					return null;

@@ -31,7 +31,7 @@
 	    if ($row) {
 
 	        $response["success"] = 0;
-	        $response["message"] = "This Email Address is already in use";
+	        $response["message"] = "This email address already exists in the database!";
 	        die(json_encode($response));
 	    }
 		

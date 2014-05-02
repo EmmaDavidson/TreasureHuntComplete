@@ -14,6 +14,9 @@ using TreasureHuntDesktopApplication.FullClient.TreasureHuntService;
 
 //----------------------------------------------------------
 //<copyright>
+/*
+ * Emma Davidson - Treasure Hunt 2013-3014 Final Year Project
+ */
 //</copyright>
 //----------------------------------------------------------
 
@@ -207,7 +210,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
          {
              get
              {
-                 return 4;
+                 return 3;
 
              }
          }
@@ -582,7 +585,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             if (!Validation.IsValidLength(EmailAddress, EmailMaxLength, EmailMinLength))
             {
-                return "Email Address must be between 10 and 30 characters.";
+                return "Email address must be between 10 and 30 characters.";
             }
 
             return null;
@@ -619,16 +622,16 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(CompanyName))
             {
-                return "Company Name cannot be empty.";
+                return "Company name cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(CompanyName))
             {
-                return "Company Name must be made up of only alphabetic characters.";
+                return "Company name must be made up of only alphabetic characters.";
             }
             if (!Validation.IsValidLength(CompanyName, CompanyNameMaxLength, CompanyNameMinLength))
             {
-                return "Company Name must be between 4 and 30 characters.";
+                return "Company name must be between 3 and 30 characters.";
             }
 
             return null;
@@ -642,7 +645,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
         {
             if (Validation.IsNullOrEmpty(CompanyPassword))
             {
-                return "Company Password cannot be empty.";
+                return "Company password cannot be empty.";
             }
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidPasswordCharacters(CompanyPassword))
@@ -651,7 +654,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             }
             if (!Validation.IsValidLength(CompanyPassword, PasswordMaxLength, PasswordMinLength))
             {
-                return "Company Password must be between 6 and 20 characters.";
+                return "Company password must be between 6 and 20 characters.";
             }
 
             return null;
@@ -670,7 +673,7 @@ namespace TreasureHuntDesktopApplication.FullClient.ViewModel
             //-http://blog.magnusmontin.net/2013/08/26/data-validation-in-wpf/
             if (!Validation.IsValidCharacters(SecurityAnswer))
             {
-                return "Answer must be made up of alphabetic characters only.";
+                return "Answer must only be made up of alphabetic characters.";
             }
             if (!Validation.IsValidLength(SecurityAnswer, SecurityAnswerMaxLength, SecurityAnswerMinLength))
             {
